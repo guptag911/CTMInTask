@@ -17,13 +17,13 @@ jobs:
     name: Build and Deploy
     runs-on: [ubuntu-latest]
     steps:
-    - name: Checkout Repo
-    - uses: actions/checkout@v2
-    - name: Install dependencies 
-      run: npm install
-    - name: Firebase Trigger
-      uses: w9jds/firebase-trigger@v1.0.1
-      with:
-        args: deploy
-      env: 
-        FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Install dependencies 
+        run: npm install
+      - name: Firebase Trigger
+        uses: w9jds/firebase-trigger@v1.0.1
+        with:
+          args: deploy
+        env: 
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
