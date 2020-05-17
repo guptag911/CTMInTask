@@ -28,4 +28,4 @@ jobs:
         env: # Or as an environment variable
           super_secret: ${{ secrets.FIREBASE_TOKEN }}
           run: |
-            firebase deploy --token ${{ super_secret }}
+            firebase deploy --token ${super_secret}
