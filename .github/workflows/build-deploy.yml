@@ -23,7 +23,7 @@ jobs:
         run: npm install
       - name: Deploy to Firebase
         uses: lowply/deploy-firebase@v0.0.2
-        with:
-          args: deploy
-        env: 
-          FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
+        with: # Set the secret as an input
+          super_secret: ${{ secrets.FIREBASE_TOKEN }}
+        env: # Or as an environment variable
+          super_secret: ${{ secrets.FIREBASE_TOKEN }}
