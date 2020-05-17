@@ -21,8 +21,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Install dependencies 
         run: npm install
-      - name: Firebase Trigger
-        uses: w9jds/firebase-trigger@master
+      - name: Deploy to Firebase
+        uses: lowply/deploy-firebase@v0.0.2
         with:
           args: deploy
         env: 
