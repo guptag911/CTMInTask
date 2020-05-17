@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies 
         run: npm install
       - name: Firebase Trigger
-        uses: w9jds/firebase-trigger@v1.0.1
+        uses: w9jds/firebase-trigger@master
         with:
           args: deploy
         env: 
