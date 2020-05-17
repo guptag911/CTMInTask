@@ -17,14 +17,12 @@ jobs:
   firebase-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
           node-version: '10.x' 
       - run: npm install
-      - name: GitHub Action for Firebase
-        uses: w9jds/firebase-action@master
+      - uses: w9jds/firebase-action@master
         with: # Set the secret as an input
           args: deploy --only hosting
         env: # Or as an environment variable
