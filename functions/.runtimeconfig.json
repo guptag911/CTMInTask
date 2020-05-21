@@ -1,7 +1,0 @@
-{
-  "service": {
-    "client_secret": "ZKU5aIdclK2d_niJKY2hY1GY",
-    "redirect_url": "http://localhost:5000/authon",
-    "client_id": "191064865538-k95dvgct4qussfdd3nmm8noqlr6n961i.apps.googleusercontent.com"
-  }
-}
