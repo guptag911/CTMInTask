@@ -10,6 +10,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import { firebaseAuth } from "../config/config";
+import { Link } from "react-router-dom";
+import { signout } from "../helper/auth";
 
 const styles = (theme) => ({
   root: {
@@ -74,7 +76,8 @@ const Profile = (props) => {
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleClose = () => {
+  const handleClose = async () => {
+    await signout();
     setOpen(false);
   };
 
@@ -94,7 +97,7 @@ const Profile = (props) => {
         <DialogContent dividers>
           <Typography gutterBottom>
             <img
-              src={user.photoURL}
+              src={user.photoURL || "ab"}
               alt="profile Image"
               width="25%"
               height="25%"
@@ -108,6 +111,17 @@ const Profile = (props) => {
             <b>Email: {user.email}</b>
           </Typography>
         </DialogContent>
+        <DialogActions>
+          <Button
+            autoFocus
+            onClick={handleClose}
+            color="primary"
+            component={Link}
+            to="/"
+          >
+            Sign Out
+          </Button>
+        </DialogActions>
       </Dialog>
     </div>
   );

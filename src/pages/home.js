@@ -3,7 +3,6 @@ import Button from "@material-ui/core/Button";
 import { signout, signIn } from "../helper/auth";
 import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
-import { list } from "../helper/api";
 
 const style = {
   width: "100px",
@@ -14,11 +13,10 @@ const Home = () => {
 
   const handleUser = async (e) => {
     if (currentUser) {
-      const result = await signout();
-      const res = await list();
-      console.log(res);
+      console.log(currentUser);
+      await signout();
     } else {
-      const result = await signIn();
+      await signIn();
     }
   };
   firebaseAuth.onAuthStateChanged((user) => {
