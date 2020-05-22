@@ -97,7 +97,7 @@ const Profile = (props) => {
         <DialogContent dividers>
           <Typography gutterBottom>
             <img
-              src={user.photoURL || "ab"}
+              src={user.photoURL || "../../public/anime.jpg"}
               alt="profile Image"
               width="25%"
               height="25%"

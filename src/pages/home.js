@@ -42,7 +42,15 @@ const Home = () => {
         {currentUser ? (
           <h4 style={style}>Sign Out</h4>
         ) : (
-          <h4 style={style}>Sign In</h4>
+          <div id="customBtn">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+              alt="Google"
+              width="25px"
+              style={{ paddingTop: "10px", paddingLeft: "10px" }}
+            />
+            <span class="buttonText">Log in with Google</span>
+          </div>
         )}
       </Button>
       {currentUser ? (

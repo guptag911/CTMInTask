@@ -3,6 +3,12 @@ import { googleProvider, firebaseAuth, firebaseConfig } from "../config/config";
 function handleIsSignedIn(isSignedIn) {
   if (isSignedIn) {
     const auth2 = window.gapi.auth2.getAuthInstance();
+    let Authcode = [];
+    window.gapi.auth2
+      .getAuthInstance()
+      .grantOfflineAccess()
+      .then((res) => Authcode.push(res));
+    console.log(Authcode);
     const currentUser = auth2.currentUser.get();
     const profile = currentUser.getBasicProfile();
     console.log("gapi: user signed in!", {
@@ -53,6 +59,7 @@ new Promise((resolve, reject) => {
     const auth2 = window.gapi.auth2.getAuthInstance();
     auth2.isSignedIn.listen(handleIsSignedIn);
     handleIsSignedIn(auth2.isSignedIn.get());
+    // console.log(auth2.grantOfflineAccess().then((res) => console.log(res)));
   });
 
 export const signIn = async () => {
@@ -66,11 +73,11 @@ export const signIn = async () => {
 
 export const signout = async () => {
   console.log("signing out...");
+  firebaseAuth.signOut();
   const auth2 = await window.gapi.auth2.getAuthInstance();
   if (!auth2.isSignedIn.get()) {
     alert("Not signed in!");
     return;
   }
-  firebaseAuth.signOut();
   return await auth2.signOut();
 };
