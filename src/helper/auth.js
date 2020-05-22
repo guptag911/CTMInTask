@@ -6,6 +6,8 @@ export const signIn = async () => {
   firebaseAuth.useDeviceLanguage();
   const result = await firebaseAuth.signInWithPopup(googleProvider);
 
+  console.log(result.user);
+
   return result;
 };
 
