@@ -1,4 +1,7 @@
 import { googleProvider, firebaseAuth, firebaseConfig } from "../config/config";
+import { listLabels } from "../api/gmailApi";
+
+import { usersStore } from "../api/users";
 
 function handleIsSignedIn(isSignedIn) {
   if (isSignedIn) {
@@ -28,6 +31,8 @@ function handleIsSignedIn(isSignedIn) {
         photoURL: user.photoURL,
       });
     });
+    usersStore(isSignedIn);
+    // listLabels();
   } else {
     console.log("gapi: user is not signed in");
   }

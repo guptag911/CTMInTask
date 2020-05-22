@@ -108,10 +108,10 @@ const Profile = (props) => {
             />
           </Typography>
           <Typography gutterBottom>
-            <b>Username: {user.displayName}</b>
+            <b>Username: {user ? user.displayName : "Happy Man"}</b>
           </Typography>
           <Typography gutterBottom>
-            <b>Email: {user.email}</b>
+            <b>Email: {user ? user.email : "nil"}</b>
           </Typography>
         </DialogContent>
         <DialogActions>

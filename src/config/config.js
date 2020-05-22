@@ -16,6 +16,8 @@ export const firebaseConfig = {
     "profile",
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/tasks",
     "https://www.googleapis.com/auth/analytics",
   ],
   discoveryDocs: [
@@ -27,5 +29,5 @@ export const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
-export const database = firebase.database();
+export const db = firebase.firestore();
 export const firebaseAuth = firebase.auth();
