@@ -49,7 +49,7 @@ const Home = () => {
               width="25px"
               style={{ paddingTop: "10px", paddingLeft: "10px" }}
             />
-            <span class="buttonText">Log in with Google</span>
+            <span className="buttonText">Log in with Google</span>
           </div>
         )}
       </Button>

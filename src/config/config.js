@@ -14,15 +14,13 @@ export const firebaseConfig = {
   scopes: [
     "email",
     "profile",
-    // "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/analytics.readonly",
-    // "https://www.googleapis.com/auth/contacts",
+    "https://www.googleapis.com/auth/analytics",
   ],
   discoveryDocs: [
-    // "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+    "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
     "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest",
-    // "https://www.googleapis.com/discovery/v1/apis/contacts/v3/rest",
   ],
 };
 

@@ -77,8 +77,11 @@ const Profile = (props) => {
     setOpen(true);
   };
   const handleClose = async () => {
-    await signout();
     setOpen(false);
+  };
+
+  const handleLogOut = async () => {
+    await signout();
   };
 
   return (
@@ -97,7 +100,7 @@ const Profile = (props) => {
         <DialogContent dividers>
           <Typography gutterBottom>
             <img
-              src={user.photoURL || "../../public/anime.jpg"}
+              src={user ? user.photoURL : "../../public/anime.jpg"}
               alt="profile Image"
               width="25%"
               height="25%"
@@ -114,7 +117,7 @@ const Profile = (props) => {
         <DialogActions>
           <Button
             autoFocus
-            onClick={handleClose}
+            onClick={handleLogOut}
             color="primary"
             component={Link}
             to="/"

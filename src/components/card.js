@@ -30,7 +30,7 @@ const useStyles = makeStyles({
 
 export default function SimpleCard(props) {
     const classes = useStyles();
-    console.log("props is ", props);
+    // console.log("props is ", props);
     const [checked, setChecked] = React.useState(true);
     const handleChange = (id) => {
         console.log("id is ",id, props.data[id].done);
