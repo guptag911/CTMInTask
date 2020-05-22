@@ -61,7 +61,6 @@ export const signIn = async () => {
     alert("already signed in");
     return;
   }
-
   return await auth2.signIn();
 };
 
