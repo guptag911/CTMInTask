@@ -11,6 +11,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Profile from "./profile";
+import { sync } from "../helper/syncData";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -95,6 +96,7 @@ const NavigationBar = () => {
   const handleMenuClose = (e) => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    sync();
   };
 
   const handleMobileMenuOpen = (event) => {

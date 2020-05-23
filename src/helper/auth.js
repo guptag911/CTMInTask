@@ -4,6 +4,7 @@ import {
   firebaseConfig,
   db,
 } from "../config/config";
+
 import { listLabels } from "../api/gmailApi";
 
 import { usersStore } from "../api/users";
@@ -11,13 +12,6 @@ import { usersStore } from "../api/users";
 function handleIsSignedIn(isSignedIn) {
   if (isSignedIn) {
     const auth2 = window.gapi.auth2.getAuthInstance();
-    let authcode = [];
-    // window.gapi.auth2
-    //   .getAuthInstance()
-    //   .grantOfflineAccess()
-    //   .then((res) => authcode.push(res));
-    // console.log(authcode);
-
     const currentUser = auth2.currentUser.get();
     const profile = currentUser.getBasicProfile();
     console.log("gapi: user signed in!", {
@@ -36,9 +30,7 @@ function handleIsSignedIn(isSignedIn) {
         email: user.email,
         photoURL: user.photoURL,
       });
-      usersStore(isSignedIn, user, authcode);
     });
-    // listLabels();
   } else {
     console.log("gapi: user is not signed in");
   }
