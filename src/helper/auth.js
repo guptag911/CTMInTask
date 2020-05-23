@@ -12,7 +12,6 @@ import { usersStore } from "../api/users";
 function handleIsSignedIn(isSignedIn) {
   if (isSignedIn) {
     const auth2 = window.gapi.auth2.getAuthInstance();
-    let authcode = [];
     const currentUser = auth2.currentUser.get();
     const profile = currentUser.getBasicProfile();
     console.log("gapi: user signed in!", {
@@ -31,9 +30,7 @@ function handleIsSignedIn(isSignedIn) {
         email: user.email,
         photoURL: user.photoURL,
       });
-      usersStore(isSignedIn, user, authcode);
     });
-    // listLabels();
   } else {
     console.log("gapi: user is not signed in");
   }
