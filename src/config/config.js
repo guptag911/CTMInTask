@@ -17,19 +17,20 @@ export const firebaseConfig = {
     "profile",
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/drive.metadata.readonly",
     "https://www.googleapis.com/auth/tasks",
     "https://www.googleapis.com/auth/analytics",
   ],
   discoveryDocs: [
     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
     "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest",
+    "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest",
   ],
 };
-
 
 firebase.initializeApp(firebaseConfig);
 
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
 export const db = firebase.firestore();
 export const firebaseAuth = firebase.auth();
+export const func = firebase.functions();
