@@ -1,9 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const express = require("express");
 const cors = require("cors");
-const app = express();
-app.use(cors());
+
 const serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
@@ -13,11 +11,20 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-app.get("/sample", async (req, res) => {
-  const data = await db.collection("sample").get();
-  data.forEach((doc) => {
-    res.json(doc.data());
-  });
+
+// auth functions
+exports.newSignUp = functions.auth.user().onCreate(async (user) => {
+  let userObject = {
+    name: `${user.displayName}`,
+    email: `${user.email}`,
+    photoUrl: `${user.photoURL}`,
+    refreshToken: `${user.tokensValidAfterTime}`,
+    uid: `${user.uid}`,
+  };
+
+  return db.collection("users").doc(user.uid).set(userObject);
 });
 
-exports.api = functions.region("asia-east2").https.onRequest(app);
+exports.onUserDelete = functions.auth.user().onDelete(async (user) => {
+  return doc.delete();
+});
