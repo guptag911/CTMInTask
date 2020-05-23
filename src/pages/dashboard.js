@@ -6,7 +6,7 @@ import TabView from "../components/tabView";
 import {DataSave, GetData, ListOfLabels} from "../api/testdatasave";
 
 const Dashboard = () => {
-  // const data = ListOfLabels();
+  const data = ListOfLabels();
   return (
     <div>
       <NavigationBar />
