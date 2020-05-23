@@ -6,7 +6,7 @@ import {
 
 
 const PrivateRoute = ({
-    component: Component,
+    Component: Component,
     ...rest
 }) => (
         <Route
