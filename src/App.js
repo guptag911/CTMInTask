@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import PrivateRoute from "./components/privateRoute";
 
 // Pages
 import Home from "./pages/home";
@@ -30,7 +31,7 @@ function App() {
       <div className="App">
         <Router>
           <Switch>
-            <Route path="/dash" component={Dashboard} />
+            <PrivateRoute exact path="/dash" component={Dashboard} />
             <Route path="/" component={Home} />
           </Switch>
         </Router>
