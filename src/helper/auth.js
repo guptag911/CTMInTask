@@ -1,5 +1,5 @@
 import { googleProvider, firebaseAuth, firebaseConfig } from "../config/config";
-import { listLabels } from "../api/gmailApi";
+import { ListLabels } from "../api/gmailApi";
 
 import { usersStore } from "../api/users";
 
