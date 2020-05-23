@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
 import { signout } from "../helper/auth";
+import { db } from "../config/config";
 
 const styles = (theme) => ({
   root: {
@@ -72,6 +73,7 @@ const Profile = (props) => {
   });
 
   const user = JSON.parse(sessionStorage.getItem("user"));
+  
 
   const handleClickOpen = () => {
     setOpen(true);
