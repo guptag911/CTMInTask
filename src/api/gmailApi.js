@@ -1,6 +1,6 @@
 import { googleProvider, firebaseAuth, firebaseConfig } from "../config/config";
 
-export const ListLabels = () => {
+export const listLabels = () => {
   console.log("in listlabels ",window.gapi.client);
   window.gapi.client.gmail.users.labels
     .list({
