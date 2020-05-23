@@ -12,7 +12,7 @@ export const ListLabels = () => {
       console.log("log lables is ", label);
 
       if (labels && labels.length > 0) {
-        for (var i = 0; i < labels.length; i++) {
+        for (var i = 0; i < labels.length; i++) { 
           var label = labels[i];
           console.log("label is ",label);
         }
