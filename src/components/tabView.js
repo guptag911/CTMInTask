@@ -103,13 +103,13 @@ export default function ScrollableTabsButtonAuto() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <CardView data={data1}></CardView>
+        <CardView data="gsuite"></CardView>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CardView data={data2}></CardView>
+        <CardView data="gsuite"></CardView>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <CardView data={data3}></CardView>
+        <CardView data="gsuite"></CardView>
       </TabPanel>
       <TabPanel value={value} index={3}>
         <CardView data={data4}></CardView>

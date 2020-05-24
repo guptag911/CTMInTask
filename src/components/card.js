@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -6,6 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
 
 const useStyles = makeStyles({
     root: {
@@ -30,25 +31,36 @@ const useStyles = makeStyles({
 
 export default function SimpleCard(props) {
     const classes = useStyles();
+
     // console.log("props is ", props);
-    const [checked, setChecked] = React.useState(true);
+
+    let [data , getData] = useState([]);
+    const [checked, setChecked] = useState(true);
+    useEffect(() => { 
+         GsuiteDataGet().then((data)=>{
+            getData(data);
+         }).catch((err)=>{
+            console.log("err is ", err);
+         });
+    }, []);
+
     const handleChange = (id) => {
-        console.log("id is ",id, props.data[id].done);
-        props.data[id].done=!props.data[id].done;
+        console.log("id is ", id, props.data[id].done);
+        props.data[id].done = !props.data[id].done;
         setChecked(!checked);
-      };
+    };
     // const bull = <span className={classes.bullet}>•</span>;
 
     return (
         <React.Fragment>
-            {props.data ? props.data.map((element) => {
+            {data ? data.map((element) => {
                 return (<Card key={element.id} className={classes.root}>
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
-                            Assigned by -- {element.by}
+                            Assigned by -- {element.sender}
                         </Typography>
                         <Typography variant="h5" component="h2">
-                            {element.task}
+                            {element.task_desc}
                         </Typography>
                         <Typography className={classes.pos} color="textSecondary">
                             adjective
@@ -59,14 +71,14 @@ export default function SimpleCard(props) {
                             {'"a benevolent smile"'}
                         </Typography>
                         <FormControlLabel
-                        control={
-                            <Checkbox
-                            checked={element.done}
-                            color="primary"
-                            onChange={()=>handleChange(element.id)}
-                        />
-                        }
-                        label="Completed"  
+                            control={
+                                <Checkbox
+                                    checked={!element.taskid && element.status}
+                                    color="primary"
+                                    onChange={() => handleChange(element.id)}
+                                />
+                            }
+                            label="Completed"
                         />
 
                     </CardContent>

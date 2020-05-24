@@ -1,5 +1,6 @@
 import { googleProvider, firebaseAuth, firebaseConfig, db } from "../config/config";
 import axios from "axios";
+import { GsuiteDataSave } from "./gsuiteApi";
 
 
 export const DataSave = async () => {
@@ -41,7 +42,8 @@ var MY_SCHEMA =
     file_id: "FileId of the doc",
     comment_id: "Comment ID will be UNIQUE",
     taskid: "Will be NONE if not in tasklist.",
-    status: "Bool Tells weather the task was present ever in the tasklist or not."
+    status: "Bool Tells weather the task was present ever in the tasklist or not.",
+    task_desc:"task description"
 }
 
 
@@ -57,6 +59,8 @@ const insert_task = async (data) => {
         some_data.forEach(async (comments) => {
             if (comments['commentId'] === cmtid) {
                 var title = comments['content'];
+                console.log("title is ", title);
+
                 try {
                     if (comments['status'] === 'open' && data['status'] === false) {
                         try {
@@ -225,8 +229,26 @@ export const MessageList = async () => {
                     userSchema['sender'] = head['value'];
                 }
             })
+            try{
+            var comment_list = await window.gapi.client.drive.comments.list({ fileId: userSchema["file_id"], fields: '*' })
+            var some_data = comment_list.result['items']
+            var cmtid = userSchema['comment_id']
+            some_data.forEach(async (comments) => {
+                if (comments['commentId'] === cmtid) {
+                    var title = comments['content'];
+                    if(title){
+                        userSchema["task_desc"]=title;
+                    }
+                }
+            })
+        }catch(err){
+            console.log("error in title fetching", err);
+            userSchema["task_desc"]=null;
+        }
             userData.push(userSchema);
-            insert_task(userSchema);
+            // insert_task(userSchema);
+            await GsuiteDataSave(userSchema["mid"], userSchema);
+
         });
         console.log("log lables new ", threadList);
         console.log("mails ", Mails);
