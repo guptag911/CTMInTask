@@ -117,7 +117,7 @@ const NavigationBar = () => {
       <MenuItem onClick={handleMenuClose}>
         <Profile />
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Sync Data</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Sync</MenuItem>
     </Menu>
   );
 
@@ -148,7 +148,7 @@ const NavigationBar = () => {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <Typography className={classes.title} variant="h4" noWrap>
             <strong>innovaccer</strong>

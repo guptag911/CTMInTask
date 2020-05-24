@@ -48,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     marginTop: 20,
   },
+
+  bold: {
+    fontWeight: "bold",
+  },
 }));
 
 const data1 = [
@@ -95,11 +99,19 @@ export default function ScrollableTabsButtonAuto() {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
-          <Tab label="Google Docs" {...a11yProps(0)} />
-          <Tab label="Google Sheets" {...a11yProps(1)} />
-          <Tab label="Google Slides" {...a11yProps(2)} />
-          <Tab label="Jira" {...a11yProps(3)} />
-          <Tab label="Confluence" {...a11yProps(4)} />
+          <Tab label="Google Docs" {...a11yProps(0)} className={classes.bold} />
+          <Tab
+            label="Google Sheets"
+            {...a11yProps(1)}
+            className={classes.bold}
+          />
+          <Tab
+            label="Google Slides"
+            {...a11yProps(2)}
+            className={classes.bold}
+          />
+          <Tab label="Jira" {...a11yProps(3)} className={classes.bold} />
+          <Tab label="Confluence" {...a11yProps(4)} className={classes.bold} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>

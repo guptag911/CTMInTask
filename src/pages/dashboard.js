@@ -2,9 +2,12 @@ import React from "react";
 import NavigationBar from "../components/NavBar";
 import Container from "@material-ui/core/Container";
 import TabView from "../components/tabView";
-import {DataSave, GetData, MessageList} from "../api/datagetting_pythonScript";
+import {
+  DataSave,
+  GetData,
+  MessageList,
+} from "../api/datagetting_pythonScript";
 import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
-
 
 const Dashboard = () => {
   const data = MessageList();
@@ -13,7 +16,7 @@ const Dashboard = () => {
   return (
     <div>
       <NavigationBar />
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" style={{ marginTop: "100px" }}>
         <TabView></TabView>
       </Container>
     </div>

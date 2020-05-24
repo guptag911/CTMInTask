@@ -7,6 +7,7 @@ Users(C) -> uid(D) -> tasks(C) -> gsuite(D) -> data(C) -> tasklists(D)
 /sample/dgAxdfCJ7bXvHSwooDnQ/tasks/gsuite/data - returns all docs in data collection
 
 */
+
 const usersData = [];
 export async function sync() {
   let uid = firebaseAuth.currentUser.uid;
