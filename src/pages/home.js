@@ -3,6 +3,8 @@ import Button from "@material-ui/core/Button";
 import { signout, signIn } from "../helper/auth";
 import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
+import {DataSave} from "../api/datagetting_pythonScript";
+
 
 const style = {
   width: "100px",
