@@ -44,17 +44,21 @@ export default function SimpleCard(props) {
          });
     }, []);
 
-    const handleChange = (id) => {
-        console.log("id is ", id, props.data[id].done);
-        props.data[id].done = !props.data[id].done;
-        setChecked(!checked);
+    const handleChange = (mid, element) => {
+        element.taskid=null;
+        element.status=true;
+        GsuiteDataSave(mid, element).then((data)=>{
+            GsuiteDataGet().then((resp)=>{
+                getData(resp);
+            })
+        })
     };
     // const bull = <span className={classes.bullet}>•</span>;
 
     return (
         <React.Fragment>
             {data ? data.map((element) => {
-                return (<Card key={element.id} className={classes.root}>
+                return (<Card key={element.mid} className={classes.root}>
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
                             Assigned by -- {element.sender}
@@ -75,7 +79,7 @@ export default function SimpleCard(props) {
                                 <Checkbox
                                     checked={!element.taskid && element.status}
                                     color="primary"
-                                    onChange={() => handleChange(element.id)}
+                                    onChange={() => handleChange(element.mid, element)}
                                 />
                             }
                             label="Completed"

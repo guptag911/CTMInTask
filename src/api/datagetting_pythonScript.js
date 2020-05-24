@@ -176,7 +176,7 @@ export const MessageList = async () => {
                 if (my_url !== null)
                     userSchema['url'] = my_url[0];
                 else
-                    userSchema['URL'] = null;
+                    userSchema['url'] = null;
             }
             catch (err) {
                 console.log("error is ", err);
@@ -245,6 +245,9 @@ export const MessageList = async () => {
             console.log("error in title fetching", err);
             userSchema["task_desc"]=null;
         }
+            if(!userSchema["url"]){
+                userSchema["url"]="#";
+            }
             userData.push(userSchema);
             // insert_task(userSchema);
             await GsuiteDataSave(userSchema["mid"], userSchema);
