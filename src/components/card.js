@@ -58,7 +58,7 @@ export default function SimpleCard(props) {
     return (
         <React.Fragment>
             {data ? data.map((element) => {
-                return (<Card key={element.mid} className={classes.root}>
+                return !element.taskid && element.status ? null: (  <Card key={element.mid} className={classes.root}>
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
                             Assigned by -- {element.sender}
