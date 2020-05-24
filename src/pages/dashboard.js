@@ -2,7 +2,7 @@ import React from "react";
 import NavigationBar from "../components/NavBar";
 import Container from "@material-ui/core/Container";
 import TabView from "../components/tabView";
-import {DataSave, GetData, MessageList} from "../api/testdatasave";
+import {DataSave, GetData, MessageList} from "../api/datagetting_pythonScript";
 
 const Dashboard = () => {
   const data = MessageList();

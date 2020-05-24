@@ -46,19 +46,83 @@ var MY_SCHEMA =
 
 
 const insert_task = async (data) => {
-    window.gapi.client.load('drive', 'v2', async function () {
-        console.log("gapi  is ", window.gapi.client);
-        var file_id = data['file_id']
-        var cmtid = data['comment_id']
-        try {
-            var comment_list = await window.gapi.client.drive.comments.list({ fileId: file_id, fields: 'items/status, items/content, items/commentId' })
-            var some_data = comment_list['items']
-            console.log("comment list is ", comment_list);
-        }
-        catch (err) {
-            console.log("error is ", err);
-        }
-    });
+    // window.gapi.client.load('drive', 'v2', async function () {
+    console.log("gapi  is ", window.gapi.client);
+    var file_id = data['file_id']
+    var cmtid = data['comment_id']
+    try {
+        var comment_list = await window.gapi.client.drive.comments.list({ fileId: file_id, fields: '*' })
+        var some_data = comment_list.result['items']
+        console.log("comment list is ", some_data);
+        some_data.forEach(async (comments) => {
+            if (comments['commentId'] === cmtid) {
+                var title = comments['content'];
+                try {
+                    if (comments['status'] === 'open' && data['status'] === false) {
+                        try {
+                            var results = await window.gapi.client.tasks.tasklists.list({});
+                            // console.log("results is ", results);
+                            var items = results.result.items;
+                            console.log("items is ", items);
+                            var tasklist_id = items[0]['id']
+                            var new_task = { 'title': title.toString(), 'notes': (data['url']).toString() }
+                        }
+                        catch (err) {
+                            console.log("error is ", err);
+                        }
+                        try {
+                            var go = await window.gapi.client.tasks.tasklists.insert({ tasklist: "@default", body: new_task })
+                            data['taskid'] = go['id']
+                            data['status'] = true
+                            console.log("New Task Added");
+                        }
+                        catch (err) {
+                            console.log("error is ", err);
+                        }
+                    }
+                    else if (comments['status'] === 'resolved' && data['status'] === true) {
+                        if (data['taskid'] !== null) {
+                            var task = await window.gapi.client.tasks.tasklists.get({ tasklist: "@default", task: data['taskid'] });
+                            task['status'] = "completed";
+                            task['hidden'] = true;
+                            var result = await window.gapi.client.tasks.tasklists.update({ tasklist: "@default", task: task['id'], body: task });
+                            data['taskid'] = null;
+                            console.log("Assigned Task marked as done!")
+                        }
+                    }
+
+                    else if (comments['status'] === 'open' && data['status'] === true) {
+                        if (data['taskid'] !== null) {
+                            var task = await window.gapi.client.tasks.tasklists.get({ tasklist: "@default", task: data['taskid'] });
+                            var flag = task['status']
+                            if (flag === 'completed') {
+                                var my_comment = window.gapi.client.drive.comments.get({ fileId: file_id, commentId: cmtid });
+                                my_comment['status'] = 'resolved';
+                                await window.gapi.client.drive.comments.update({ fileId: file_id, commentId: cmtid, body: my_comment });
+                                await window.gapi.client.drive.comments.delete({ fileId: file_id, commentId: cmtid });
+                                console.log("Task mark as done from tasks");
+                            }
+                            else if (flag === "needsAction")
+                                console.log("Task Assigned but yet to be completed!");
+                        }
+                    }
+
+                    else if (comments['status'] === 'resolved' && data['status'] === false) {
+                        console.log("Task is already completed!");
+                    }
+
+                }
+                catch (err) {
+                    console.log("err is ", err);
+                }
+            }
+        })
+
+    }
+    catch (err) {
+        console.log("error is ", err);
+    }
+    // });
 
 }
 
@@ -116,7 +180,7 @@ export const MessageList = async () => {
             //Getting file ID of the assigned doc
             var url = userSchema['url'];
             //console.log(url);
-            if (url == null)
+            if (url === null)
                 userSchema['file_id'] = "None";
             else {
                 //getting the file id
@@ -133,7 +197,7 @@ export const MessageList = async () => {
                 }
             }
 
-            if (url == null)
+            if (url === null)
                 userSchema['comment_id'] = null;
             else {
                 try {
@@ -154,10 +218,10 @@ export const MessageList = async () => {
             var header = payload.headers;
             header.forEach(head => {
                 // console.log("head is", head);
-                if (head.name == "Delivered-To") {
+                if (head.name === "Delivered-To") {
                     userSchema['u_mail'] = head['value'];
                 }
-                if (head.name == 'From') {
+                if (head.name === 'From') {
                     userSchema['sender'] = head['value'];
                 }
             })

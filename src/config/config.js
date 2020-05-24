@@ -24,7 +24,8 @@ export const firebaseConfig = {
   discoveryDocs: [
     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
     "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest",
-    "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest",
+    "https://www.googleapis.com/discovery/v1/apis/drive/v2/rest",
+    "https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest",
   ],
 };
 
