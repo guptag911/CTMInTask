@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
+import axios from "axios";
 
 const useStyles = makeStyles({
     root: {
@@ -34,31 +35,45 @@ export default function SimpleCard(props) {
 
     // console.log("props is ", props);
 
-    let [data , getData] = useState([]);
-    const [checked, setChecked] = useState(true);
-    useEffect(() => { 
-         GsuiteDataGet().then((data)=>{
-            getData(data);
-         }).catch((err)=>{
-            console.log("err is ", err);
-         });
+    let [data, getData] = useState([]);
+    useEffect(() => {
+        if (props.data === "gsuite") {
+            GsuiteDataGet().then((data) => {
+                getData(data);
+            }).catch((err) => {
+                console.log("err is ", err);
+            });
+        }
     }, []);
 
-    const handleChange = (mid, element) => {
-        element.taskid=null;
-        element.status=true;
-        GsuiteDataSave(mid, element).then((data)=>{
-            GsuiteDataGet().then((resp)=>{
-                getData(resp);
+    const handleChange = async (mid, element) => {
+        try {
+            var task = await window.gapi.client.tasks.tasks.get({ tasklist: "@default", task: element.taskid });
+            console.log("task is ", task.result);
+            task.result['status'] = "completed";
+            task.result['hidden'] = true;
+            var result = await window.gapi.client.tasks.tasks.update({ 'tasklist': "@default", 'task': task.result['id'] }, task.result);
+            // var result = axios.put('https://www.googleapis.com/tasks/v1/users/@me/lists/MkVoclhyZUZycUtubkNMWQ', {"id": "MkVoclhyZUZycUtubkNMWQ","title": "My task modified again with new tech"});
+            console.log("result is ", result.result);
+            element.taskid = null;
+            element.status = "completed";
+            GsuiteDataSave(mid, element).then((data) => {
+                GsuiteDataGet().then((resp) => {
+                    getData(resp);
+                })
             })
-        })
+        }
+        catch (e) {
+            console.log("error ", e);
+        }
+
     };
     // const bull = <span className={classes.bullet}>•</span>;
 
     return (
         <React.Fragment>
             {data ? data.map((element) => {
-                return !element.taskid && element.status ? null: (  <Card key={element.mid} className={classes.root}>
+                return !element.taskid && element.status ? null : (<Card key={element.mid} className={classes.root}>
                     <CardContent>
                         <Typography className={classes.title} color="textSecondary" gutterBottom>
                             Assigned by -- {element.sender}

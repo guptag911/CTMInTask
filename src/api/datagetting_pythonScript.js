@@ -43,61 +43,76 @@ var MY_SCHEMA =
     comment_id: "Comment ID will be UNIQUE",
     taskid: "Will be NONE if not in tasklist.",
     status: "Bool Tells weather the task was present ever in the tasklist or not.",
-    task_desc:"task description"
+    task_desc: "task description"
 }
 
 
 const insert_task = async (data) => {
-    // window.gapi.client.load('drive', 'v2', async function () {
-    console.log("gapi  is ", window.gapi.client);
     var file_id = data['file_id']
     var cmtid = data['comment_id']
     try {
         var comment_list = await window.gapi.client.drive.comments.list({ fileId: file_id, fields: '*' })
         var some_data = comment_list.result['items']
-        console.log("comment list is ", some_data);
+        // console.log("comment list is ", some_data);
         some_data.forEach(async (comments) => {
             if (comments['commentId'] === cmtid) {
                 var title = comments['content'];
-                console.log("title is ", title);
+                // console.log("title is ", title);
 
                 try {
                     if (comments['status'] === 'open' && data['status'] === false) {
                         try {
-                            var results = await window.gapi.client.tasks.tasklists.list({});
-                            // console.log("results is ", results);
+                            var results = await window.gapi.client.tasks.tasks.list({ tasklist: "@default" });
+                            // console.log("results is this ", results);
                             var items = results.result.items;
-                            console.log("items is ", items);
+                            // console.log("items is ", items);
                             var tasklist_id = items[0]['id']
                             var new_task = { 'title': title.toString(), 'notes': (data['url']).toString() }
-                        }
-                        catch (err) {
-                            console.log("error is ", err);
-                        }
-                        try {
-                            var go = await window.gapi.client.tasks.tasklists.insert({ tasklist: "@default", body: new_task })
-                            data['taskid'] = go['id']
+                            // console.log("new task is ", new_task);
+                            var go = await window.gapi.client.tasks.tasks.insert({ tasklist: "@default", body: new_task })
+                            // console.log("go is ", go);
+                            data['taskid'] = go.result['id']
+                            // console.log("task id is ", data["taskid"], " and id ", data["mid"])
                             data['status'] = true
                             console.log("New Task Added");
+                            console.log("Data is this new ", data);
+                            // console.log("yes no");
+                            return data;
                         }
                         catch (err) {
-                            console.log("error is ", err);
+                            console.log("error is this ", err);
+                            console.log("Data is this ", data);
+                            return data;
                         }
                     }
                     else if (comments['status'] === 'resolved' && data['status'] === true) {
                         if (data['taskid'] !== null) {
-                            var task = await window.gapi.client.tasks.tasklists.get({ tasklist: "@default", task: data['taskid'] });
-                            task['status'] = "completed";
-                            task['hidden'] = true;
-                            var result = await window.gapi.client.tasks.tasklists.update({ tasklist: "@default", task: task['id'], body: task });
-                            data['taskid'] = null;
-                            console.log("Assigned Task marked as done!")
+                            try {
+                                var task = await window.gapi.client.tasks.tasks.get({ tasklist: "@default", task: data['taskid'] });
+                                task['status'] = "completed";
+                                task['hidden'] = true;
+                                var result = await window.gapi.client.tasks.tasks.update({ tasklist: "@default", task: task['id'], body: task });
+                                data['taskid'] = null;
+                                console.log("in null");
+                                console.log("Assigned Task marked as done!")
+                                console.log("Data is this 2nd", data);
+                                return data;
+                            }
+                            catch (e) {
+                                console(e);
+                                console.log("Data is this 2nd err", data);
+                                return data;
+                            }
+                        }
+                        else {
+                            console.log("Data is this ", data);
+                            return data;
                         }
                     }
 
                     else if (comments['status'] === 'open' && data['status'] === true) {
                         if (data['taskid'] !== null) {
-                            var task = await window.gapi.client.tasks.tasklists.get({ tasklist: "@default", task: data['taskid'] });
+                            var task = await window.gapi.client.tasks.tasks.get({ tasklist: "@default", task: data['taskid'] });
                             var flag = task['status']
                             if (flag === 'completed') {
                                 var my_comment = window.gapi.client.drive.comments.get({ fileId: file_id, commentId: cmtid });
@@ -106,18 +121,29 @@ const insert_task = async (data) => {
                                 await window.gapi.client.drive.comments.delete({ fileId: file_id, commentId: cmtid });
                                 console.log("Task mark as done from tasks");
                             }
-                            else if (flag === "needsAction")
+                            else if (flag === "needsAction") {
                                 console.log("Task Assigned but yet to be completed!");
+                            }
+                            console.log("Data is this in ", data);
+                            return data;
+                        }
+                        else {
+                            console.log("Data is this ", data);
+                            return data;
                         }
                     }
 
                     else if (comments['status'] === 'resolved' && data['status'] === false) {
                         console.log("Task is already completed!");
+                        console.log("Data is this in ", data);
+                        return data;
                     }
 
                 }
                 catch (err) {
                     console.log("err is ", err);
+                    console.log("Data is this in ", data);
+                    return data;
                 }
             }
         })
@@ -125,9 +151,10 @@ const insert_task = async (data) => {
     }
     catch (err) {
         console.log("error is ", err);
+        console.log("Data is this in ", data);
+        return data;
     }
     // });
-
 }
 
 const getIndvMail = async (mid) => {
@@ -216,7 +243,7 @@ export const MessageList = async () => {
                     console.log("error is ", err);
                 }
             }
-            userSchema['task_id'] = null;
+            userSchema['taskid'] = null;
             userSchema['status'] = false;
             // console.log("payload is", payload);
             var header = payload.headers;
@@ -229,29 +256,38 @@ export const MessageList = async () => {
                     userSchema['sender'] = head['value'];
                 }
             })
-            try{
-            var comment_list = await window.gapi.client.drive.comments.list({ fileId: userSchema["file_id"], fields: '*' })
-            var some_data = comment_list.result['items']
-            var cmtid = userSchema['comment_id']
-            some_data.forEach(async (comments) => {
-                if (comments['commentId'] === cmtid) {
-                    var title = comments['content'];
-                    if(title){
-                        userSchema["task_desc"]=title;
+            try {
+                var comment_list = await window.gapi.client.drive.comments.list({ fileId: userSchema["file_id"], fields: '*' })
+                var some_data = comment_list.result['items']
+                var cmtid = userSchema['comment_id']
+                some_data.forEach(async (comments) => {
+                    if (comments['commentId'] === cmtid) {
+                        var title = comments['content'];
+                        if (title) {
+                            userSchema["task_desc"] = title;
+                        }
                     }
-                }
-            })
-        }catch(err){
-            console.log("error in title fetching", err);
-            userSchema["task_desc"]=null;
-        }
-            if(!userSchema["url"]){
-                userSchema["url"]="#";
+                })
+            } catch (err) {
+                console.log("error in title fetching", err);
+                userSchema["task_desc"] = null;
+            }
+            if (!userSchema["url"]) {
+                userSchema["url"] = "#";
             }
             userData.push(userSchema);
-            // insert_task(userSchema);
-            await GsuiteDataSave(userSchema["mid"], userSchema);
+            try {
+                if(userSchema['file_id']){
+                userSchema = await insert_task(userSchema);
+                console.log("user schema is ", userSchema)
+                var GData = await GsuiteDataSave(userSchema["mid"], userSchema);
+                console.log("GData is ", GData);
+                }
 
+            }
+            catch (e) {
+                console.log(e);
+            }
         });
         console.log("log lables new ", threadList);
         console.log("mails ", Mails);
