@@ -5,12 +5,14 @@ Schema
 -------
 Users(C) -> uid(D) -> tasks(C) -> gsuite(D) -> data(C) -> tasklists(D)
 /sample/dgAxdfCJ7bXvHSwooDnQ/tasks/gsuite/data - returns all docs in data collection
+
 */
 const usersData = [];
 export async function sync() {
   let uid = firebaseAuth.currentUser.uid;
-  const res = await db.collection("sample/" + uid + "/tasks/gsuite/data").get();
+  const res = await db.collection("users/" + uid + "/tasks/gsuite/data").get();
   res.docs.forEach((ele) => {
+    console.log(ele.data());
     usersData.push(ele.data());
   });
   const uniqueData = getUniqueData(usersData, "mid");
