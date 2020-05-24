@@ -54,12 +54,14 @@ const insert_task = async (data) => {
         var comment_list = await window.gapi.client.drive.comments.list({ fileId: file_id, fields: '*' })
         var some_data = comment_list.result['items']
         // console.log("comment list is ", some_data);
-        some_data.forEach(async (comments) => {
+
+        return (await new Promise( (resolve)=>some_data.map(async (comments) => {
             if (comments['commentId'] === cmtid) {
                 var title = comments['content'];
                 // console.log("title is ", title);
 
                 try {
+
                     if (comments['status'] === 'open' && data['status'] === false) {
                         try {
                             var results = await window.gapi.client.tasks.tasks.list({ tasklist: "@default" });
@@ -77,12 +79,12 @@ const insert_task = async (data) => {
                             console.log("New Task Added");
                             console.log("Data is this new ", data);
                             // console.log("yes no");
-                            return data;
+                            resolve(data);
                         }
                         catch (err) {
                             console.log("error is this ", err);
                             console.log("Data is this ", data);
-                            return data;
+                            resolve(data);
                         }
                     }
                     else if (comments['status'] === 'resolved' && data['status'] === true) {
@@ -96,17 +98,17 @@ const insert_task = async (data) => {
                                 console.log("in null");
                                 console.log("Assigned Task marked as done!")
                                 console.log("Data is this 2nd", data);
-                                return data;
+                                resolve(data);
                             }
                             catch (e) {
                                 console(e);
                                 console.log("Data is this 2nd err", data);
-                                return data;
+                                resolve(data);
                             }
                         }
                         else {
                             console.log("Data is this ", data);
-                            return data;
+                            resolve(data);
                         }
                     }
 
@@ -125,28 +127,28 @@ const insert_task = async (data) => {
                                 console.log("Task Assigned but yet to be completed!");
                             }
                             console.log("Data is this in ", data);
-                            return data;
+                            resolve(data);
                         }
                         else {
                             console.log("Data is this ", data);
-                            return data;
+                            resolve(data);
                         }
                     }
 
                     else if (comments['status'] === 'resolved' && data['status'] === false) {
                         console.log("Task is already completed!");
                         console.log("Data is this in ", data);
-                        return data;
+                        resolve(data);
                     }
 
                 }
                 catch (err) {
                     console.log("err is ", err);
                     console.log("Data is this in ", data);
-                    return data;
+                    resolve(data);
                 }
             }
-        })
+        })))
 
     }
     catch (err) {
@@ -277,11 +279,11 @@ export const MessageList = async () => {
             }
             userData.push(userSchema);
             try {
-                if(userSchema['file_id']){
-                userSchema = await insert_task(userSchema);
-                console.log("user schema is ", userSchema)
-                var GData = await GsuiteDataSave(userSchema["mid"], userSchema);
-                console.log("GData is ", GData);
+                if (userSchema['file_id']) {
+                    userSchema = await insert_task(userSchema);
+                    console.log("user schema is ", userSchema)
+                    var GData = await GsuiteDataSave(userSchema["mid"], userSchema);
+                    console.log("GData is ", GData);
                 }
 
             }
