@@ -13,6 +13,22 @@ export async function sync() {
   res.docs.forEach((ele) => {
     usersData.push(ele.data());
   });
-  console.log(usersData);
-  return ;
+  const uniqueData = getUniqueData(usersData, "mid");
+  console.log(uniqueData);
+  return uniqueData;
+}
+
+function getUniqueData(arr, comp) {
+  // store the comparison  values in array
+  const uniqueData = arr
+    .map((e) => e[comp])
+
+    // store the indexes of the unique objects
+    .map((e, i, final) => final.indexOf(e) === i && i)
+
+    // eliminate the false indexes & return unique objects
+    .filter((e) => arr[e])
+    .map((e) => arr[e]);
+
+  return uniqueData;
 }
