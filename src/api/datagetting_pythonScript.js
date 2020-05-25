@@ -51,7 +51,7 @@ const insert_task = async (data) => {
     var file_id = data['file_id']
     var cmtid = data['comment_id']
     try {
-        var comment_list = await window.gapi.client.drive.comments.list({ fileId: file_id, fields: '*' })
+        var comment_list = await window.gapi.client.drive.comments.list({ fileId: file_id, fields: 'items/status, items/content, items/commentId' })
         var some_data = comment_list.result['items']
         // console.log("comment list is ", some_data);
 
@@ -260,7 +260,7 @@ export const MessageList = async () => {
                 }
             })
             try {
-                var comment_list = await window.gapi.client.drive.comments.list({ fileId: userSchema["file_id"], fields: '*' })
+                var comment_list = await window.gapi.client.drive.comments.list({ fileId: userSchema["file_id"], fields: 'items/status, items/content, items/commentId' })
                 var some_data = comment_list.result['items']
                 var cmtid = userSchema['comment_id']
                 some_data.forEach(async (comments) => {
