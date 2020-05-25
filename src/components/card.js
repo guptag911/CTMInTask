@@ -7,7 +7,6 @@ import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
-import axios from "axios";
 
 const useStyles = makeStyles({
   root: {

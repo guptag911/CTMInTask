@@ -58,27 +58,28 @@ const insert_task = async (data) => {
         return (await new Promise( (resolve)=>some_data.map(async (comments) => {
             if (comments['commentId'] === cmtid) {
                 var title = comments['content'];
-                // console.log("title is ", title);
+                console.log("title is ", title);
 
                 try {
 
                     if (comments['status'] === 'open' && data['status'] === false) {
                         try {
+                            var n_title=title;
                             var results = await window.gapi.client.tasks.tasks.list({ tasklist: "@default" });
                             // console.log("results is this ", results);
                             var items = results.result.items;
                             // console.log("items is ", items);
                             var tasklist_id = items[0]['id']
-                            var new_task = { 'title': title.toString(), 'notes': (data['url']).toString() }
+                            var new_task = { 'title': n_title.toString(), 'notes': (data['url']).toString() }
                             // console.log("new task is ", new_task);
-                            var go = await window.gapi.client.tasks.tasks.insert({ tasklist: "@default", body: new_task })
-                            // console.log("go is ", go);
+                            var go = await window.gapi.client.tasks.tasks.insert({ tasklist: "@default"}, new_task);
+                            console.log("go is ", go);
                             data['taskid'] = go.result['id']
                             // console.log("task id is ", data["taskid"], " and id ", data["mid"])
                             data['status'] = true
                             console.log("New Task Added");
                             console.log("Data is this new ", data);
-                            // console.log("yes no");
+                            console.log("yes no");
                             resolve(data);
                         }
                         catch (err) {
@@ -93,7 +94,7 @@ const insert_task = async (data) => {
                                 var task = await window.gapi.client.tasks.tasks.get({ tasklist: "@default", task: data['taskid'] });
                                 task['status'] = "completed";
                                 task['hidden'] = true;
-                                var result = await window.gapi.client.tasks.tasks.update({ tasklist: "@default", task: task['id'], body: task });
+                                var result = await window.gapi.client.tasks.tasks.update({ tasklist: "@default", task: task['id']}, task.result);
                                 data['taskid'] = null;
                                 console.log("in null");
                                 console.log("Assigned Task marked as done!")
