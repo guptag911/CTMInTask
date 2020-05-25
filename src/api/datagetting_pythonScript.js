@@ -69,7 +69,7 @@ const insert_task = async (data) => {
                             // console.log("results is this ", results);
                             var items = results.result.items;
                             // console.log("items is ", items);
-                            var tasklist_id = items[0]['id']
+                            // var tasklist_id = items[0]['id']
                             var new_task = { 'title': n_title.toString(), 'notes': (data['url']).toString() }
                             // console.log("new task is ", new_task);
                             var go = await window.gapi.client.tasks.tasks.insert({ tasklist: "@default"}, new_task);
