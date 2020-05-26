@@ -7,6 +7,14 @@ import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+const useStyleLoader = makeStyles((theme) => ({
+  root: {
+    
+      margin:200
+  },
+}));
 
 const useStyles = makeStyles({
   root: {
@@ -35,10 +43,12 @@ export default function SimpleCard(props) {
   const [checked, setChecked] = React.useState(true);
 
   const classes = useStyles();
+  const classesLoader = useStyleLoader();
+  let [Loader, setLoader] = useState(false);
 
   // console.log("props is ", props);
 
-  let [data, getData] = useState([]);
+  let [data, getData] = useState(null);
   useEffect(() => {
     if (props.data === "gsuite") {
       GsuiteDataGet()
@@ -52,6 +62,7 @@ export default function SimpleCard(props) {
   }, []);
 
   const handleChange = async (mid, element) => {
+    setLoader(true);
     try {
       var task = await window.gapi.client.tasks.tasks.get({
         tasklist: "@default",
@@ -71,6 +82,8 @@ export default function SimpleCard(props) {
       GsuiteDataSave(mid, element).then((data) => {
         GsuiteDataGet().then((resp) => {
           getData(resp);
+          console.log("data is in the card",data);
+          setLoader(false);
         });
       });
     } catch (e) {
@@ -80,61 +93,63 @@ export default function SimpleCard(props) {
 
   return (
     <React.Fragment>
-      {data
+      {data && !Loader
         ? data.map((element) => {
-            return !element.taskid && element.status ? null : (
-              <Card key={element.mid} className={classes.root}>
-                <CardContent>
-                  <Typography
-                    className={classes.title}
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    Assigned by -- {element.sender}
-                  </Typography>
-                  <Typography variant="h7" component="h7">
-                    {element.task_desc}
-                  </Typography>
-                  {/* <Typography className={classes.pos} color="textSecondary">
+          return !element.taskid && element.status ? null : (
+            <Card key={element.mid} className={classes.root}>
+              <CardContent>
+                <Typography
+                  className={classes.title}
+                  color="textSecondary"
+                  gutterBottom
+                >
+                  Assigned by -- {element.sender}
+                </Typography>
+                <Typography variant="h7" component="h7">
+                  {element.task_desc}
+                </Typography>
+                {/* <Typography className={classes.pos} color="textSecondary">
                     ad
                   </Typography> */}
-                  {/* <Typography variant="body2" component="p">
+                {/* <Typography variant="body2" component="p">
                     well meaning and kindly.
                     <br />
                     {'"a benevolent smile"'}
                   </Typography> */}
-                  <br />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={!element.taskid && element.status}
-                        color="primary"
-                        onChange={(e) => {
-                          setChecked(e.target.checked);
-                          handleChange(element.mid, element);
-                        }}
-                      />
-                    }
-                    label="Mark as Done"
-                  />
-                </CardContent>
-                <CardActions>
-                  <a
-                    href={element.url}
-                    style={{
-                      textDecoration: "none",
-                      color: "#e84993",
-                      fontWeight: "bold",
-                    }}
-                    size="small"
-                  >
-                    Go to the task
+                <br />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!element.taskid && element.status}
+                      color="primary"
+                      onChange={(e) => {
+                        setChecked(e.target.checked);
+                        handleChange(element.mid, element);
+                      }}
+                    />
+                  }
+                  label="Mark as Done"
+                />
+              </CardContent>
+              <CardActions>
+                <a
+                  href={element.url}
+                  style={{
+                    textDecoration: "none",
+                    color: "#e84993",
+                    fontWeight: "bold",
+                  }}
+                  size="small"
+                >
+                  Go to the task
                   </a>
-                </CardActions>
-              </Card>
-            );
-          })
-        : null}
+              </CardActions>
+            </Card>
+          );
+        })
+        : <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>}
     </React.Fragment>
   );
 }
