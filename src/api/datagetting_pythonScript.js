@@ -78,7 +78,6 @@ const insert_task = async (data) => {
                                     tasklist: "@default",
                                 });
                                 // console.log("results is this ", results);
-                                var items = results.result.items;
                                 // console.log("items is ", items);
                                 // var tasklist_id = items[0]['id']
                                 var new_task = {
