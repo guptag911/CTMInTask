@@ -26,9 +26,14 @@ const useStyles = makeStyles({
   pos: {
     marginBottom: 12,
   },
+  checked: {
+    background: "#e84993",
+  },
 });
 
 export default function SimpleCard(props) {
+  const [checked, setChecked] = React.useState(true);
+
   const classes = useStyles();
 
   // console.log("props is ", props);
@@ -90,20 +95,24 @@ export default function SimpleCard(props) {
                   <Typography variant="h7" component="h7">
                     {element.task_desc}
                   </Typography>
-                  <Typography className={classes.pos} color="textSecondary">
-                    adjective
-                  </Typography>
-                  <Typography variant="body2" component="p">
+                  {/* <Typography className={classes.pos} color="textSecondary">
+                    ad
+                  </Typography> */}
+                  {/* <Typography variant="body2" component="p">
                     well meaning and kindly.
                     <br />
                     {'"a benevolent smile"'}
-                  </Typography>
+                  </Typography> */}
+                  <br />
                   <FormControlLabel
                     control={
                       <Checkbox
                         checked={!element.taskid && element.status}
                         color="primary"
-                        onChange={() => handleChange(element.mid, element)}
+                        onChange={(e) => {
+                          setChecked(e.target.checked);
+                          handleChange(element.mid, element);
+                        }}
                       />
                     }
                     label="Mark as Done"
