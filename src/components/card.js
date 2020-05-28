@@ -16,17 +16,23 @@ const useStyleLoader = makeStyles((theme) => ({
   },
 }));
 
-const useStyles = makeStyles({
-  root: {
-    maxWidth: "30%",
-    margin: 20,
-    float: "left",
-    display: "inline-block",
+const useStyles = makeStyles((theme)=>({
+
+  [theme.breakpoints.down('sm')]: {
+    root: {
+      maxWidth: "100%",
+      margin: 20,
+      float: "left",
+      display: "inline-block",
+    },
   },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
+  [theme.breakpoints.up('sm')]: {
+    root: {
+      maxWidth: "30%",
+      margin: 20,
+      float: "left",
+      display: "inline-block",
+    },
   },
   title: {
     fontSize: 14,
@@ -37,7 +43,7 @@ const useStyles = makeStyles({
   checked: {
     background: "#e84993",
   },
-});
+}));
 
 export default function SimpleCard(props) {
   const [checked, setChecked] = React.useState(true);
@@ -149,7 +155,7 @@ export default function SimpleCard(props) {
                   color="textSecondary"
                   gutterBottom
                 >
-                  Assigned by -- {element.sender}
+                  Assigned by -- {element.sender.split("<")[0]}
                 </Typography>
                 <Typography variant="h7" component="h7">
                   {element.task_desc}
