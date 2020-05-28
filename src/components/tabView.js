@@ -115,19 +115,19 @@ export default function ScrollableTabsButtonAuto() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <CardView data="gsuite"></CardView>
+        <CardView product="gsuites" data="gdocs"></CardView>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CardView data="gsuite"></CardView>
+        <CardView product="gsuites" data="gsheets"></CardView>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <CardView data="gsuite"></CardView>
+        <CardView product="gsuites" data="gslides"></CardView>
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <CardView data={data4}></CardView>
+        <CardView product="jira" data={data4}></CardView>
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <CardView data={data5}></CardView>
+        <CardView product="confluence" data={data5}></CardView>
       </TabPanel>
     </div>
   );

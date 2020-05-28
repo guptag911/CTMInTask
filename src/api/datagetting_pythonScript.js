@@ -218,12 +218,13 @@ export const MessageList = async () => {
         //list of mails fetching
         var response = await window.gapi.client.gmail.users.messages.list({
             userId: "me",
-            q: query,
+            q:query,
             maxResults: 100,
         });
         var messages = response.result.messages;
         var threadList = [];
         var userData = [];
+        console.log("total messages are ", response.result);
         messages.forEach(async (element) => {
             var userSchema = {};
             threadList.push(element.threadId);
