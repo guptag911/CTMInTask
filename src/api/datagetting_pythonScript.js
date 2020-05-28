@@ -110,18 +110,19 @@ const insert_task = async (data) => {
                                 try {
                                     var task = await window.gapi.client.tasks.tasks.get({
                                         tasklist: "@default",
-                                        task: data["taskid"],
+                                        task: data['taskid'],
                                     });
-                                    task["status"] = "completed";
-                                    task["hidden"] = true;
+                                    console.log("task is ", task.result);
+                                    task.result["status"] = "completed";
+                                    task.result["hidden"] = true;
                                     var result = await window.gapi.client.tasks.tasks.update(
-                                        { tasklist: "@default", task: task["id"] },
-                                        task.result
+                                    { tasklist: "@default", task: task.result["id"] },
+                                    task.result
                                     );
-                                    data["taskid"] = null;
-                                    console.log("in null");
+                                    data['taskid'] = null;
+                                    //console.log("in null");
                                     console.log("Assigned Task marked as done!");
-                                    console.log("Data is this 2nd", data);
+                                    //console.log("Data is this 2nd", data);
                                     resolve(data);
                                 } catch (e) {
                                     console(e);
