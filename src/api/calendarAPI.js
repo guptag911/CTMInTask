@@ -28,7 +28,7 @@ export const CalendarDataSave = async () => {
 
     let calendarData = await window.gapi.client.calendar.events.list({ "calendarId": "primary" });
 
-    console.log("calender data is ", calendarData.result.items);
+    // console.log("calender data is ", calendarData.result.items);
 
     calendarData.result.items.forEach(async (element) => {
 
@@ -40,7 +40,7 @@ export const CalendarDataSave = async () => {
             catch(e){
                 loc=null;
             }
-            console.log("loc is ", loc);
+            // console.log("loc is ", loc);
             let calenderData = {
                 "id": element.id,
                 "creator": element.creator.email,
@@ -62,11 +62,11 @@ export const CalendarDataSave = async () => {
         try{
         const uid = firebaseAuth.currentUser.uid;
         const userRef = await db.collection("users").doc(uid).collection("calender").doc(element.id).set(calenderData);
-        console.log("userRef is ", userRef);
+        // console.log("userRef is ", userRef);
         return { "msg": "success" };
         }
         catch(e){
-            console.log("error in the cal is ", e);
+            // console.log("error in the cal is ", e);
             return {"msg":false};
         }
     }
@@ -83,12 +83,12 @@ export const CalendarDataGet = async ()=>{
         userRef.forEach((data)=>{
             finalData.push(data.data());
         })
-        console.log("Data is ", finalData);
+        // console.log("Data is ", finalData);
         return finalData;
         
     }
     catch (e) {
-        console.log("error is ", e);
+        // console.log("error is ", e);
         return [];
     }
 }

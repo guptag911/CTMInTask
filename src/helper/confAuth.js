@@ -77,10 +77,12 @@ export async function constrRequestUrl(apiPath) {
 export async function getCloudId(accessToken) {
   const result = await axios.get(
     "https://api.atlassian.com/oauth/token/accessible-resources",
-    {}
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    }
   );
-  console.log(result);
-
   return result.data[0];
 }
-

@@ -26,7 +26,7 @@ export const GsuiteDataSave = async (mid, userdata) => {
       .collection("data")
       .doc(mid)
       .set(userdata);
-    console.log("userRef is ", userRef);
+    // console.log("userRef is ", userRef);
     return { msg: "success" };
   } catch (e) {
     console.log("error is ", e);
@@ -49,7 +49,7 @@ export const GsuiteDataGet = async () => {
     userRef.forEach((data) => {
       finalData.push(data.data());
     });
-    console.log("Data is ", finalData);
+    // console.log("Data is ", finalData);
     return finalData;
   } catch (e) {
     console.log("error is ", e);

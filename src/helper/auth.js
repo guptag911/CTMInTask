@@ -5,29 +5,28 @@ import {
   db,
 } from "../config/config";
 
-
-
 function handleIsSignedIn(isSignedIn) {
   if (isSignedIn) {
     const auth2 = window.gapi.auth2.getAuthInstance();
     const currentUser = auth2.currentUser.get();
     const profile = currentUser.getBasicProfile();
-    console.log("gapi: user signed in!", {
-      name: profile.getName(),
-      imageURL: profile.getImageUrl(),
-      email: profile.getEmail(),
-    });
+    // console.log("gapi: user signed in!", {
+    //   name: profile.getName(),
+    //   imageURL: profile.getImageUrl(),
+    //   email: profile.getEmail(),
+    // });
     const authResponse = currentUser.getAuthResponse(true);
     const credential = googleProvider.credential(
       authResponse.id_token,
       authResponse.access_token
     );
     firebaseAuth.signInWithCredential(credential).then(({ user }) => {
-      console.log("firebase: user signed in!", {
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-      });
+      // console.log("firebase: user signed in!", {
+      //   displayName: user.displayName,
+      //   email: user.email,
+      //   photoURL: user.photoURL,
+      // });
+      return user;
     });
   } else {
     console.log("gapi: user is not signed in");
