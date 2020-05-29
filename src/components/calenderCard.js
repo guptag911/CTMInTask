@@ -4,7 +4,7 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import { CalenderDataGet } from "../api/calenderAPI";
+import { CalendarDataGet } from "../api/calendarAPI";
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyleLoader = makeStyles((theme) => ({
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CalenderCard(props) {
+export default function CalendarCard(props) {
   const classes = useStyles();
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(false);
@@ -50,7 +50,7 @@ export default function CalenderCard(props) {
 
   useEffect(() => {
     setLoader(true);
-    CalenderDataGet().then((resp) => {
+    CalendarDataGet().then((resp) => {
       getData(resp);
     }).catch((e) => {
       console.log("error is ", e);
@@ -103,7 +103,7 @@ export default function CalenderCard(props) {
                   }}
                   size="small"
                 >
-                  Calender
+                  Calendar
                   </a>
               </CardActions>
               <CardActions style={{ float: "right" }}>

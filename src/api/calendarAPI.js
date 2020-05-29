@@ -24,7 +24,7 @@ var MY_SCHEMA =
 
 }
 
-export const CalenderDataSave = async () => {
+export const CalendarDataSave = async () => {
 
     let calendarData = await window.gapi.client.calendar.events.list({ "calendarId": "primary" });
 
@@ -75,7 +75,7 @@ export const CalenderDataSave = async () => {
 } 
 
 
-export const CalenderDataGet = async ()=>{
+export const CalendarDataGet = async ()=>{
     try {
         const uid = firebaseAuth.currentUser.uid;
         const userRef = await db.collection("users").doc(uid).collection("calender").orderBy('start_time', 'desc').get();

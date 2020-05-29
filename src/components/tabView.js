@@ -111,7 +111,7 @@ export default function ScrollableTabsButtonAuto() {
             {...a11yProps(2)}
             className={classes.bold}
           />
-          <Tab label="Calender Events" {...a11yProps(3)} className={classes.bold} />
+          <Tab label="Calendar Events" {...a11yProps(3)} className={classes.bold} />
           <Tab label="Jira" {...a11yProps(4)} className={classes.bold} />
           <Tab label="Confluence" {...a11yProps(5)} className={classes.bold} />
         </Tabs>
