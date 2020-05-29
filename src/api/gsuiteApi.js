@@ -51,3 +51,20 @@ export const GsuiteDataGet = async () => {
     }
 
 }
+
+export const GsuiteGetId = async () => {
+    try{
+        var my_data = GsuiteDataGet();
+        var ids = [];
+        (await my_data).forEach((data) => {
+            ids.push(data['mid']);
+        })
+        //console.log("ids are->", ids)
+        return ids;
+    }
+    catch (e) {
+        console.log("Error is", e);
+        return []
+    }
+}
+
