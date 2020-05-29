@@ -5,17 +5,16 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { CalendarDataGet } from "../api/calendarAPI";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
-    margin: 200
+    margin: 200,
   },
 }));
 
 const useStyles = makeStyles((theme) => ({
-
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down("sm")]: {
     root: {
       maxWidth: "100%",
       margin: 20,
@@ -23,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
       display: "inline-block",
     },
   },
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up("sm")]: {
     root: {
       maxWidth: "25%",
       margin: 20,
@@ -50,18 +49,19 @@ export default function CalendarCard(props) {
 
   useEffect(() => {
     setLoader(true);
-    CalendarDataGet().then((resp) => {
-      getData(resp);
-    }).catch((e) => {
-      console.log("error is ", e);
-    })
+    CalendarDataGet()
+      .then((resp) => {
+        getData(resp);
+      })
+      .catch((e) => {
+        console.log("error is ", e);
+      });
   }, []);
-
 
   return (
     <React.Fragment>
-      {data
-        ? data.map((element) => {
+      {data ? (
+        data.map((element) => {
           return (
             <Card className={classes.root}>
               <CardContent>
@@ -75,22 +75,15 @@ export default function CalendarCard(props) {
                 <Typography variant="h7" component="h7">
                   {element.summary}
                 </Typography>
-                <Typography className={classes.pos} color="textSecondary">
-                  ad
-                  </Typography>
-                <Typography variant="body2" component="p">
-                  well meaning and kindly.
-                    <br />
-                  {'"a benevolent smile"'}
-                </Typography>
                 <br />
                 <Typography className={classes.pos} color="textSecondary">
-                  Event timing - {new Date(element.start_time).toUTCString()} - {new Date(element.end_time).toUTCString()}
-                  </Typography>
-                  <br></br>
-                  <Typography className={classes.pos} color="textSecondary">
+                  Event timing - {new Date(element.start_time).toUTCString()} -{" "}
+                  {new Date(element.end_time).toUTCString()}
+                </Typography>
+                <br></br>
+                <Typography className={classes.pos} color="textSecondary">
                   Last Modified - {new Date(element.updated).toUTCString()}
-                  </Typography>
+                </Typography>
               </CardContent>
               <CardActions style={{ float: "left" }}>
                 <a
@@ -104,27 +97,32 @@ export default function CalendarCard(props) {
                   size="small"
                 >
                   Calendar
-                  </a>
+                </a>
               </CardActions>
               <CardActions style={{ float: "right" }}>
-                {element.location ? <a
-                  href={element.location}
-                  target="_blank"
-                  style={{
-                    textDecoration: "none",
-                    color: "#e84993",
-                    fontWeight: "bold",
-                  }}
-                  size="small"
-                >
-                  Event
-                  </a> : null}
-
+                {element.location ? (
+                  <a
+                    href={element.location}
+                    target="_blank"
+                    style={{
+                      textDecoration: "none",
+                      color: "#e84993",
+                      fontWeight: "bold",
+                    }}
+                    size="small"
+                  >
+                    Event
+                  </a>
+                ) : null}
               </CardActions>
-            </Card>)
-        }) : <div className={classesLoader.root}>
+            </Card>
+          );
+        })
+      ) : (
+        <div className={classesLoader.root}>
           <CircularProgress />
-        </div>}
+        </div>
+      )}
     </React.Fragment>
   );
 }
