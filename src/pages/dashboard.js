@@ -8,9 +8,11 @@ import {
   MessageList,
 } from "../api/datagetting_pythonScript";
 import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
+import { CalenderDataSave } from "../api/calenderAPI";
 
 const Dashboard = () => {
   const data = MessageList();
+  const data3 = CalenderDataSave();
   // const data1 = GsuiteDataSave();
   // const data2 = GsuiteDataGet();
   return (

@@ -11,7 +11,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
-
     margin: 200
   },
 }));
@@ -47,7 +46,6 @@ const useStyles = makeStyles((theme)=>({
 
 export default function SimpleCard(props) {
   const [checked, setChecked] = React.useState(true);
-
   const classes = useStyles();
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(false);

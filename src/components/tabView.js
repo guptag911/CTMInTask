@@ -7,6 +7,7 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import CardView from "./card";
+import CalenderCard from './calenderCard';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -110,8 +111,9 @@ export default function ScrollableTabsButtonAuto() {
             {...a11yProps(2)}
             className={classes.bold}
           />
-          <Tab label="Jira" {...a11yProps(3)} className={classes.bold} />
-          <Tab label="Confluence" {...a11yProps(4)} className={classes.bold} />
+          <Tab label="Calender Events" {...a11yProps(3)} className={classes.bold} />
+          <Tab label="Jira" {...a11yProps(4)} className={classes.bold} />
+          <Tab label="Confluence" {...a11yProps(5)} className={classes.bold} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -124,9 +126,12 @@ export default function ScrollableTabsButtonAuto() {
         <CardView product="gsuites" data="gslides"></CardView>
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <CardView product="jira" data={data4}></CardView>
+        <CalenderCard></CalenderCard>
       </TabPanel>
       <TabPanel value={value} index={4}>
+        <CardView product="jira" data={data4}></CardView>
+      </TabPanel>
+      <TabPanel value={value} index={5}>
         <CardView product="confluence" data={data5}></CardView>
       </TabPanel>
     </div>
