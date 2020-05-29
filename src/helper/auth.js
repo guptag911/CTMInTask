@@ -5,9 +5,7 @@ import {
   db,
 } from "../config/config";
 
-import { listLabels } from "../api/gmailApi";
 
-import { usersStore } from "../api/users";
 
 function handleIsSignedIn(isSignedIn) {
   if (isSignedIn) {

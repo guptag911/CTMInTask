@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import { signout, signIn } from "../helper/auth";
 import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
-import {DataSave} from "../api/datagetting_pythonScript";
-
+import { DataSave } from "../api/datagetting_pythonScript";
+import { auth, getToken } from "../helper/confAuth";
 
 const style = {
   width: "100px",
@@ -12,15 +12,25 @@ const style = {
 };
 const Home = () => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [authUrl, setAuthUrl] = useState("");
+  const [authState, setAuthSate] = useState(
+    JSON.parse(localStorage.getItem("token"))
+  );
+
+  async function fetchData() {
+    const res = await auth();
+    setAuthUrl(res);
+    return res;
+  }
 
   const handleUser = async (e) => {
     if (currentUser) {
-      console.log(currentUser);
       await signout();
     } else {
       await signIn();
     }
   };
+
   firebaseAuth.onAuthStateChanged((user) => {
     if (user) {
       setCurrentUser(user);
@@ -30,6 +40,15 @@ const Home = () => {
       return null;
     }
   });
+
+  const handleReq = async (e) => {
+    const res = await fetchData();
+    window.location.href = res;
+  };
+
+  const handleToken = async (e) => {
+    await getToken();
+  };
 
   return (
     <div className="center">
@@ -63,8 +82,20 @@ const Home = () => {
           component={Link}
           to="/dash"
           style={{ margin: "5px", width: "200px", height: "75px" }}
+          onClick={handleToken}
         >
           <b>Go to Dashboard</b>
+        </Button>
+      ) : null}
+      {currentUser && !authState ? (
+        <Button
+          className="btn"
+          variant="contained"
+          color="secondary"
+          style={{ margin: "5px", width: "200px", height: "75px" }}
+          onClick={handleReq}
+        >
+          <b>Authorize Confluence</b>
         </Button>
       ) : null}
     </div>

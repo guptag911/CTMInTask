@@ -7,12 +7,11 @@ import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
-    
-      margin:200
+    margin: 200,
   },
 }));
 
@@ -82,7 +81,7 @@ export default function SimpleCard(props) {
       GsuiteDataSave(mid, element).then((data) => {
         GsuiteDataGet().then((resp) => {
           getData(resp);
-          console.log("data is in the card",data);
+          console.log("data is in the card", data);
           setLoader(false);
         });
       });
@@ -93,8 +92,8 @@ export default function SimpleCard(props) {
 
   return (
     <React.Fragment>
-      {data && !Loader
-        ? data.map((element) => {
+      {data && !Loader ? (
+        data.map((element) => {
           return !element.taskid && element.status ? null : (
             <Card key={element.mid} className={classes.root}>
               <CardContent>
@@ -108,14 +107,7 @@ export default function SimpleCard(props) {
                 <Typography variant="h7" component="h7">
                   {element.task_desc}
                 </Typography>
-                {/* <Typography className={classes.pos} color="textSecondary">
-                    ad
-                  </Typography> */}
-                {/* <Typography variant="body2" component="p">
-                    well meaning and kindly.
-                    <br />
-                    {'"a benevolent smile"'}
-                  </Typography> */}
+
                 <br />
                 <FormControlLabel
                   control={
@@ -142,14 +134,16 @@ export default function SimpleCard(props) {
                   size="small"
                 >
                   Go to the task
-                  </a>
+                </a>
               </CardActions>
             </Card>
           );
         })
-        : <div className={classesLoader.root}>
+      ) : (
+        <div className={classesLoader.root}>
           <CircularProgress />
-        </div>}
+        </div>
+      )}
     </React.Fragment>
   );
 }

@@ -1,4 +1,5 @@
 import { func, firebaseAuth, db } from "../config/config";
+import "./confAuth";
 
 /*
 Schema 
