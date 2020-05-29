@@ -331,14 +331,14 @@ export const MessageList = async () => {
                         var GData = await GsuiteDataSave(userSchema["mid"], userSchema);
                         console.log("GData is ", GData);
                     }
-                    // else if ((GFireDataDict[userSchema["mid"]] && GFireDataDict[userSchema["mid"]]["taskid"] ===null && GFireDataDict[userSchema["mid"]]["status"] === "completed")) {
-                    //     console.log("GData is ", GData);
-                    // }
-                    // else{
-                    //     // userSchema = await insert_task(userSchema);
-                    //     var GData = await GsuiteDataSave(userSchema["mid"], userSchema);
-                    //     console.log("GData is ", GData);
-                    // }
+                    else if ((GFireDataDict[userSchema["mid"]] && GFireDataDict[userSchema["mid"]]["taskid"] ===null && GFireDataDict[userSchema["mid"]]["status"] === "completed")) {
+                        console.log("GData is ", GData);
+                    }
+                    else{
+                        userSchema = await insert_task(userSchema);
+                        var GData = await GsuiteDataSave(userSchema["mid"], userSchema);
+                        console.log("GData is ", GData);
+                    }
     
                 }
             } catch (e) {
