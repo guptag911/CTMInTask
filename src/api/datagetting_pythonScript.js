@@ -118,8 +118,9 @@ const insert_task = async (data) => {
                     task.result
                   );
                   data["taskid"] = null;
+                  data["status"] = "completed";
                   //console.log("in null");
-                  //   console.log("Assigned Task marked as done!");
+                  console.log("Assigned Task marked as done!");
                   //console.log("Data is this 2nd", data);
                   resolve(data);
                 } catch (e) {
@@ -156,6 +157,7 @@ const insert_task = async (data) => {
                     fileId: file_id,
                     commentId: cmtid,
                   });
+                  data["status"] = "completed";
                   console.log("Task mark as done from tasks");
                 } else if (flag === "needsAction") {
                   console.log("Task Assigned but yet to be completed!");
@@ -170,6 +172,7 @@ const insert_task = async (data) => {
               comments["status"] === "resolved" &&
               data["status"] === false
             ) {
+              data["status"] = "completed";
               //   console.log("Task is already completed!");
               //   console.log("Data is this in ", data);
               resolve(data);
