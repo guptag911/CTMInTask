@@ -87,7 +87,10 @@ const Home = () => {
           <b>Go to Dashboard</b>
         </Button>
       ) : null}
-      {currentUser && !authState ? (
+      {currentUser &&
+      !authState &&
+      (currentUser.email === "abhilnm011@gmail.com" ||
+        currentUser.email === "abhishek.tiwari@innovaccer.com") ? (
         <Button
           className="btn"
           variant="contained"
