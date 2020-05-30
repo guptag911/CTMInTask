@@ -15,8 +15,6 @@ async function space() {
   return result.data;
 }
 
-space();
-
 async function task() {
   const apiPath = "rest/api/inlinetasks/search";
   const reqUrl = await conf.constrRequestUrl(apiPath);
@@ -29,3 +27,5 @@ async function task() {
   });
   console.log(result.data);
 }
+
+task();
