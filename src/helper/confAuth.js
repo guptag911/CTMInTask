@@ -2,7 +2,9 @@ import axios from "axios";
 import "../api/confluence";
 
 export async function auth() {
-  const result = await axios.get("/auth");
+  const result = await axios.get(
+    "https://us-central1-ctmintask.cloudfunctions.net/api/auth"
+  );
   return result.data;
 }
 
@@ -23,7 +25,7 @@ export async function getToken() {
   } else {
     const params = new URLSearchParams(window.location.search);
     const authCode = params.get("code");
-
+    console.log(authCode);
     const result = await axios.post(
       "https://auth.atlassian.com/oauth/token",
       {
@@ -32,7 +34,7 @@ export async function getToken() {
         client_secret:
           "wXIyWcPzxQCtgOzZrLSZBmUPPx-fqovQRqjiVAqDSTKpkelS9cpMxBMQMTvdMcp5",
         code: `${authCode}`,
-        redirect_uri: "http://localhost:3000/",
+        redirect_uri: "https://ctmintask.web.app/",
       },
       {
         headers: {
