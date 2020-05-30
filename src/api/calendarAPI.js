@@ -87,7 +87,7 @@ export const CalendarDataGet = async () => {
         const userRef = await db.collection("users").doc(uid).collection("calender").orderBy('start_time', 'desc').get();
         var finalData = [];
         userRef.forEach((data) => {
-            console.log(" the date comparison ", new Date(data.data().start_time).toISOString(), new Date().toISOString())
+            // console.log(" the date comparison ", new Date(data.data().start_time).toISOString(), new Date().toISOString())
             if (new Date(data.data().start_time).toISOString() >= new Date().toISOString()) {
                 finalData.push(data.data());
             }
