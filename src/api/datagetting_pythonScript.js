@@ -136,28 +136,33 @@ const insert_task = async (data) => {
               comments["status"] === "open" &&
               data["status"] === true
             ) {
+              console.log("Enter Correct Block");
               if (data["taskid"] !== null) {
                 var task = await window.gapi.client.tasks.tasks.get({
                   tasklist: "@default",
                   task: data["taskid"],
                 });
-                var flag = task["status"];
+                var task_Data = task.result;
+                //console.log("Task data is", task_Data);
+                var flag = task_Data["status"];
+                //console.log("My flag is", flag);
                 if (flag === "completed") {
+                  data["status"] = "completed";
+                  data["taskid"] = null;
                   var my_comment = window.gapi.client.drive.comments.get({
                     fileId: file_id,
                     commentId: cmtid,
                   });
-                  my_comment["status"] = "resolved";
-                  await window.gapi.client.drive.comments.update({
-                    fileId: file_id,
-                    commentId: cmtid,
-                    body: my_comment,
+                  my_comment.execute(function(resp) {
+                    resp.status = "resolved";
+                    resp.content = "DONE!"
+                    var updatereq = window.gapi.client.drive.comments.update({
+                      'fileId': file_id,
+                      'commentId':cmtid,
+                      'resource': resp
+                    });
+                    updatereq.execute(function(resp) { });
                   });
-                  await window.gapi.client.drive.comments.delete({
-                    fileId: file_id,
-                    commentId: cmtid,
-                  });
-                  data["status"] = "completed";
                   console.log("Task mark as done from tasks");
                 } else if (flag === "needsAction") {
                   console.log("Task Assigned but yet to be completed!");
@@ -238,6 +243,7 @@ export const MessageList = async () => {
             .get();
           var my_data = userref.data();
           var user_schema = {};
+          console.log("From Firebase: ",my_data);
           user_schema = await insert_task(my_data);
           //   console.log("User Schema from if->", user_schema);
           var GData = await GsuiteDataSave(user_schema["mid"], user_schema);
@@ -343,6 +349,7 @@ export const MessageList = async () => {
         try {
           if (userSchema["file_id"]) {
             userSchema = await insert_task(userSchema);
+            console.log("Data Going to db", userSchema);
             // console.log("user schema is ", userSchema);
             var GData = await GsuiteDataSave(userSchema["mid"], userSchema);
             // console.log("GData is ", GData);
