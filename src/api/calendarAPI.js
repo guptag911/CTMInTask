@@ -33,7 +33,7 @@ export const CalendarDataSave = async () => {
 
         calendarData.result.items.forEach(async (element) => {
 
-            if (element.status === "confirmed") {
+            if (element.status === "confirmed" && element.start.dateTime && (new Date(element.start.dateTime).toISOString() >= new Date().toISOString())) {
                 let loc;
                 try {
                     loc = element.description.split('href=\"')[1].split('"')[0];
@@ -74,7 +74,7 @@ export const CalendarDataSave = async () => {
             }
         });
     }
-    catch(e){
+    catch (e) {
         console.log(e);
     }
 
@@ -87,7 +87,10 @@ export const CalendarDataGet = async () => {
         const userRef = await db.collection("users").doc(uid).collection("calender").orderBy('start_time', 'desc').get();
         var finalData = [];
         userRef.forEach((data) => {
-            finalData.push(data.data());
+            console.log(" the date comparison ", new Date(data.data().start_time).toISOString(), new Date().toISOString())
+            if (new Date(data.data().start_time).toISOString() >= new Date().toISOString()) {
+                finalData.push(data.data());
+            }
         })
         // console.log("Data is ", finalData);
         return finalData;

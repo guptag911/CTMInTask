@@ -77,12 +77,12 @@ export default function CalendarCard(props) {
                 </Typography>
                 <br />
                 <Typography className={classes.pos} color="textSecondary">
-                  Event timing - {new Date(element.start_time).toUTCString()} -{" "}
-                  {new Date(element.end_time).toUTCString()}
+                  Event timing - {new Date(element.start_time).toString()} -{" "}
+                  {new Date(element.end_time).toString()}
                 </Typography>
                 <br></br>
                 <Typography className={classes.pos} color="textSecondary">
-                  Last Modified - {new Date(element.updated).toUTCString()}
+                  Last Modified - {new Date(element.updated).toString()}
                 </Typography>
               </CardContent>
               <CardActions style={{ float: "left" }}>
