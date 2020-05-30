@@ -26,66 +26,72 @@ var MY_SCHEMA =
 
 export const CalendarDataSave = async () => {
 
-    let calendarData = await window.gapi.client.calendar.events.list({ "calendarId": "primary" });
+    try {
+        let calendarData = await window.gapi.client.calendar.events.list({ "calendarId": "primary" });
 
-    // console.log("calender data is ", calendarData.result.items);
+        // console.log("calender data is ", calendarData.result.items);
 
-    calendarData.result.items.forEach(async (element) => {
+        calendarData.result.items.forEach(async (element) => {
 
-        if (element.status === "confirmed") {
-            let loc;
-            try{
-            loc = element.description.split('href=\"')[1].split('"')[0];
+            if (element.status === "confirmed") {
+                let loc;
+                try {
+                    loc = element.description.split('href=\"')[1].split('"')[0];
+                }
+                catch (e) {
+                    loc = null;
+                }
+                // console.log("loc is ", loc);
+                let calenderData = {
+                    "id": element.id,
+                    "creator": element.creator.email,
+                    "created_date": element.created,
+                    "start_time": element.start.dateTime,
+                    "end_time": element.end.dateTime,
+                    "timezone": element.end.dateTime ? element.end.dateTime : null,
+                    "icalUID": element.iCalUID,
+                    "htmlLink": element.htmlLink,
+                    "status": element.status,
+                    "summary": element.summary,
+                    "location": element.location ? element.location : loc,
+                    "organizer": {
+                        "email": element.organizer.email,
+                        "displayName": element.organizer.displayName ? element.organizer.displayName : null,
+                    },
+                    "updated": element.updated
+                }
+                try {
+                    const uid = firebaseAuth.currentUser.uid;
+                    const userRef = await db.collection("users").doc(uid).collection("calender").doc(element.id).set(calenderData);
+                    // console.log("userRef is ", userRef);
+                    return { "msg": "success" };
+                }
+                catch (e) {
+                    // console.log("error in the cal is ", e);
+                    return { "msg": false };
+                }
+
             }
-            catch(e){
-                loc=null;
-            }
-            // console.log("loc is ", loc);
-            let calenderData = {
-                "id": element.id,
-                "creator": element.creator.email,
-                "created_date": element.created,
-                "start_time": element.start.dateTime,
-                "end_time": element.end.dateTime,
-                "timezone": element.end.dateTime ? element.end.dateTime : null,
-                "icalUID": element.iCalUID,
-                "htmlLink": element.htmlLink,
-                "status": element.status,
-                "summary": element.summary,
-                "location": element.location ? element.location : loc,
-                "organizer": {
-                    "email": element.organizer.email,
-                    "displayName": element.organizer.displayName ? element.organizer.displayName : null,
-                },
-                "updated": element.updated
-            }
-        try{
-        const uid = firebaseAuth.currentUser.uid;
-        const userRef = await db.collection("users").doc(uid).collection("calender").doc(element.id).set(calenderData);
-        // console.log("userRef is ", userRef);
-        return { "msg": "success" };
-        }
-        catch(e){
-            // console.log("error in the cal is ", e);
-            return {"msg":false};
-        }
+        });
     }
-    });
+    catch(e){
+        console.log(e);
+    }
 
-} 
+}
 
 
-export const CalendarDataGet = async ()=>{
+export const CalendarDataGet = async () => {
     try {
         const uid = firebaseAuth.currentUser.uid;
         const userRef = await db.collection("users").doc(uid).collection("calender").orderBy('start_time', 'desc').get();
-        var finalData=[];
-        userRef.forEach((data)=>{
+        var finalData = [];
+        userRef.forEach((data) => {
             finalData.push(data.data());
         })
         // console.log("Data is ", finalData);
         return finalData;
-        
+
     }
     catch (e) {
         // console.log("error is ", e);
