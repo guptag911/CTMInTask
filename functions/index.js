@@ -118,11 +118,3 @@ function createMessage(displayName, imageURL) {
     }],
   };
 }
-
-
-
-
-exports.addMessage = functions.https.onRequest(async (req, res) => {
-  
-  res.json({result: `Message with ID: added.`});
-});
