@@ -30,8 +30,16 @@ const authUrl =
   "https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=LcUQspyPyb8ATVkVEUN5KS4NuIxrI4mO&scope=read%3Aconfluence-content.summary%20read%3Aconfluence-space.summary%20read%3Aconfluence-props%20write%3Aconfluence-content%20read%3Aconfluence-content.all%20offline_access&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&state=${YOUR_USER_BOUND_VALUE}&response_type=code&prompt=consent";
 // Auth
 
+// Uer Auth
+const userAuth =
+  "https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=LcUQspyPyb8ATVkVEUN5KS4NuIxrI4mO&scope=read%3Ame%20offline_access&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2F&state=${YOUR_USER_BOUND_VALUE}&response_type=code&prompt=consent";
+
 app.get("/auth", (req, res) => {
   res.send(authUrl);
+});
+
+app.get("/user", (req, res) => {
+  res.send(userAuth);
 });
 
 exports.api = functions.https.onRequest(app);
