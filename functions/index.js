@@ -61,3 +61,49 @@ exports.onUserDelete = functions.auth.user().onDelete((user) => {
 
   return doc.delete();
 });
+
+// ChatBot code
+
+exports.helloHangoutsChat = functions.https.onRequest((req, res) => {
+  if (req.method === "GET" || !req.body.message) {
+    res.send(
+      "Hello! This function is meant to be used in a Hangouts Chat " + "Room."
+    );
+  }
+  console.log(req.body);
+
+  const sender = req.body.message.sender.displayName;
+  const image = req.body.message.sender.avatarUrl;
+
+  const data = createMessage(sender, image);
+
+  res.send(data);
+});
+
+function createMessage(displayName, imageURL) {
+  const cardHeader = {
+    title: "Hello " + displayName + "!",
+  };
+
+  const avatarWidget = {
+    textParagraph: { text: "Your avatar picture: " },
+  };
+
+  const avatarImageWidget = {
+    image: { imageUrl: imageURL },
+  };
+
+  const avatarSection = {
+    widgets: [avatarWidget, avatarImageWidget],
+  };
+
+  return {
+    cards: [
+      {
+        name: "Avatar Card",
+        header: cardHeader,
+        sections: [avatarSection],
+      },
+    ],
+  };
+}
