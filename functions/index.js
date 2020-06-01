@@ -64,13 +64,27 @@ exports.onUserDelete = functions.auth.user().onDelete((user) => {
 
 // ChatBot code
 
+const arr = [];
+
+// eslint-disable-next-line promise/catch-or-return
+db.collection("users")
+  .get()
+  .then((res) => {
+    res.docs.forEach((ele) => {
+      const newObj = {};
+      newObj.uid = ele.data().uid;
+      newObj.email = ele.data().email;
+      arr.push(newObj);
+    });
+  });
+
 exports.helloHangoutsChat = functions.https.onRequest((req, res) => {
   if (req.method === "GET" || !req.body.message) {
     res.send(
       "Hello! This function is meant to be used in a Hangouts Chat " + "Room."
     );
   }
-  console.log(req.body);
+  console.log(arr);
 
   const sender = req.body.message.sender.displayName;
   const image = req.body.message.sender.avatarUrl;
