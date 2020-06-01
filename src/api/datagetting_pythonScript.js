@@ -243,7 +243,7 @@ export const MessageList = async () => {
             .get();
           var my_data = userref.data();
           var user_schema = {};
-          console.log("From Firebase: ",my_data);
+          // console.log("From Firebase: ",my_data);
           user_schema = await insert_task(my_data);
           //   console.log("User Schema from if->", user_schema);
           var GData = await GsuiteDataSave(user_schema["mid"], user_schema);
