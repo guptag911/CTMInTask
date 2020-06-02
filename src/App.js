@@ -1,9 +1,13 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  HashRouter,
+  BrowserRouter as Router,
+  Route,
+  Switch,
+} from "react-router-dom";
 import "./App.css";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import PrivateRoute from "./components/privateRoute";
 
 // Pages
 import Home from "./pages/home";
@@ -29,12 +33,12 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <div className="App">
-        <Router>
+        <HashRouter>
           <Switch>
-            <PrivateRoute exact path="/dash" component={Dashboard} />
+            <Route exact path="/dash" component={Dashboard} />
             <Route path="/" component={Home} />
           </Switch>
-        </Router>
+        </HashRouter>
       </div>
     </MuiThemeProvider>
   );

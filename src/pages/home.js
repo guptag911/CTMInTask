@@ -8,7 +8,6 @@ import { auth, getToken } from "../helper/confAuth";
 
 import { getUserToken } from "../helper/confUserAuth";
 
-import { Route, Redirect } from "react-router-dom";
 
 const style = {
   width: "100px",
