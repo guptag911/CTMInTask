@@ -22,6 +22,7 @@ export const firebaseConfig = {
     "https://www.googleapis.com/auth/analytics",
   ],
   discoveryDocs: [
+    "https://chat.googleapis.com/$discovery/rest?version=v1",
     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
     "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest",
     "https://www.googleapis.com/discovery/v1/apis/drive/v2/rest",
