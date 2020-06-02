@@ -64,51 +64,202 @@ exports.onUserDelete = functions.auth.user().onDelete((user) => {
 
 // ChatBot code
 
-exports.helloHangoutsChat = functions.https.onRequest(async(req, res) => {
-  if (req.method === "GET" || !req.body.message) {
-    res.send(
-      "Hello! This function is meant to be used in a Hangouts Chat " + "Room."
-    );
+// eslint-disable-next-line promise/catch-or-return
+
+const UIDData = async () => {
+
+  let arr = {}
+  try {
+    let data = await db.collection("users").get();
+    data.docs.forEach((ele) => {
+      arr[ele.data().email] = ele.data().uid;
+    });
+    return arr;
   }
-  // console.log("request body is\n",req.body);
-  // console.log("Your text is\n",req.body.message.text);
+  catch (e) {
+    return arr;
+  }
+}
 
-  let setAda =await db.collection('users').get();
-  console.log("Data is ",setAda);
+exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
 
-  const sender = req.body.message.sender.displayName;
-  const image = req.body.message.sender.avatarUrl;
+  // let arr = await UIDData();
+  // let data =await getDocTasks(arr['raybittu242@gmail.com']);
+  // res.send(data);
 
-  const data = createMessage(sender, image);
-  
+  // if (req.method === "GET" || !req.body.message) {
+  //   res.send(
+  //     "Hello! This function is meant to be used in a Hangouts Chat " + "Room."
+  //   );
+  // }
 
-  res.send(data);
+  try {
+    let arr = await UIDData();
+    // console.log("arr is ", arr);
+    // let data =await getDocTasks(arr['raybittu242@gmail.com']);
+    // console.log("data is ", data);
+    // console.log("arr is ", arr);
+    // console.log("body is ", req.body);
+
+    const sender = req.body.message.sender.displayName;
+    const image = req.body.message.sender.avatarUrl;
+    const email = req.body.message.sender.email
+    const text = req.body.message.text;
+
+
+    const data = await createMessage(sender, image, email, arr[email]);
+
+    res.send(data);
+  } catch (e) {
+    console.log("in err", e);
+    res.send({});
+  }
 });
 
-function createMessage(displayName, imageURL) {
-  const cardHeader = {
-    title: "Hello " + displayName + "!",
-  };
+const createMessage = async (displayName, imageURL, email, uid) => {
 
-  const avatarWidget = {
-    textParagraph: { text: "Your avatar picture: " },
-  };
-
-  const avatarImageWidget = {
-    image: { imageUrl: imageURL },
-  };
-
-  const avatarSection = {
-    widgets: [avatarWidget, avatarImageWidget],
-  };
-
-  return {
-    cards: [
+  console.log("arr email ", uid, email);
+  const widgets = [{
+    "widgets": [
       {
-        name: "Avatar Card",
-        header: cardHeader,
-        sections: [avatarSection],
-      },
-    ],
-  };
+        "textParagraph": {
+          "text": "<h2 background-color=\"#00ff00\"><b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font></h2>"
+        }
+      }
+    ]
+  },
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "<b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font>"
+        }
+      }
+    ]
+  },
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "<b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font>"
+        }
+      }
+    ]
+  },
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "<b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font>"
+        }
+      }
+    ]
+  }
+  ]
+
+  try {
+    // const data = await getDocTasks(arr[email]);
+    let taskData = []
+    let data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
+    data.docs.forEach((element) => {
+      if (!(element.data().status === "completed" && element.data().taskid === null)) {
+        console.log("docs data ", element.data());
+        let widgets = {
+          "widgets": [
+            {
+              "textParagraph": {
+                "text": element.data().task_desc
+              }
+            }
+          ]
+        }
+        taskData.push(widgets);
+      }
+    })
+
+    const notData = [
+      {
+        "widgets": [
+          {
+            "textParagraph": {
+              "text": "<font color=\"#ff0000\">You do not have any task left.</font>"
+            }
+          }
+        ]
+
+      }
+    ]
+
+    return {
+      "cards": [
+        {
+          "header": {
+            "title": displayName,
+            "subtitle": email,
+            "imageUrl": imageURL,
+            "imageStyle": "AVATAR"
+          },
+          "sections": taskData.length===0?notData:taskData
+        }
+      ]
+    }
+  } catch (e) {
+    console.log("err is ", e);
+    return {
+      "cards": [
+        {
+          "header": {
+            "title": displayName,
+            "subtitle": email,
+            "imageUrl": imageURL,
+            "imageStyle": "AVATAR"
+          },
+          "sections": [
+            {
+              "widgets": [
+                {
+                  "textParagraph": {
+                    "text": "<font color=\"#ff0000\">You Register first</font>"
+                  }
+                }
+              ]
+
+            }
+          ]
+        }
+      ]
+    }
+  }
 }
+
+
+
+
+// const getDocTasks = async (uid) => {
+//   let taskData = []
+//   console.log("uid is ", uid);
+//   try {
+//     let data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
+//     // console.log(data.docs);
+//     for(var element in data.docs) {
+//       console.log("docs data ", element.data());
+//       let widgets = {
+//         "widgets": [
+//           {
+//             "textParagraph": {
+//               "text": element.data().task_desc
+//             }
+//           }
+//         ]
+//       }
+//       taskData.push(widgets);
+//     }
+//     console.log("not error ");
+//     return taskData;
+//   }
+//   catch (e) {
+//     console.log("in error ", e);
+//     return taskData;
+//   }
+
+// }
