@@ -5,6 +5,7 @@ import {
   db,
 } from "../config/config";
 
+
 function handleIsSignedIn(isSignedIn) {
   if (isSignedIn) {
     const auth2 = window.gapi.auth2.getAuthInstance();
@@ -77,19 +78,3 @@ export const signout = async () => {
   }
   return await auth2.signOut();
 };
-
-// const arr = [];
-
-// db.collection("users")
-//   .get()
-//   .then((res) => {
-//     console.log(res.docs);
-//     res.docs.forEach((ele) => {
-//       const newObj = {};
-//       newObj.uid = ele.data().uid;
-//       newObj.email = ele.data().email;
-//       arr.push(newObj);
-//     });
-//   });
-
-// console.log(arr);

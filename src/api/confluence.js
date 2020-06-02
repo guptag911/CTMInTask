@@ -13,10 +13,8 @@ async function space() {
     },
   });
   console.log(result.data);
-  return result.data; 
+  return result.data;
 }
-
-space()
 
 async function task() {
   const apiPath = "rest/api/inlinetasks/search?limit=10";
@@ -44,4 +42,3 @@ async function user() {
   console.log(result.data);
   return result.data;
 }
-
