@@ -12,12 +12,11 @@ import { CalendarDataSave } from "../api/calendarAPI";
 
 const Dashboard = () => {
   React.useEffect(()=>{
-    const data = MessageList();
-    const data3 = CalendarDataSave();
+    MessageList();
+    CalendarDataSave();
   }, []);
   // const data1 = GsuiteDataSave();
   // const data2 = GsuiteDataGet();
-  console.log("in dashboard ");
   return (
     <div>
       <NavigationBar />

@@ -36,7 +36,6 @@ export const GsuiteDataSave = async (mid, userdata) => {
 
 export const GsuiteDataGet = async () => {
   try {
-    // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
     const uid = firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
