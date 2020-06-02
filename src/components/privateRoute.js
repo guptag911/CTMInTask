@@ -10,6 +10,7 @@ const PrivateRoute = ({
     component: Component,
     ...rest
 }) => {
+    
     console.log("current user is ",firebaseAuth.currentUser);
     return (
         <Route
