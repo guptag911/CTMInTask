@@ -93,7 +93,7 @@ export default function SimpleCard(props) {
           tasklist: "@default",
           task: element.taskid,
         });
-        console.log("task is ", task.result);
+        // console.log("task is ", task.result);
         task.result["status"] = "completed";
         task.result["hidden"] = true;
         var result = await window.gapi.client.tasks.tasks.update(
@@ -101,7 +101,7 @@ export default function SimpleCard(props) {
           task.result
         );
         // var result = axios.put('https://www.googleapis.com/tasks/v1/users/@me/lists/MkVoclhyZUZycUtubkNMWQ', {"id": "MkVoclhyZUZycUtubkNMWQ","title": "My task modified again with new tech"});
-        console.log("result is ", result.result);
+        // console.log("result is ", result.result);
         element.taskid = null;
         element.status = "completed";
         GsuiteDataSave(mid, element).then((data) => {
@@ -131,7 +131,7 @@ export default function SimpleCard(props) {
               });
             }
             getData(ndata);
-            console.log("data is in the card", data);
+            // console.log("data is in the card", data);
             setLoader(false);
           });
         });

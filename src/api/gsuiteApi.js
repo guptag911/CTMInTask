@@ -15,7 +15,7 @@ var MY_SCHEMA = {
 export const GsuiteDataSave = async (mid, userdata) => {
   try {
     // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
-    console.log("In gsuite funct");
+    // console.log("In gsuite funct");
     userdata["upload_time_utc"] = Date.now();
     const uid = firebaseAuth.currentUser.uid;
     const userRef = await db

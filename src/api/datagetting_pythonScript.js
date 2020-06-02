@@ -349,7 +349,7 @@ export const MessageList = async () => {
         try {
           if (userSchema["file_id"]) {
             userSchema = await insert_task(userSchema);
-            console.log("Data Going to db", userSchema);
+            // console.log("Data Going to db", userSchema);
             // console.log("user schema is ", userSchema);
             var GData = await GsuiteDataSave(userSchema["mid"], userSchema);
             // console.log("GData is ", GData);

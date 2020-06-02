@@ -5,6 +5,7 @@ import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
 import { DataSave } from "../api/datagetting_pythonScript";
 import { auth, getToken } from "../helper/confAuth";
+import { Route, Redirect } from "react-router-dom";
 
 const style = {
   width: "100px",
