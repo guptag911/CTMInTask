@@ -5,17 +5,21 @@ import {
 } from "../config/config";
 
 
+
 const PrivateRoute = ({
     component: Component,
     ...rest
-}) => (
+}) => {
+    console.log("current user is ",firebaseAuth.currentUser);
+    return (
         <Route
             {...rest}
             render={(props) =>
-                firebaseAuth.currentUser ? <Component {...props} /> : <Redirect to="/" />
+                window.localStorage.getItem("firebase:authUser:AIzaSyAaQHOvz_m-PBJa2QFhCuT82aIzFc2ZQVI:[DEFAULT]") ? <Component {...props} /> : <Redirect to="/" />
             }
         />
-    );
+    )
+}
 
 export default PrivateRoute;
 
