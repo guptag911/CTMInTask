@@ -9,12 +9,9 @@ function handleIsSignedIn(isSignedIn) {
   if (isSignedIn) {
     const auth2 = window.gapi.auth2.getAuthInstance();
     const currentUser = auth2.currentUser.get();
+    console.log(currentUser);
     const profile = currentUser.getBasicProfile();
-    // console.log("gapi: user signed in!", {
-    //   name: profile.getName(),
-    //   imageURL: profile.getImageUrl(),
-    //   email: profile.getEmail(),
-    // });
+    console.log("gapi: user signed in!", profile);
     const authResponse = currentUser.getAuthResponse(true);
     const credential = googleProvider.credential(
       authResponse.id_token,
@@ -80,3 +77,19 @@ export const signout = async () => {
   }
   return await auth2.signOut();
 };
+
+// const arr = [];
+
+// db.collection("users")
+//   .get()
+//   .then((res) => {
+//     console.log(res.docs);
+//     res.docs.forEach((ele) => {
+//       const newObj = {};
+//       newObj.uid = ele.data().uid;
+//       newObj.email = ele.data().email;
+//       arr.push(newObj);
+//     });
+//   });
+
+// console.log(arr);

@@ -11,7 +11,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Profile from "./profile";
-import { sync } from "../helper/syncData";
+import { firebaseAuth } from "../config/config";
+import { user } from "../helper/confUserAuth";
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -81,6 +83,9 @@ const NavigationBar = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [authUser, setAuthUser] = useState(
+    JSON.parse(localStorage.getItem("user"))
+  );
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -96,7 +101,11 @@ const NavigationBar = () => {
   const handleMenuClose = (e) => {
     setAnchorEl(null);
     handleMobileMenuClose();
-    sync();
+  };
+
+  const handleUserAuth = async (e) => {
+    const res = await user();
+    window.location.href = res;
   };
 
   const handleMobileMenuOpen = (event) => {
@@ -117,7 +126,6 @@ const NavigationBar = () => {
       <MenuItem onClick={handleMenuClose}>
         <Profile />
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Sync</MenuItem>
     </Menu>
   );
 
@@ -167,9 +175,21 @@ const NavigationBar = () => {
             />
           </div>
           <div className={classes.grow} />
-          <Typography className={classes.title} variant="h4" noWrap>
+          {/* <Typography className={classes.title} variant="h4" noWrap>
             <strong>Dashboard</strong>
-          </Typography>
+          </Typography> */}
+          {firebaseAuth.currentUser &&
+          !authUser &&
+          (firebaseAuth.currentUser.email === "abhilnm011@gmail.com" ||
+            firebaseAuth.currentUser.email ===
+              "abhishek.tiwari@innovaccer.com") ? (
+            <Button
+              onClick={handleUserAuth}
+              style={{ color: "white", fontWeight: "bold" }}
+            >
+              conf
+            </Button>
+          ) : null}
           <div className={classes.sectionDesktop}>
             <IconButton
               edge="end"
