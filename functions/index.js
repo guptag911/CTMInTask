@@ -87,11 +87,11 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
   // let data =await getDocTasks(arr['raybittu242@gmail.com']);
   // res.send(data);
 
-  // if (req.method === "GET" || !req.body.message) {
-  //   res.send(
-  //     "Hello! This function is meant to be used in a Hangouts Chat " + "Room."
-  //   );
-  // }
+  if (req.method === "GET" || !req.body.message) {
+    res.send(
+      "Hello! This function is meant to be used in a Hangouts Chat " + "Room."
+    );
+  }
 
   try {
     let arr = await UIDData();
@@ -104,61 +104,105 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
     const sender = req.body.message.sender.displayName;
     const image = req.body.message.sender.avatarUrl;
     const email = req.body.message.sender.email
-    const text = req.body.message.text;
+    const textList = req.body.message.text.toLowerCase().split(" ");
+
+    const showTasktext = { "show": 1, "task": 1, "tasks": 1 };
+    showtaskcount = 0;
+    for (let text in textList) {
+      if (showTasktext[textList[text]]) {
+        showtaskcount += 1;
+      }
+    }
+
+    if (showtaskcount >= Object.keys(showTasktext).length - 1) {
+      const data = await createMessage(sender, image, email, arr[email]);
+
+      res.send(data);
+    }
+
+    const showEventText = { "show": 1, "calendar": 1, "event": 1, "events": 1 }
+    showeventcount = 0;
+    for (let text in textList) {
+      if (showEventText[textList[text]]) {
+        showeventcount += 1;
+      }
+    }
+
+    if (showeventcount >= Object.keys(showEventText).length - 2) {
+      const data = await getDocTasks(arr[email]);
+
+      res.send({
+        "cards": [
+          {
+            "header": {
+              "title": sender,
+              "subtitle": email,
+              "imageUrl": image,
+              "imageStyle": "AVATAR"
+            },
+            "sections": data
+          }
+        ]
+      }
+      );
+    }
+
+    else {
+      res.send({
+        "cards": [
+          {
+            "header": {
+              "title": sender,
+              "subtitle": email,
+              "imageUrl": image,
+              "imageStyle": "AVATAR"
+            },
+            "sections": [
+              {
+                "widgets": [
+                  {
+                    "textParagraph": {
+                      "text": "Hello, <b>" + sender + "</b>."
+                    }
+                  }
+                ]
+
+              },
+              {
+                "widgets": [
+                  {
+                    "textParagraph": {
+                      "text": "To see Tasklists, type <font color=\"#ff0000\"><b>show tasks</b></font> <br /> or To see your calender Events, type <font color=\"#ff0000\"><b>show events</b></font>"
+                    }
+                  }
+                ]
+
+              }
+            ]
+          }
+        ]
+      }
+      );
+    }
 
 
-    const data = await createMessage(sender, image, email, arr[email]);
+    // const data = await createMessage(sender, image, email, arr[email]);
 
-    res.send(data);
   } catch (e) {
     console.log("in err", e);
-    res.send({});
+    res.send({
+      "text": "Something went wrong"
+    }
+    );
   }
 });
 
 const createMessage = async (displayName, imageURL, email, uid) => {
 
   console.log("arr email ", uid, email);
-  const widgets = [{
-    "widgets": [
-      {
-        "textParagraph": {
-          "text": "<h2 background-color=\"#00ff00\"><b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font></h2>"
-        }
-      }
-    ]
-  },
-  {
-    "widgets": [
-      {
-        "textParagraph": {
-          "text": "<b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font>"
-        }
-      }
-    ]
-  },
-  {
-    "widgets": [
-      {
-        "textParagraph": {
-          "text": "<b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font>"
-        }
-      }
-    ]
-  },
-  {
-    "widgets": [
-      {
-        "textParagraph": {
-          "text": "<b>Roses</b> are <font color=\"#ff0000\">red</font>,<br><i>Violets</i> are <font color=\"#0000ff\">blue</font>"
-        }
-      }
-    ]
-  }
-  ]
+
 
   try {
-    // const data = await getDocTasks(arr[email]);
     let taskData = []
     let data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
     data.docs.forEach((element) => {
@@ -167,9 +211,28 @@ const createMessage = async (displayName, imageURL, email, uid) => {
         let widgets = {
           "widgets": [
             {
-              "textParagraph": {
-                "text": element.data().task_desc
+              "keyValue": {
+                "topLabel": element.data().sender.split("<")[0],
+                "content": element.data().task_desc,
+                "contentMultiline": "true",
+                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "Visit Document",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
               }
+
             }
           ]
         }
@@ -199,7 +262,7 @@ const createMessage = async (displayName, imageURL, email, uid) => {
             "imageUrl": imageURL,
             "imageStyle": "AVATAR"
           },
-          "sections": taskData.length===0?notData:taskData
+          "sections": taskData.length === 0 ? notData : taskData
         }
       ]
     }
@@ -235,31 +298,49 @@ const createMessage = async (displayName, imageURL, email, uid) => {
 
 
 
-// const getDocTasks = async (uid) => {
-//   let taskData = []
-//   console.log("uid is ", uid);
-//   try {
-//     let data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
-//     // console.log(data.docs);
-//     for(var element in data.docs) {
-//       console.log("docs data ", element.data());
-//       let widgets = {
-//         "widgets": [
-//           {
-//             "textParagraph": {
-//               "text": element.data().task_desc
-//             }
-//           }
-//         ]
-//       }
-//       taskData.push(widgets);
-//     }
-//     console.log("not error ");
-//     return taskData;
-//   }
-//   catch (e) {
-//     console.log("in error ", e);
-//     return taskData;
-//   }
+const getDocTasks = async (uid) => {
+  let EventData = []
+  console.log("uid is ", uid);
+  try {
+    let data = await db.collection('users').doc(uid).collection('calender').get();
+    // console.log(data.docs);
+    data.docs.forEach((element) => {
+      console.log("docs data ", element.data());
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().creator,
+              "content": element.data().summary,
+              "contentMultiline": "true",
+              "bottomLabel": new Date(element.data().start_time).toString(),
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Visit Event",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().htmlLink
+                    }
+                  }
+                }
+              }
+            }
 
-// }
+          }
+        ]
+      }
+      EventData.push(widgets);
+    });
+    return EventData;
+  }
+  catch (e) {
+    console.log("in error ", e);
+    return EventData;
+  }
+
+}
