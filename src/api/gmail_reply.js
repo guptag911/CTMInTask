@@ -18,7 +18,6 @@ user_schema = {
 }
 */
 
-
 export const get_profile = async () => {
   try {
     console.log(window.gapi.client);
@@ -33,8 +32,6 @@ export const get_profile = async () => {
   }
 };
 
-
-
 export const get_username = async (email) => {
   try {
     var pos1 = email.match(/\./);
@@ -44,12 +41,12 @@ export const get_username = async (email) => {
     first_name = first_name.charAt(0).toUpperCase() + first_name.slice(1);
     last_name = last_name.charAt(0).toUpperCase() + last_name.slice(1);
     var name = first_name + " " + last_name;
+    console.log(name);
     return name;
   } catch (err) {
     console.log("Error!", err);
   }
 };
-
 
 
 export const get_a_msg = async (msg_ID) => {
@@ -166,7 +163,9 @@ export const message_list = async () => {
               console.log("Reply to this mail.");
             }
             //send user_schema to database
-          } else console.log("Not a tagged mail.");
+          } else {
+            console.log("Not a tagged mail.");
+          }
         } catch (err) {
           console.log("Error!", err);
         }
