@@ -1,21 +1,21 @@
 import axios from "axios";
 import "../api/confluence";
 
-export async function auth() {
+export async function user() {
   const result = await axios.get(
-    "https://us-central1-ctmintask.cloudfunctions.net/api/auth"
+    "https://us-central1-ctmintask.cloudfunctions.net/api/user"
   );
   return result.data;
 }
 
-export async function getToken() {
-  const result = JSON.parse(localStorage.getItem("token"));
+export async function getUserToken() {
+  const result = JSON.parse(localStorage.getItem("user"));
   if (result && (new Date().getTime() - result.assignTime) / 1000 > 3600) {
-    const newToken = await refreshAccessToken(result.refresh_token);
+    const newToken = await refreshUserAccessToken(result.refresh_token);
     newToken["refresh_token"] = result.refresh_token;
     let assignTime = new Date().getTime();
     newToken["assignTime"] = assignTime;
-    localStorage.setItem("token", JSON.stringify(newToken));
+    localStorage.setItem("user", JSON.stringify(newToken));
     return newToken.access_token;
   } else if (
     result &&
@@ -36,7 +36,7 @@ export async function getToken() {
         code: `${authCode}`,
         redirect_uri: "http://localhost:3000/",
       },
-      { 
+      {
         headers: {
           "Content-Type": "application/json",
         },
@@ -44,13 +44,13 @@ export async function getToken() {
     );
     let assignTime = new Date().getTime();
     result.data.assignTime = assignTime;
-    localStorage.setItem("token", JSON.stringify(result.data));
+    localStorage.setItem("user", JSON.stringify(result.data));
 
     return result.data.access_token;
   }
 }
 
-export async function refreshAccessToken(refresh_token) {
+export async function refreshUserAccessToken(refresh_token) {
   const result = await axios.post(
     "https://auth.atlassian.com/oauth/token",
     {
@@ -68,23 +68,4 @@ export async function refreshAccessToken(refresh_token) {
   );
 
   return result.data;
-}
-
-export async function constrRequestUrl(apiPath) {
-  const accessToken = await getToken();
-  const cloudId = await getCloudId(accessToken);
-  return `https://api.atlassian.com/ex/confluence/${cloudId.id}/${apiPath}`;
-}
-
-export async function getCloudId(accessToken) {
-  const result = await axios.get(
-    "https://api.atlassian.com/oauth/token/accessible-resources",
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Accept: "application/json",
-      },
-    }
-  );
-  return result.data[0];
 }

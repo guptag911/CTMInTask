@@ -1,13 +1,18 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  HashRouter,
+  BrowserRouter as Router,
+  Route,
+  Switch,
+} from "react-router-dom";
 import "./App.css";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import PrivateRoute from "./components/privateRoute";
 
 // Pages
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
+import TestPage from "./components/test.js";
 
 const theme = createMuiTheme({
   palette: {
@@ -29,12 +34,15 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <div className="App">
+        {/* <HashRouter> */}
         <Router>
           <Switch>
-            <PrivateRoute exact path="/dash" component={Dashboard} />
+            <Route exact path="/dash" component={Dashboard} />
             <Route path="/" component={Home} />
+            <Route path="/hubspot-test" component={TestPage} />
           </Switch>
-        </Router>
+          </Router>
+        {/* </HashRouter> */}
       </div>
     </MuiThemeProvider>
   );

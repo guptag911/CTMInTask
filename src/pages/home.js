@@ -5,7 +5,9 @@ import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
 import { DataSave } from "../api/datagetting_pythonScript";
 import { auth, getToken } from "../helper/confAuth";
-import { Route, Redirect } from "react-router-dom";
+
+import { getUserToken } from "../helper/confUserAuth";
+
 
 const style = {
   width: "100px",
@@ -13,14 +15,13 @@ const style = {
 };
 const Home = () => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [authUrl, setAuthUrl] = useState("");
+
   const [authState, setAuthSate] = useState(
     JSON.parse(localStorage.getItem("token"))
   );
 
   async function fetchData() {
     const res = await auth();
-    setAuthUrl(res);
     return res;
   }
 
@@ -47,8 +48,12 @@ const Home = () => {
     window.location.href = res;
   };
 
-  const handleToken = async (e) => {
-    await getToken();
+  const handleAuth = async () => {
+    if (authState) {
+      await getUserToken();
+    } else {
+      await getToken();
+    }
   };
 
   return (
@@ -83,7 +88,7 @@ const Home = () => {
           component={Link}
           to="/dash"
           style={{ margin: "5px", width: "200px", height: "75px" }}
-          onClick={handleToken}
+          onClick={handleAuth}
         >
           <b>Go to Dashboard</b>
         </Button>

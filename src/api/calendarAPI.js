@@ -2,6 +2,7 @@ import { React } from 'react';
 import { googleProvider, firebaseAuth, firebaseConfig, db } from "../config/config";
 
 
+
 var MY_SCHEMA =
 {
     "id": "id of the event",
