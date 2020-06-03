@@ -4,7 +4,7 @@ import {
   firebaseConfig,
   db,
 } from "../config/config";
-
+import { listUsers } from "../api/directory";
 
 function handleIsSignedIn(isSignedIn) {
   if (isSignedIn) {
@@ -24,6 +24,7 @@ function handleIsSignedIn(isSignedIn) {
       //   email: user.email,
       //   photoURL: user.photoURL,
       // });
+
       return user;
     });
   } else {
@@ -52,6 +53,7 @@ new Promise((resolve, reject) => {
   })
   .then(() => {
     console.log("gapi: analytics v3 loaded", window.gapi.client.analytics);
+    // listUsers();
   })
   .then(() => {
     const auth2 = window.gapi.auth2.getAuthInstance();

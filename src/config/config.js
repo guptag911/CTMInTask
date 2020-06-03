@@ -20,12 +20,14 @@ export const firebaseConfig = {
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/tasks",
     "https://www.googleapis.com/auth/analytics",
+    "https://www.googleapis.com/auth/admin.directory.user.readonly",
   ],
   discoveryDocs: [
     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
     "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest",
     "https://www.googleapis.com/discovery/v1/apis/drive/v2/rest",
     "https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest",
+    "https://www.googleapis.com/discovery/v1/apis/admin/directory_v1/rest",
   ],
 };
 

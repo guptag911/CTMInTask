@@ -175,19 +175,18 @@ const NavigationBar = () => {
             />
           </div>
           <div className={classes.grow} />
-          {/* <Typography className={classes.title} variant="h4" noWrap>
-            <strong>Dashboard</strong>
-          </Typography> */}
           {firebaseAuth.currentUser &&
           !authUser &&
           (firebaseAuth.currentUser.email === "abhilnm011@gmail.com" ||
             firebaseAuth.currentUser.email ===
               "abhishek.tiwari@innovaccer.com") ? (
             <Button
+              variant="contained"
+              color="secondary"
               onClick={handleUserAuth}
-              style={{ color: "white", fontWeight: "bold" }}
+              style={{ fontWeight: "bold" }}
             >
-              conf
+              Identify Yourself
             </Button>
           ) : null}
           <div className={classes.sectionDesktop}>

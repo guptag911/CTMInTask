@@ -7,7 +7,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) =>
-        firebaseAuth.currentUser ? (
+        window.sessionStorage.getItem("user") ? (
           <Component {...props} />
         ) : (
           <Redirect to="/" />
