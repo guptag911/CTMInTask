@@ -7,9 +7,12 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import CardView from "./card";
-import CalenderCard from './calenderCard';
-import EmailReplyCard from './replyEmailsCard';
-
+import CalenderCard from "./calenderCard";
+import EmailReplyCard from "./replyEmailsCard";
+import Button from "@material-ui/core/Button";
+import { firebaseAuth } from "../config/config";
+import { auth, getToken } from "../helper/confAuth";
+import { getUserToken } from "../helper/confUserAuth";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -55,39 +58,36 @@ const useStyles = makeStyles((theme) => ({
   bold: {
     fontWeight: "bold",
   },
+
+  center: {
+    margin: "0 auto",
+  },
 }));
 
-const data1 = [
-  { id: 0, done: true, by: "user1", task: "task1", url: "#" },
-  { id: 1, done: false, by: "user2", task: "task2", url: "#" },
-  { id: 2, done: true, by: "user3", task: "task3", url: "#" },
-];
-const data2 = [
-  { id: 0, done: false, by: "user11", task: "task11", url: "#" },
-  { id: 1, done: false, by: "user12", task: "task12", url: "#" },
-  { id: 2, done: true, by: "user13", task: "task13", url: "#" },
-];
-const data3 = [
-  { id: 0, done: false, by: "user111", task: "task111", url: "#" },
-  { id: 1, done: false, by: "user122", task: "task122", url: "#" },
-  { id: 2, done: false, by: "user133", task: "task133", url: "#" },
-];
-const data4 = [
-  { id: 0, done: false, by: "user1111", task: "task1111", url: "#" },
-  { id: 1, done: false, by: "user1222", task: "task1222", url: "#" },
-  { id: 2, done: false, by: "user1333", task: "task1333", url: "#" },
-];
-const data5 = [
-  { id: 0, done: false, by: "user11111", task: "task11111", url: "#" },
-  { id: 1, done: true, by: "user12222", task: "task12222", url: "#" },
-  { id: 2, done: false, by: "user13333", task: "task13333", url: "#" },
-];
+
 export default function ScrollableTabsButtonAuto() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const [authState, setAuthSate] = React.useState(
+    JSON.parse(localStorage.getItem("token"))
+  );
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleReq = async (e) => {
+    const res = await auth();
+    window.location.href = res;
+    await handleAuth();
+  };
+
+  const handleAuth = async () => {
+    if (authState) {
+      await getUserToken();
+    } else {
+      await getToken();
+    }
   };
 
   return (
@@ -113,9 +113,19 @@ export default function ScrollableTabsButtonAuto() {
             {...a11yProps(2)}
             className={classes.bold}
           />
-          <Tab label="Calendar Events" {...a11yProps(3)} className={classes.bold} />
-          <Tab label="Reply to Mails" {...a11yProps(4)} className={classes.bold} />
-          <Tab label="Confluence" {...a11yProps(5)} className={classes.bold} />
+          <Tab
+            label="Calendar Events"
+            {...a11yProps(3)}
+            className={classes.bold}
+          />
+          <Tab
+            label="Reply to Mails"
+            {...a11yProps(4)}
+            className={classes.bold}
+          />
+          <Tab label="HubSpot" {...a11yProps(5)} className={classes.bold} />
+          <Tab label="Jira" {...a11yProps(6)} className={classes.bold} />
+          <Tab label="Confluence" {...a11yProps(7)} className={classes.bold} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -134,7 +144,45 @@ export default function ScrollableTabsButtonAuto() {
         <EmailReplyCard></EmailReplyCard>
       </TabPanel>
       <TabPanel value={value} index={5}>
-        <CardView product="confluence" data={data5}></CardView>
+        <Button variant="contained" color="primary">
+          Connect to HubSpot
+        </Button>
+        <CardView product="HubSpot" data="hubspot"></CardView>
+      </TabPanel>
+      <TabPanel value={value} index={6}>
+        {firebaseAuth.currentUser &&
+        !authState &&
+        (firebaseAuth.currentUser.email === "abhilnm011@gmail.com" ||
+          firebaseAuth.currentUser.email ===
+            "abhishek.tiwari@innovaccer.com") ? (
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.center}
+          >
+            Connect to Jira
+          </Button>
+        ) : (
+          <CardView product="Jira" data="jira"></CardView>
+        )}
+      </TabPanel>
+      <TabPanel value={value} index={7}>
+        {firebaseAuth.currentUser &&
+        !authState &&
+        (firebaseAuth.currentUser.email === "abhilnm011@gmail.com" ||
+          firebaseAuth.currentUser.email ===
+            "abhishek.tiwari@innovaccer.com") ? (
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.center}
+            onClick={handleReq}
+          >
+            Connect to Confluence
+          </Button>
+        ) : (
+          <CardView product="Confluence" data="confluence"></CardView>
+        )}
       </TabPanel>
     </div>
   );

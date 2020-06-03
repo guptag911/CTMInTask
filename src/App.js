@@ -8,7 +8,7 @@ import {
 import "./App.css";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-
+import PrivateRoute from "./components/privateRoute";
 // Pages
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
@@ -35,7 +35,7 @@ function App() {
       <div className="App">
         <HashRouter>
           <Switch>
-            <Route exact path="/dash" component={Dashboard} />
+            <PrivateRoute exact path="/dash" component={Dashboard} />
             <Route path="/" component={Home} />
           </Switch>
         </HashRouter>

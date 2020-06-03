@@ -15,8 +15,7 @@ const Dashboard = () => {
     MessageList();
     CalendarDataSave();
   }, []);
-  // const data1 = GsuiteDataSave();
-  // const data2 = GsuiteDataGet();
+
   return (
     <div>
       <NavigationBar />

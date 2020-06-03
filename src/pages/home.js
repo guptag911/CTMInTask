@@ -4,9 +4,6 @@ import { signout, signIn } from "../helper/auth";
 import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
 import { DataSave } from "../api/datagetting_pythonScript";
-import { auth, getToken } from "../helper/confAuth";
-
-import { getUserToken } from "../helper/confUserAuth";
 
 
 const style = {
@@ -15,15 +12,6 @@ const style = {
 };
 const Home = () => {
   const [currentUser, setCurrentUser] = useState(null);
-
-  const [authState, setAuthSate] = useState(
-    JSON.parse(localStorage.getItem("token"))
-  );
-
-  async function fetchData() {
-    const res = await auth();
-    return res;
-  }
 
   const handleUser = async (e) => {
     if (currentUser) {
@@ -43,18 +31,7 @@ const Home = () => {
     }
   });
 
-  const handleReq = async (e) => {
-    const res = await fetchData();
-    window.location.href = res;
-  };
 
-  const handleAuth = async () => {
-    if (authState) {
-      await getUserToken();
-    } else {
-      await getToken();
-    }
-  };
 
   return (
     <div className="center">
@@ -88,23 +65,8 @@ const Home = () => {
           component={Link}
           to="/dash"
           style={{ margin: "5px", width: "200px", height: "75px" }}
-          onClick={handleAuth}
         >
           <b>Go to Dashboard</b>
-        </Button>
-      ) : null}
-      {currentUser &&
-      !authState &&
-      (currentUser.email === "abhilnm011@gmail.com" ||
-        currentUser.email === "abhishek.tiwari@innovaccer.com") ? (
-        <Button
-          className="btn"
-          variant="contained"
-          color="secondary"
-          style={{ margin: "5px", width: "200px", height: "75px" }}
-          onClick={handleReq}
-        >
-          <b>Authorize Confluence</b>
         </Button>
       ) : null}
     </div>
