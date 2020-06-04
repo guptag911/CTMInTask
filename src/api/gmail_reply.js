@@ -7,11 +7,11 @@ import {
 import axios from "axios";
 import { GsuiteDataSave, GsuiteDataGet, GsuiteGetId } from "./gsuiteApi";
 
-//Only the relevant mails will be present in the database
+//Read only those threads in UI whose user_schema['replied'] = false
 
 /*
 user_schema = {
-  msg_id :  id of the mail
+  thread_id :  thread id of the mail
   subject : subject of the mail          
   url:  url of the mail
   replied: true if replied else false
@@ -68,9 +68,9 @@ export const query_para = async (user_list) => {
     user_list.forEach((element) => {
         query += 'from:'+element+' OR ';
     });
-    query.slice(0, query.length - 3);
-    query += '-label:chats';
-    return query;
+    let result = query.slice(0, query.length - 3);
+    result += '-label:chats';
+    return result;
 }
 
 export const message_list = async () => {
@@ -91,72 +91,63 @@ export const message_list = async () => {
       maxResults: 100, 
     });
     let messages = response.result.messages;
-    let thread_ids = [];  //Fetching IDs by calling API
     messages.forEach(async (element) => {
-      if (IDs.includes(element.threadId)) {
-        //checking if the id is in firestore databse
-        try {
-          //const user_ID = firebaseAuth.currentUser.uid; //Getting unique user ID
-        } catch (err) {
-          console.log("Error!", err);
+      let thread_ID = element.threadId;
+      let mail_data = await get_a_msg(thread_ID);
+      //fetching the data of the last thread
+      let last_index = mail_data.messages.length - 1;
+      let last_index_data = mail_data.messages[last_index];
+      let payload = last_index_data["payload"];
+      //getting the last sender
+      try
+      {
+        let header = payload["headers"];
+        var sender;
+        header.forEach((head) => {
+            if (head.name === "From") {
+              sender = head["value"];
+            }
+          });
+        let query = new RegExp(email);  
+        let pos = sender.match(query);
+        if(pos == null)  // the last sender is not the user
+        {
+          user_schema['replied'] = false;
         }
-      } else {
-        let msg_ID = element.threadId;
-        user_schema["msg_id"] = msg_ID;
-        let mail_data = await get_a_msg(msg_ID);
+        else  //the last sender is the user
+        {
+          user_schema['replied'] = true;
+        }
+      } 
+      catch (err)
+      {
+        console.log("Error!", err);
+      }
+      //if thread ID is already in the database
+      if (IDs.includes(thread_ID)) 
+      {
+        //change the replied status in the database accordingly
+      } 
+      else
+      {
+        user_schema["thread_id"] = thread_ID;
+        //fetching the subject
         let payload = mail_data.messages[0].payload;
         let header = payload["headers"];
-        //fetching the subject
         header.forEach((head) => {
           if (head.name === "Subject") {
             user_schema["subject"] = head["value"];
           }
         });
         //fetching the url
-        let url = "https://mail.google.com/mail/u/2/#inbox/" + msg_ID.toString();
+        let url = "https://mail.google.com/mail/u/2/#inbox/" + thread_ID.toString();
         user_schema["url"] = url;
-        //fetching the data of the last thread
-        let last_index = mail_data.messages.length - 1;
-        let last_index_data = mail_data.messages[last_index];
-        payload = last_index_data["payload"];
-        //fetching the body
-        try {
-          let header = payload["headers"];
-          let sender;
-          header.forEach((head) => {
-              if (head.name === "From") {
-                sender = head["value"];
-              }
-            });
-          query = new RegExp(email);  //check if the last sender is user
-          let pos = sender.match(query);
-          if(pos == null)  // the sender is not the user
-          {
-          let msg_raw = payload["parts"][0].body.data;
-          let data = msg_raw;
-          let buff = new Buffer.from(data, "base64");
-          let text = buff.toString();   //body of the thread
-          //console.log(text);
-          /*
-            apply cloud functions to determine the mood and
-            decide the value of user_schema['imp_mail']
-            if true then user_schema['replied'] = false
-            else user_schema['replied'] = true
-            send to database only if user_schema['imp_mail'] = true
-            and user_schema['replied'] = false
-          */   
-          }
-          else  //the sender is the user
-          {
-            user_schema['replied'] = true;
-            user_schema['imp_mail'] = null; 
-          }
-        } catch (err) {
-          console.log("Error!", err);
-        }
+        //send the schema into the database  
       }
     });
-  } catch (err) {
-    console.log(err);
+  } 
+  catch (err)
+  {
+    console.log('Error!',err);
   }
 };
