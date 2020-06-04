@@ -97,4 +97,4 @@ async function get_data() {
   }
 }
 
-
+get_data();
