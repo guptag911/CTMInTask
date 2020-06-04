@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import EmailInputModel from './emailInputModel';
+import { Button } from '@material-ui/core';
+import axios from 'axios';
+import {HubAuthURL} from "../helper/hubSpotOAuth";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -14,9 +16,8 @@ const useStyles = makeStyles(theme => ({
 export default function EmailReplyCard() {
   const classes = useStyles();
 
+
   return (
-    <form className={classes.root} noValidate autoComplete="off">
-        <EmailInputModel></EmailInputModel>
-    </form>
+      <HubAuthURL></HubAuthURL>
   );
 }

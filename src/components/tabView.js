@@ -13,10 +13,13 @@ import { firebaseAuth } from "../config/config";
 import { auth, getToken } from "../helper/confAuth";
 import { getUserToken } from "../helper/confUserAuth";
 import { hubAuth, getHubToken } from "../helper/hubAuth";
-import { ReactAutosuggestExample } from "./reactAutoSuggest";
+import { ReactAutosuggestExample, EmailData } from "./reactAutoSuggest";
+import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+
+  console.log("email data is ", EmailData);
 
   return (
     <div
@@ -79,24 +82,70 @@ export default function ScrollableTabsButtonAuto() {
     JSON.parse(localStorage.getItem("jira"))
   );
 
+  const [hub, setHub] = React.useState(false);
+  const [conf, setConf] = React.useState(false);
+  const [Jira, setJira] = React.useState(false);
+  const [clickState, setclickState] = React.useState(
+    JSON.parse(localStorage.getItem("state")) || {
+      hub: false,
+      conf: false,
+      Jira: false,
+    }
+  );
+
+  let state = {
+    hub: false,
+    conf: false,
+    Jira: false,
+  };
+
+  console.log(hub, conf, Jira);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const handleReq = async (e) => {
+    state = {
+      hub: false,
+      conf: true,
+      Jira: false,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
     const res = await auth();
     window.location.href = res;
   };
 
   const handleHub = async (e) => {
+    state = {
+      hub: true,
+      conf: false,
+      Jira: false,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
     const res = await hubAuth();
-    console.log(res);
+    window.location.href = res;
+  };
+
+  const handleJira = async (e) => {
+    state = {
+      hub: false,
+      conf: false,
+      Jira: true,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
+    const res = await jiraAuth();
     window.location.href = res;
   };
 
   React.useEffect(() => {
-    handleAuth();
-    handleHubAuth();
+    if (clickState.hub) {
+      handleHubAuth();
+    } else if (clickState.Jira) {
+      handleJiraAuth();
+    } else if (clickState.conf) {
+      handleAuth();
+    }
   }, [window.onload]);
 
   const handleAuth = async () => {
@@ -104,6 +153,14 @@ export default function ScrollableTabsButtonAuto() {
       await getUserToken();
     } else {
       await getToken();
+    }
+  };
+
+  const handleJiraAuth = async () => {
+    if (jiraState) {
+      await getUserToken();
+    } else {
+      await getJiraToken();
     }
   };
 
@@ -184,6 +241,7 @@ export default function ScrollableTabsButtonAuto() {
             variant="contained"
             color="primary"
             className={classes.center}
+            onClick={handleJira}
           >
             Connect to Jira
           </Button>

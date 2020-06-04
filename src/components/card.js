@@ -82,7 +82,7 @@ export default function SimpleCard(props) {
           console.log("err is ", err);
         });
     }
-  }, []);
+  });
 
   const handleChange = async (mid, element) => {
     setLoader(true);

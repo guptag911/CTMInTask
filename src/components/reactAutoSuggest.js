@@ -6,6 +6,9 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import ChipInput from "material-ui-chip-input";
+import { Button } from "@material-ui/core";
+
+let TopEmailData = [];
 
 const suggestions = [
   { name: "Afghanistan" },
@@ -78,8 +81,8 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
               {part.text}
             </span>
           ) : (
-            <span key={String(index)}>{part.text}</span>
-          );
+              <span key={String(index)}>{part.text}</span>
+            );
         })}
       </div>
     </MenuItem>
@@ -108,16 +111,16 @@ function getSuggestions(value) {
   return inputLength === 0
     ? []
     : suggestions.filter((suggestion) => {
-        const keep =
-          count < 5 &&
-          suggestion.name.toLowerCase().slice(0, inputLength) === inputValue;
+      const keep =
+        count < 5 &&
+        suggestion.name.toLowerCase().slice(0, inputLength) === inputValue;
 
-        if (keep) {
-          count += 1;
-        }
+      if (keep) {
+        count += 1;
+      }
 
-        return keep;
-      });
+      return keep;
+    });
 }
 
 const styles = (theme) => ({
@@ -178,6 +181,8 @@ class ReactAutosuggest extends Component {
         value: [...value, chip],
         textFieldInput: "",
       }));
+      TopEmailData.push(chip);
+      // console.log("email Data is ", TopEmailData);
     }
   }
 
@@ -189,42 +194,79 @@ class ReactAutosuggest extends Component {
         value: temp,
       };
     });
+    TopEmailData.splice(index, 1);
   }
+
+  handleOnSave(){
+    // console.log(JSON.parse(window.localStorage.getItem("topEmails")));
+    let topEmails={};
+    let count=1;
+    TopEmailData.forEach((element)=>{
+      topEmails["email"+count]=element;
+      count+=1;
+    })
+    window.localStorage.setItem("topEmails",JSON.stringify(topEmails));
+  }
+
+  componentDidMount(){
+    let emailData = JSON.parse(window.localStorage.getItem("topEmails"));
+    for(let email in emailData){
+      if (this.props.allowDuplicates || this.state.value.indexOf(emailData[email]) < 0) {
+        this.setState(({ value }) => ({
+          value: [...value, emailData[email]],
+          textFieldInput: "",
+        }));
+        TopEmailData.push(emailData[email]);
+      }
+    }
+  }
+
+
 
   render() {
     const { classes, ...other } = this.props;
 
     return (
-      <Autosuggest
-        theme={{
-          container: classes.container,
-          suggestionsContainerOpen: classes.suggestionsContainerOpen,
-          suggestionsList: classes.suggestionsList,
-          suggestion: classes.suggestion,
-        }}
-        renderInputComponent={renderInput}
-        suggestions={this.state.suggestions}
-        onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
-        onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
-        renderSuggestionsContainer={renderSuggestionsContainer}
-        getSuggestionValue={getSuggestionValue}
-        renderSuggestion={renderSuggestion}
-        onSuggestionSelected={(e, { suggestionValue }) => {
-          this.handleAddChip(suggestionValue);
-          e.preventDefault();
-        }}
-        focusInputOnSuggestionClick
-        inputProps={{
-          chips: this.state.value,
-          value: this.state.textFieldInput,
-          onChange: this.handletextFieldInputChange,
-          onAdd: (chip) => this.handleAddChip(chip),
-          onDelete: (chip, index) => this.handleDeleteChip(chip, index),
-          ...other,
-        }}
-      />
+      <React.Fragment>
+        <Autosuggest
+          theme={{
+            container: classes.container,
+            suggestionsContainerOpen: classes.suggestionsContainerOpen,
+            suggestionsList: classes.suggestionsList,
+            suggestion: classes.suggestion,
+          }}
+          renderInputComponent={renderInput}
+          suggestions={this.state.suggestions}
+          onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
+          renderSuggestionsContainer={renderSuggestionsContainer}
+          getSuggestionValue={getSuggestionValue}
+          renderSuggestion={renderSuggestion}
+          onSuggestionSelected={(e, { suggestionValue }) => {
+            this.handleAddChip(suggestionValue);
+            e.preventDefault();
+          }}
+          focusInputOnSuggestionClick
+          inputProps={{
+            chips: this.state.value,
+            value: this.state.textFieldInput,
+            onChange: this.handletextFieldInputChange,
+            onAdd: (chip) => this.handleAddChip(chip),
+            onDelete: (chip, index) => this.handleDeleteChip(chip, index),
+            ...other,
+          }}
+        />
+        <br></br>
+        <Button variant="contained"
+          color="primary"
+          onClick={this.handleOnSave}
+        >
+          Save
+        </Button>
+      </React.Fragment>
     );
   }
 }
 
 export const ReactAutosuggestExample = withStyles(styles)(ReactAutosuggest);
+export const EmailData = TopEmailData;
