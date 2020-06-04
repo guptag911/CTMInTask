@@ -7,6 +7,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import ChipInput from "material-ui-chip-input";
 
+let TopEmailData=[];
+
 const suggestions = [
   { name: "Afghanistan" },
   { name: "Aland Islands" },
@@ -158,7 +160,6 @@ class ReactAutosuggest extends Component {
     this.setState({
       suggestions: getSuggestions(value),
     });
-    console.log("suggestion is ", value);
   };
 
   handleSuggestionsClearRequested = () => {
@@ -179,6 +180,8 @@ class ReactAutosuggest extends Component {
         value: [...value, chip],
         textFieldInput: "",
       }));
+      TopEmailData.push(chip);
+      console.log("email Data is ", TopEmailData);
     }
   }
 
@@ -229,3 +232,4 @@ class ReactAutosuggest extends Component {
 }
 
 export const ReactAutosuggestExample = withStyles(styles)(ReactAutosuggest);
+export const EmailData = TopEmailData;

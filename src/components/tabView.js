@@ -145,7 +145,7 @@ export default function ScrollableTabsButtonAuto() {
       </TabPanel>
       <TabPanel value={value} index={4}>
         <ReactAutosuggestExample />
-        {/* <EmailReply></EmailReply> */}
+        <EmailReply></EmailReply>
       </TabPanel>
       <TabPanel value={value} index={5}>
         <Button variant="contained" color="primary">
