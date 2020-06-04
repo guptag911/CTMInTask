@@ -14,6 +14,7 @@ import { auth, getToken } from "../helper/confAuth";
 import { getUserToken } from "../helper/confUserAuth";
 import { hubAuth, getHubToken } from "../helper/hubAuth";
 import { ReactAutosuggestExample } from "./reactAutoSuggest";
+import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -94,8 +95,14 @@ export default function ScrollableTabsButtonAuto() {
     window.location.href = res;
   };
 
+  const handleJira = async (e) => {
+    const res = await jiraAuth();
+    window.location.href = res;
+  };
+
   React.useEffect(() => {
     handleAuth();
+    handleJiraAuth();
     handleHubAuth();
   }, [window.onload]);
 
@@ -104,6 +111,14 @@ export default function ScrollableTabsButtonAuto() {
       await getUserToken();
     } else {
       await getToken();
+    }
+  };
+
+  const handleJiraAuth = async () => {
+    if (jiraState) {
+      await getUserToken();
+    } else {
+      await getJiraToken();
     }
   };
 
@@ -184,6 +199,7 @@ export default function ScrollableTabsButtonAuto() {
             variant="contained"
             color="primary"
             className={classes.center}
+            onClick={handleJira}
           >
             Connect to Jira
           </Button>
