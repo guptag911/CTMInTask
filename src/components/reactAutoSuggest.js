@@ -158,6 +158,7 @@ class ReactAutosuggest extends Component {
     this.setState({
       suggestions: getSuggestions(value),
     });
+    console.log("suggestion is ", value);
   };
 
   handleSuggestionsClearRequested = () => {

@@ -12,7 +12,6 @@ import PrivateRoute from "./components/privateRoute";
 // Pages
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
-import TestPage from "./components/test.js";
 
 const theme = createMuiTheme({
   palette: {
@@ -37,7 +36,6 @@ function App() {
         {/* <HashRouter> */}
         <Router>
           <Switch>
-          <PrivateRoute exact path="/hubspot-test" component={TestPage} />
             <PrivateRoute exact path="/dash" component={Dashboard} />
             <Route path="/" component={Home} />
           </Switch>
