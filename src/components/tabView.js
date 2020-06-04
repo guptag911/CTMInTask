@@ -150,10 +150,7 @@ export default function ScrollableTabsButtonAuto() {
       </TabPanel>
       <TabPanel value={value} index={6}>
         {firebaseAuth.currentUser &&
-        !authState &&
-        (firebaseAuth.currentUser.email === "abhilnm011@gmail.com" ||
-          firebaseAuth.currentUser.email ===
-            "abhishek.tiwari@innovaccer.com") ? (
+        !authState ? (
           <Button
             variant="contained"
             color="primary"
@@ -167,10 +164,7 @@ export default function ScrollableTabsButtonAuto() {
       </TabPanel>
       <TabPanel value={value} index={7}>
         {firebaseAuth.currentUser &&
-        !authState &&
-        (firebaseAuth.currentUser.email === "abhilnm011@gmail.com" ||
-          firebaseAuth.currentUser.email ===
-            "abhishek.tiwari@innovaccer.com") ? (
+        !authState ? (
           <Button
             variant="contained"
             color="primary"
