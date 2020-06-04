@@ -14,8 +14,6 @@ var MY_SCHEMA = {
 
 export const GsuiteDataSave = async (mid, userdata) => {
   try {
-    // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
-    // console.log("In gsuite funct");
     userdata["upload_time_utc"] = Date.now();
     const uid = firebaseAuth.currentUser.uid;
     const userRef = await db
@@ -48,7 +46,6 @@ export const GsuiteDataGet = async () => {
     userRef.forEach((data) => {
       finalData.push(data.data());
     });
-    // console.log("Data is ", finalData);
     return finalData;
   } catch (e) {
     console.log("error is ", e);
