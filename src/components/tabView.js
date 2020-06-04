@@ -82,30 +82,70 @@ export default function ScrollableTabsButtonAuto() {
     JSON.parse(localStorage.getItem("jira"))
   );
 
+  const [hub, setHub] = React.useState(false);
+  const [conf, setConf] = React.useState(false);
+  const [Jira, setJira] = React.useState(false);
+  const [clickState, setclickState] = React.useState(
+    JSON.parse(localStorage.getItem("state")) || {
+      hub: false,
+      conf: false,
+      Jira: false,
+    }
+  );
+
+  let state = {
+    hub: false,
+    conf: false,
+    Jira: false,
+  };
+
+  console.log(hub, conf, Jira);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const handleReq = async (e) => {
+    state = {
+      hub: false,
+      conf: true,
+      Jira: false,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
     const res = await auth();
     window.location.href = res;
   };
 
   const handleHub = async (e) => {
+    state = {
+      hub: true,
+      conf: false,
+      Jira: false,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
     const res = await hubAuth();
-    console.log(res);
     window.location.href = res;
   };
 
   const handleJira = async (e) => {
+    state = {
+      hub: false,
+      conf: false,
+      Jira: true,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
     const res = await jiraAuth();
     window.location.href = res;
   };
 
   React.useEffect(() => {
-    handleAuth();
-    handleJiraAuth();
-    handleHubAuth();
+    if (clickState.hub) {
+      handleHubAuth();
+    } else if (clickState.Jira) {
+      handleJiraAuth();
+    } else if (clickState.conf) {
+      handleAuth();
+    }
   }, [window.onload]);
 
   const handleAuth = async () => {
