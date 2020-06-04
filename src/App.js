@@ -37,9 +37,9 @@ function App() {
         {/* <HashRouter> */}
         <Router>
           <Switch>
+          <PrivateRoute exact path="/hubspot-test" component={TestPage} />
             <PrivateRoute exact path="/dash" component={Dashboard} />
             <Route path="/" component={Home} />
-            <Route path="/hubspot-test" component={TestPage} />
           </Switch>
           </Router>
         {/* </HashRouter> */}

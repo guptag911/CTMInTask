@@ -27,7 +27,7 @@ export default function EmailReplyCard() {
   return (
     <form className={classes.root} noValidate autoComplete="off">
         <EmailInputModel></EmailInputModel>
-        <a href="https://app.hubspot.com/oauth/authorize?client_id=9c45499b-4c44-46b7-9398-33b298e731ba&redirect_uri=http://localhost:3000/hubspot-test/&scope=contacts%20content%20automation%20timeline%20tickets%20e-commerce"><Button>authorize hubspot</Button></a>
+        <a href="https://app.hubspot.com/oauth/authorize?client_id=9c45499b-4c44-46b7-9398-33b298e731ba&redirect_uri=http://localhost:3000/hubspot-test&scope=contacts%20content%20automation%20timeline%20tickets%20e-commerce"><Button>authorize hubspot</Button></a>
     </form>
   );
 }
