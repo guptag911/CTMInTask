@@ -33,14 +33,12 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <div className="App">
-        {/* <HashRouter> */}
-        <Router>
+        <HashRouter>
           <Switch>
             <PrivateRoute exact path="/dash" component={Dashboard} />
             <Route path="/" component={Home} />
           </Switch>
-          </Router>
-        {/* </HashRouter> */}
+        </HashRouter>
       </div>
     </MuiThemeProvider>
   );
