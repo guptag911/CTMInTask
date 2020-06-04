@@ -60,6 +60,6 @@ export default function TestHubSpot(props){
   })
 
   return (
-    <Redirect to="/dash"></Redirect>
+    <Redirect to="/hubspot-test"></Redirect>
   );
 }

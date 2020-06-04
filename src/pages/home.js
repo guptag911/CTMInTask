@@ -5,7 +5,6 @@ import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
 import { DataSave } from "../api/datagetting_pythonScript";
 
-
 const style = {
   width: "100px",
   height: "20px",
@@ -16,6 +15,7 @@ const Home = () => {
   const handleUser = async (e) => {
     if (currentUser) {
       await signout();
+      window.sessionStorage.clear();
     } else {
       await signIn();
     }
@@ -24,14 +24,16 @@ const Home = () => {
   firebaseAuth.onAuthStateChanged((user) => {
     if (user) {
       setCurrentUser(user);
+      window.sessionStorage.setItem(
+        "user",
+        JSON.stringify(user.providerData[0])
+      );
       return user;
     } else {
       setCurrentUser(null);
       return null;
     }
   });
-
-
 
   return (
     <div className="center">

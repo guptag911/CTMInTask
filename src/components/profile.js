@@ -63,17 +63,17 @@ const Profile = (props) => {
   const [open, setOpen] = useState(false);
   firebaseAuth.onAuthStateChanged((user) => {
     if (user) {
-      window.sessionStorage.setItem(
-        "user",
-        JSON.stringify(user.providerData[0])
-      );
+      console.log("Hey", user.displayName);
+      // window.sessionStorage.setItem(
+      //   "user",
+      //   JSON.stringify(user.providerData[0])
+      // );
     } else {
       console.log("No users");
     }
   });
 
   const user = JSON.parse(sessionStorage.getItem("user"));
-  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -84,6 +84,7 @@ const Profile = (props) => {
 
   const handleLogOut = async () => {
     await signout();
+    window.sessionStorage.clear();
   };
 
   return (

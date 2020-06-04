@@ -8,11 +8,12 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import CardView from "./card";
 import CalenderCard from "./calenderCard";
-import EmailReplyCard from "./replyEmailsCard";
 import Button from "@material-ui/core/Button";
 import { firebaseAuth } from "../config/config";
 import { auth, getToken } from "../helper/confAuth";
 import { getUserToken } from "../helper/confUserAuth";
+import { ReactAutosuggestExample } from "./reactAutoSuggest";
+import  EmailReply from "./replyEmailsCard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -63,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
   },
 }));
-
 
 export default function ScrollableTabsButtonAuto() {
   const classes = useStyles();
@@ -141,7 +141,8 @@ export default function ScrollableTabsButtonAuto() {
         <CalenderCard></CalenderCard>
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <EmailReplyCard></EmailReplyCard>
+        <ReactAutosuggestExample />
+        <EmailReply></EmailReply>
       </TabPanel>
       <TabPanel value={value} index={5}>
         <Button variant="contained" color="primary">
