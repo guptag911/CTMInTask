@@ -1,8 +1,9 @@
 import * as conf from "../helper/confAuth";
 import * as userConf from "../helper/confUserAuth";
 import axios from "axios";
+const cheerio = require('cheerio');
 
-/*async function content_byID(content_id) {
+async function content(content_id) {
   const apiPath = "rest/api/content/"+content_id;
   const reqUrl = await conf.constrRequestUrl(apiPath);
   const token = await conf.getToken();
@@ -14,13 +15,13 @@ import axios from "axios";
   });
   //console.log(result.data);
   return result.data;
-}*/
+}
 
 
-async function task() {
+async function task(account_id) {
   try
   {
-  const apiPath = "rest/api/inlinetasks/search";
+  const apiPath = "rest/api/inlinetasks/search?assignee="+account_id;
   const reqUrl = await conf.constrRequestUrl(apiPath);
   const token = await conf.getToken();
   const result = await axios.get(reqUrl, {
@@ -29,15 +30,13 @@ async function task() {
       Accept: "application/json",
     },
   });
-  console.log(result.data.results);
+  return result.data.results;
  }
  catch(err)
  {
    console.log('Error!',err);
  }
 }
-
-task();
 
 async function user() {
   try
@@ -50,7 +49,7 @@ async function user() {
       Accept: "application/json",
     },
   });
-   alert(result.data);
+   return result.data.account_id;
   }
   catch(err)
   {
@@ -58,38 +57,61 @@ async function user() {
   }
 }
 
-user();
+async function get_date(timestamp)
+{
+  let timestamp_ms = timestamp;
+  let date_obj = new Date(timestamp_ms);
+  let year = date_obj.getFullYear();
+  year = year.toString();
+  let month = ("0" + (date_obj.getMonth() + 1)).slice(-2);
+  month = month.toString();
+  let day = ("0" + date_obj.getDate()).slice(-2);
+  day = day.toString();
+  //Getting the due date
+  let date = day + '-' + month + '-' + year;
+  return date;
+}
 
-/*async function get_data(account_id) {
-  console.log(account_id);
-  //task(account_id);
-}*/
-
-/*async function get_task(tasklist) {
+async function get_data() {
   let user_schema = {};
-  console.log(tasklist);
   try
   {
-   tasklist.forEach(async (element) => {
-     let content_id = element.contentId;
-     //let data = await content_byID(content_id);
-     let assigned_by = element.creator;
-     let status = element.status;
-     let due_date;
-     if(element.dueDate)
-        due_date = element.dueDate;
-     else
-        due_date = null;
-      let body = element.body;
-      console.log(body);
-
-   });
+  let account_ID = await user();
+  let tasklist = await task(account_ID);
+  console.log(tasklist);
+  tasklist.forEach(async (element) => {
+    user_schema['content_id'] = element.contentId;
+    let data = await content(user_schema['content_id']);
+    user_schema['page_title'] = data.title;
+    user_schema['space_name'] = data.space.name;
+    user_schema['url'] = "https://innovaccer.atlassian.net/wiki" + data._links.webui;
+    user_schema['status'] = element.status;
+    user_schema['due_date'] = null;
+    if(element.dueDate)
+      user_schema['due_date'] = await get_date(element.dueDate);
+    let body = element.body;
+    const $ = cheerio.load(body);
+    let task_name = $('span[class=placeholder-inline-tasks]').text();
+    if(user_schema['due_date'] !== null)
+        task_name += user_schema['due_date'];
+    user_schema['task_name'] = task_name;
+    console.log(user_schema);
+    if(true)
+    {
+      
+    }
+    else
+    {
+      //check if completed in database too
+    }
+  }); 
   }
   catch(err)
   {
     console.log('Error!',err);
   }
-}*/
+}
+
+get_data();
 
 
-//user();
