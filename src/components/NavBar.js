@@ -176,10 +176,7 @@ const NavigationBar = () => {
           </div>
           <div className={classes.grow} />
           {firebaseAuth.currentUser &&
-          !authUser &&
-          (firebaseAuth.currentUser.email === "abhilnm011@gmail.com" ||
-            firebaseAuth.currentUser.email ===
-              "abhishek.tiwari@innovaccer.com") ? (
+          !authUser ? (
             <Button
               variant="contained"
               color="secondary"

@@ -34,7 +34,7 @@ export async function getUserToken() {
         client_secret:
           "wXIyWcPzxQCtgOzZrLSZBmUPPx-fqovQRqjiVAqDSTKpkelS9cpMxBMQMTvdMcp5",
         code: `${authCode}`,
-        redirect_uri: "http://localhost:3000/",
+        redirect_uri: "http://localhost:3000/dash",
       },
       {
         headers: {
