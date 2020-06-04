@@ -13,11 +13,12 @@ import { firebaseAuth } from "../config/config";
 import { auth, getToken } from "../helper/confAuth";
 import { getUserToken } from "../helper/confUserAuth";
 import { hubAuth, getHubToken } from "../helper/hubAuth";
-import { ReactAutosuggestExample } from "./reactAutoSuggest";
-import  EmailReply from "./replyEmailsCard";
+import { ReactAutosuggestExample, EmailData } from "./reactAutoSuggest";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+
+  console.log("email data is ", EmailData);
 
   return (
     <div
@@ -164,7 +165,6 @@ export default function ScrollableTabsButtonAuto() {
       </TabPanel>
       <TabPanel value={value} index={4}>
         <ReactAutosuggestExample />
-        <EmailReply></EmailReply>
       </TabPanel>
       <TabPanel value={value} index={5}>
         {firebaseAuth.currentUser && !hubState ? (
