@@ -64,10 +64,6 @@ const Profile = (props) => {
   firebaseAuth.onAuthStateChanged((user) => {
     if (user) {
       console.log("Hey", user.displayName);
-      // window.sessionStorage.setItem(
-      //   "user",
-      //   JSON.stringify(user.providerData[0])
-      // );
     } else {
       console.log("No users");
     }

@@ -1,21 +1,21 @@
 import axios from "axios";
-import "../api/confluence";
 
-export async function user() {
+export async function hubAuth() {
   const result = await axios.get(
-    "https://us-central1-ctmintask.cloudfunctions.net/api/user"
+    "https://us-central1-ctmintask.cloudfunctions.net/api/hub"
   );
+  console.log(typeof result.data);
   return result.data;
 }
 
-export async function getUserToken() {
-  const result = JSON.parse(localStorage.getItem("user"));
+export async function getHubToken() {
+  const result = JSON.parse(localStorage.getItem("hub"));
   if (result && (new Date().getTime() - result.assignTime) / 1000 > 3600) {
-    const newToken = await refreshUserAccessToken(result.refresh_token);
+    const newToken = await refreshHubToken(result.refresh_token);
     newToken["refresh_token"] = result.refresh_token;
     let assignTime = new Date().getTime();
     newToken["assignTime"] = assignTime;
-    localStorage.setItem("user", JSON.stringify(newToken));
+    localStorage.setItem("hub", JSON.stringify(newToken));
     return newToken.access_token;
   } else if (
     result &&
@@ -27,14 +27,13 @@ export async function getUserToken() {
     const authCode = params.get("code");
     console.log(authCode);
     const result = await axios.post(
-      "https://auth.atlassian.com/oauth/token",
+      "https://api.hubapi.com/oauth/v1/token",
       {
         grant_type: "authorization_code",
-        client_id: "LcUQspyPyb8ATVkVEUN5KS4NuIxrI4mO",
-        client_secret:
-          "wXIyWcPzxQCtgOzZrLSZBmUPPx-fqovQRqjiVAqDSTKpkelS9cpMxBMQMTvdMcp5",
+        client_id: "49a97a69-1406-4a1d-8eb3-64b9cbed6126",
+        client_secret: "0840ac22-bc6d-49dc-90f0-06b472924e17",
         code: `${authCode}`,
-        redirect_uri: "http://localhost:3000/#/dash",
+        redirect_uri: "http://localhost:3000/",
       },
       {
         headers: {
@@ -44,21 +43,21 @@ export async function getUserToken() {
     );
     let assignTime = new Date().getTime();
     result.data.assignTime = assignTime;
-    localStorage.setItem("user", JSON.stringify(result.data));
+    localStorage.setItem("hub", JSON.stringify(result.data));
 
     return result.data.access_token;
   }
 }
 
-export async function refreshUserAccessToken(refresh_token) {
+export async function refreshHubToken(refresh_token) {
   const result = await axios.post(
-    "https://auth.atlassian.com/oauth/token",
+    "https://api.hubapi.com/oauth/v1/token",
     {
       grant_type: "refresh_token",
-      client_id: "LcUQspyPyb8ATVkVEUN5KS4NuIxrI4mO",
-      client_secret:
-        "wXIyWcPzxQCtgOzZrLSZBmUPPx-fqovQRqjiVAqDSTKpkelS9cpMxBMQMTvdMcp5",
+      client_id: "49a97a69-1406-4a1d-8eb3-64b9cbed6126",
+      client_secret: "0840ac22-bc6d-49dc-90f0-06b472924e17",
       refresh_token: `${refresh_token}`,
+      redirect_uri: "http://localhost:3000/",
     },
     {
       headers: {
@@ -68,4 +67,8 @@ export async function refreshUserAccessToken(refresh_token) {
   );
 
   return result.data;
+}
+
+export async function getRequestUrl(apiPath) {
+  return `https://api.atlassian.com/${apiPath}`;
 }

@@ -12,6 +12,7 @@ import Button from "@material-ui/core/Button";
 import { firebaseAuth } from "../config/config";
 import { auth, getToken } from "../helper/confAuth";
 import { getUserToken } from "../helper/confUserAuth";
+import { hubAuth, getHubToken } from "../helper/hubAuth";
 import { ReactAutosuggestExample } from "./reactAutoSuggest";
 
 function TabPanel(props) {
@@ -70,6 +71,13 @@ export default function ScrollableTabsButtonAuto() {
   const [authState, setAuthSate] = React.useState(
     JSON.parse(localStorage.getItem("token"))
   );
+  const [hubState, setHubState] = React.useState(
+    JSON.parse(localStorage.getItem("hub"))
+  );
+
+  const [jiraState, setJiraState] = React.useState(
+    JSON.parse(localStorage.getItem("jira"))
+  );
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -78,8 +86,18 @@ export default function ScrollableTabsButtonAuto() {
   const handleReq = async (e) => {
     const res = await auth();
     window.location.href = res;
-    await handleAuth();
   };
+
+  const handleHub = async (e) => {
+    const res = await hubAuth();
+    console.log(res);
+    window.location.href = res;
+  };
+
+  React.useEffect(() => {
+    handleAuth();
+    handleHubAuth();
+  }, [window.onload]);
 
   const handleAuth = async () => {
     if (authState) {
@@ -87,6 +105,10 @@ export default function ScrollableTabsButtonAuto() {
     } else {
       await getToken();
     }
+  };
+
+  const handleHubAuth = async () => {
+    await getHubToken();
   };
 
   return (
@@ -143,14 +165,21 @@ export default function ScrollableTabsButtonAuto() {
         <ReactAutosuggestExample />
       </TabPanel>
       <TabPanel value={value} index={5}>
-        <Button variant="contained" color="primary">
-          Connect to HubSpot
-        </Button>
-        <CardView product="HubSpot" data="hubspot"></CardView>
+        {firebaseAuth.currentUser && !hubState ? (
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.center}
+            onClick={handleHub}
+          >
+            Connect to HubSpot
+          </Button>
+        ) : (
+          <CardView product="HubSpot" data="hubspot"></CardView>
+        )}
       </TabPanel>
       <TabPanel value={value} index={6}>
-        {firebaseAuth.currentUser &&
-        !authState ? (
+        {firebaseAuth.currentUser && !jiraState ? (
           <Button
             variant="contained"
             color="primary"
@@ -163,8 +192,7 @@ export default function ScrollableTabsButtonAuto() {
         )}
       </TabPanel>
       <TabPanel value={value} index={7}>
-        {firebaseAuth.currentUser &&
-        !authState ? (
+        {firebaseAuth.currentUser && !authState ? (
           <Button
             variant="contained"
             color="primary"
