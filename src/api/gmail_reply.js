@@ -63,7 +63,7 @@ export const get_a_msg = async (msg_ID) => {
 };
 
 //query parameter will be decided by the priority list
-export const query_para = async () => {
+export const query_para = async (user_list) => {
     let query = 'is:important ';
     user_list.forEach((element) => {
         query += 'from:'+element+' OR ';
@@ -79,7 +79,7 @@ export const message_list = async () => {
   let user_schema = {};
   let email = await get_profile();
   let username = await get_username(email);
-  let query = await query_para();
+  let query = '@'+username;
   //Fetching messages IDs from Firestore
   (await ID_list).forEach((data) => {
     IDs.push(data);
@@ -96,17 +96,7 @@ export const message_list = async () => {
       if (IDs.includes(element.threadId)) {
         //checking if the id is in firestore databse
         try {
-          /*const user_ID = firebaseAuth.currentUser.uid; //Getting unique user ID
-              const user_ref = await db
-                .collection("users")
-                .doc(user_ID)
-                .collection("tasks")
-                .doc("gsuite")
-                .collection("data")
-                .doc(element.threadId)
-                .get();
-              var my_data = user_ref.data();
-              var user_schema = {};*/
+          //const user_ID = firebaseAuth.currentUser.uid; //Getting unique user ID
         } catch (err) {
           console.log("Error!", err);
         }
