@@ -78,8 +78,11 @@ export default function ScrollableTabsButtonAuto() {
   const handleReq = async (e) => {
     const res = await auth();
     window.location.href = res;
-    await handleAuth();
   };
+
+  React.useEffect(() => {
+    handleAuth()
+  },[window.onload])
 
   const handleAuth = async () => {
     if (authState) {
