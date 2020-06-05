@@ -105,6 +105,20 @@ export default function ScrollableTabsButtonAuto() {
     setValue(newValue);
   };
 
+  const handleState = (e) => {
+    e.preventDefault();
+    if (!window.localStorage.getItem("token")) {
+      alert(
+        'Connect to confluence and then Click the "Identify Yourself" button to identify yourself'
+      );
+    } else if (
+      window.localStorage.getItem("token") &&
+      !window.localStorage.getItem("user")
+    ) {
+      alert('Click the "Identify Yourself" button to identify yourself');
+    }
+  };
+
   const handleReq = async (e) => {
     state = {
       hub: false,
@@ -112,6 +126,7 @@ export default function ScrollableTabsButtonAuto() {
       Jira: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
+
     const res = await auth();
     window.location.href = res;
   };
@@ -123,6 +138,7 @@ export default function ScrollableTabsButtonAuto() {
       Jira: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
+
     const res = await hubAuth();
     window.location.href = res;
   };
@@ -199,7 +215,12 @@ export default function ScrollableTabsButtonAuto() {
           />
           <Tab label="HubSpot" {...a11yProps(5)} className={classes.bold} />
           <Tab label="Jira" {...a11yProps(6)} className={classes.bold} />
-          <Tab label="Confluence" {...a11yProps(7)} className={classes.bold} />
+          <Tab
+            label="Confluence"
+            {...a11yProps(7)}
+            className={classes.bold}
+            onClick={handleState}
+          />                    
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -254,7 +275,7 @@ export default function ScrollableTabsButtonAuto() {
             className={classes.center}
             onClick={handleReq}
           >
-            Connect to Confluence
+            Connect to Confluence          
           </Button>
         ) : (
           <CardView product="Confluence" data="confluence"></CardView>
