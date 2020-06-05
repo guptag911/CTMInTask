@@ -7,6 +7,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import ChipInput from "material-ui-chip-input";
 import { Button } from "@material-ui/core";
+import EmailCard from "./replyEmailsCard";
 
 let TopEmailData = [];
 
@@ -45,6 +46,8 @@ const suggestions = [
   { name: "Brazil" },
   { name: "British Indian Ocean Territory" },
   { name: "Brunei Darussalam" },
+  {name: "shubham.kamra@innovaccer.com"},
+  {name: "mrinalini.mittal@innovaccer.com"}
 ];
 
 function renderInput(inputProps) {
@@ -155,6 +158,7 @@ class ReactAutosuggest extends Component {
     suggestions: [],
     value: [],
     textFieldInput: "",
+    signal:0
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {
@@ -197,7 +201,7 @@ class ReactAutosuggest extends Component {
     TopEmailData.splice(index, 1);
   }
 
-  handleOnSave(){
+  handleOnSave=()=>{
     // console.log(JSON.parse(window.localStorage.getItem("topEmails")));
     let topEmails={};
     let count=1;
@@ -206,9 +210,12 @@ class ReactAutosuggest extends Component {
       count+=1;
     })
     window.localStorage.setItem("topEmails",JSON.stringify(topEmails));
+    this.setState({signal:this.state.signal+1});
+
   }
 
   componentDidMount(){
+    TopEmailData=[];
     let emailData = JSON.parse(window.localStorage.getItem("topEmails"));
     for(let email in emailData){
       if (this.props.allowDuplicates || this.state.value.indexOf(emailData[email]) < 0) {
@@ -263,10 +270,11 @@ class ReactAutosuggest extends Component {
         >
           Save
         </Button>
+        <EmailCard signal={this.state.signal}></EmailCard>
       </React.Fragment>
     );
   }
 }
 
 export const ReactAutosuggestExample = withStyles(styles)(ReactAutosuggest);
-export const EmailData = TopEmailData;
+// export const EmailData = TopEmailData;

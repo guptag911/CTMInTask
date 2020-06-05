@@ -5,7 +5,6 @@ import {
   firebaseConfig,
   db,
 } from "../config/config";
-import "./gmail_reply";
 
 var MY_SCHEMA = {
   id: "id of the event",
@@ -104,7 +103,7 @@ export const CalendarDataGet = async () => {
       .collection("users")
       .doc(uid)
       .collection("calender")
-      .orderBy("start_time", "desc")
+      .orderBy("start_time", "asc")
       .get();
     var finalData = [];
     userRef.forEach((data) => {

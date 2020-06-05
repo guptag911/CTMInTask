@@ -122,7 +122,6 @@ export const GsuiteDataGetReply = async () => {
     // console.log("Data is ", finalData);
     return finalData;
   } catch (e) {
-    console.log(window.sessionStorage.getItem("user"));
     console.log("error is ", e);
     return [];
   }
@@ -139,6 +138,32 @@ export const GsuiteGetIdreply = async () => {
     return ids;
   } catch (e) {
     console.log("Error is", e);
+    return [];
+  }
+};
+
+export const GsuiteDataGetReplyFalse = async () => {
+  try {
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("gsuite")
+      .collection("reply")
+      .where("replied", "==", false)
+      .get();
+    var finalData = [];
+    userRef.forEach((data) => {
+      finalData.push(data.data());
+    });
+    // console.log("Data is ", finalData);
+    return finalData;
+  } catch (e) {
+    console.log("error is ", e);
     return [];
   }
 };

@@ -216,6 +216,7 @@ export default function ScrollableTabsButtonAuto() {
       </TabPanel>
       <TabPanel value={value} index={4}>
         <ReactAutosuggestExample />
+        {/* <EmailCard></EmailCard> */}
       </TabPanel>
       <TabPanel value={value} index={5}>
         {firebaseAuth.currentUser && !hubState ? (
