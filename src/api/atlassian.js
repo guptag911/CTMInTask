@@ -58,7 +58,7 @@ export const get_confluenceData = async () => {
 
 export const get_confluenceID = async () => {
   try {
-    var my_data = get_confluenceData();
+    var my_data = await get_confluenceData();
     var task_ids = [];
     (await my_data).forEach((data) => {
       task_ids.push(data["task_id"]);
