@@ -180,6 +180,7 @@ import {
           if(pos == null)  // the last sender is not the user
           {
             user_schema['replied'] = false;
+            user_schema['sender'] = sender;
           }
           else  //the last sender is the user
           {

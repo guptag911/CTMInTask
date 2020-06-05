@@ -83,9 +83,6 @@ const NavigationBar = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-  const [authUser, setAuthUser] = useState(
-    JSON.parse(localStorage.getItem("user"))
-  );
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -175,9 +172,7 @@ const NavigationBar = () => {
             />
           </div>
           <div className={classes.grow} />
-          {firebaseAuth.currentUser &&
-          !authUser &&
-          window.localStorage.getItem("user") ? (
+          {firebaseAuth.currentUser && !window.localStorage.getItem("user") ? (
             <Button
               variant="contained"
               color="secondary"
