@@ -50,16 +50,21 @@ export default function SimpleCard(props) {
 
   useEffect(()=>{
     setLoader(true);
-    message_list();
-    GsuiteDataGetReplyFalse().then((data)=>{
-      console.log("data is ", data);
-      getData(data);
-      setLoader(false);
+    message_list().then((e)=>{
+      console.log("in message", e);
+      GsuiteDataGetReplyFalse().then((data)=>{
+        console.log("data is ", data);
+        getData(data);
+        setLoader(false);
+      }).catch((e)=>{
+        console.log("error is ",e);
+        getData(data);
+        setLoader(false);
+      })
     }).catch((e)=>{
-      console.log("error is ",e);
-      getData(data);
-      setLoader(false);
+      console.log("message data error ", e);
     })
+    
   },[props.signal])
 
   return (
