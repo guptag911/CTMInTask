@@ -76,6 +76,8 @@ async function get_data() {
     tasklist.forEach(async (element) => {
       user_schema['content_id'] = element.contentId;
       let data = await content(user_schema['content_id']);
+      user_schema['task_id'] = user_schema['content_id']+element.id;
+      
       user_schema['page_title'] = data.title;
       user_schema['space_name'] = data.space.name;
       user_schema['url'] = "https://innovaccer.atlassian.net/wiki" + data._links.webui;
