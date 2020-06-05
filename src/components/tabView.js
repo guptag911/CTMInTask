@@ -15,6 +15,7 @@ import { getUserToken } from "../helper/confUserAuth";
 import { hubAuth, getHubToken } from "../helper/hubAuth";
 import { ReactAutosuggestExample, EmailData } from "./reactAutoSuggest";
 import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
+import ConfluenceCard from "./confluenceCard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -278,7 +279,7 @@ export default function ScrollableTabsButtonAuto() {
             Connect to Confluence          
           </Button>
         ) : (
-          <CardView product="Confluence" data="confluence"></CardView>
+          <ConfluenceCard></ConfluenceCard>
         )}
       </TabPanel>
     </div>
