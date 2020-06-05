@@ -84,11 +84,11 @@ import {
                         notes : data['url']
                     };
                     try{
-                        var go = await  window.gapi.client.tasks.tasks.insert(
-                            {tasklist : "@default"},
-                            new_task
-                        );
-                        data["taskid"] = go.result["id"];
+                        // var go = await  window.gapi.client.tasks.tasks.insert(
+                        //     {tasklist : "@default"},
+                        //     new_task
+                        // );
+                        data["taskid"] = null;
                     }catch (e){
                         console.log("Error is ",e);
                     }
