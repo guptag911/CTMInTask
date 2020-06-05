@@ -45,23 +45,24 @@ const useStyles = makeStyles((theme) => ({
 export default function CalendarCard(props) {
   const classes = useStyles();
   const classesLoader = useStyleLoader();
-  let [Loader, setLoader] = useState(false);
+  let [Loader, setLoader] = useState(true);
   let [data, getData] = useState(null);
 
   useEffect(() => {
-    setLoader(true);
     CalendarDataGet()
       .then((resp) => {
         getData(resp);
+        setLoader(false);
       })
       .catch((e) => {
         console.log("error is ", e);
+        setLoader(false);
       });
   }, []);
 
   return (
     <React.Fragment>
-      {data ? (
+      {data && !Loader? (
         data.map((element) => {
           return (
             <Card className={classes.root}>

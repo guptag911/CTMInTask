@@ -19,7 +19,7 @@ import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
-  console.log("email data is ", EmailData);
+  // console.log("email data is ", EmailData);
 
   return (
     <div
@@ -220,6 +220,7 @@ export default function ScrollableTabsButtonAuto() {
       </TabPanel>
       <TabPanel value={value} index={4}>
         <ReactAutosuggestExample />
+        {/* <EmailCard></EmailCard> */}
       </TabPanel>
       <TabPanel value={value} index={5}>
         {firebaseAuth.currentUser && !hubState ? (

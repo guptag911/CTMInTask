@@ -47,7 +47,7 @@ export default function SimpleCard(props) {
   const [checked, setChecked] = React.useState(true);
   const classes = useStyles();
   const classesLoader = useStyleLoader();
-  let [Loader, setLoader] = useState(false);
+  let [Loader, setLoader] = useState(true);
 
   // console.log("props is ", props);
 
@@ -77,12 +77,14 @@ export default function SimpleCard(props) {
             });
           }
           getData(ndata);
+          setLoader(false);
         })
         .catch((err) => {
           console.log("err is ", err);
+          setLoader(false);
         });
     }
-  });
+  },[]);
 
   const handleChange = async (mid, element) => {
     setLoader(true);
@@ -176,6 +178,7 @@ export default function SimpleCard(props) {
               </CardContent>
               <CardActions>
                 <a
+                target="blank"
                   href={element.url}
                   style={{
                     textDecoration: "none",

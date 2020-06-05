@@ -75,7 +75,7 @@ import {
   
   export const insert_task = async (data) => {
     try{
-        return await new Promise ((resolve) => {
+        return await new Promise (async(resolve) => {
             if(data["task_id"]==null){
                 if(data["replied"]==false){
                     var tite = "There is an Email that you might be intrested in replying.";
@@ -84,7 +84,7 @@ import {
                         notes : data['url']
                     };
                     try{
-                        var go =  window.gapi.client.tasks.tasks.insert(
+                        var go = await  window.gapi.client.tasks.tasks.insert(
                             {tasklist : "@default"},
                             new_task
                         );
@@ -135,10 +135,15 @@ import {
     let IDs = [];
     let user_schema = {};
     let user_list = JSON.parse(window.localStorage.getItem("topEmails"));
-    //console.log(user_list);
-    user_list.forEach((id)=>{
-        my_list.push(id);
-    });
+    console.log("user list is ",user_list);
+    let my_list =[];
+    for(let mail in user_list){
+      my_list.push(user_list[mail]);
+    }
+    // user_list.forEach((id)=>{
+    //     my_list.push(id);
+    // });
+    console.log("my list is ", my_list);
     let email = await get_profile();
     let username = await get_username(email);
     let query = (await (query_para(my_list))).toString();
@@ -201,8 +206,8 @@ import {
 
                var my_data = useref.data();
                my_data["replied"] = user_schema["replied"];
-               //var mod_data = await insert_task(my_data["thread_id"],my_data)
-               //var Gdata = await GsuiteDataSaveReply(thread_ID, mod_data);
+               var mod_data = await insert_task(my_data["thread_id"],my_data)
+               var Gdata = await GsuiteDataSaveReply(thread_ID, mod_data);
            }catch (e){
                console.log("Error is", e);
            }
