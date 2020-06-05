@@ -176,7 +176,8 @@ const NavigationBar = () => {
           </div>
           <div className={classes.grow} />
           {firebaseAuth.currentUser &&
-          !authUser ? (
+          !authUser &&
+          window.localStorage.getItem("user") ? (
             <Button
               variant="contained"
               color="secondary"

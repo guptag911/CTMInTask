@@ -19,7 +19,7 @@ import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
-  console.log("email data is ", EmailData);
+  // console.log("email data is ", EmailData);
 
   return (
     <div
@@ -99,7 +99,7 @@ export default function ScrollableTabsButtonAuto() {
     Jira: false,
   };
 
-  console.log(hub, conf, Jira);
+  // console.log(hub, conf, Jira);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -157,11 +157,7 @@ export default function ScrollableTabsButtonAuto() {
   };
 
   const handleJiraAuth = async () => {
-    if (jiraState) {
-      await getUserToken();
-    } else {
-      await getJiraToken();
-    }
+    await getJiraToken();
   };
 
   const handleHubAuth = async () => {

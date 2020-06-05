@@ -71,7 +71,10 @@ export const CalendarDataSave = async () => {
           updated: element.updated,
         };
         try {
-          const uid = firebaseAuth.currentUser.uid;
+          const uid =
+            firebaseAuth.currentUser.uid === null
+              ? JSON.parse(window.sessionStorage.getItem("user")).uid
+              : firebaseAuth.currentUser.uid;
           const userRef = await db
             .collection("users")
             .doc(uid)
@@ -93,7 +96,10 @@ export const CalendarDataSave = async () => {
 
 export const CalendarDataGet = async () => {
   try {
-    const uid = firebaseAuth.currentUser.uid;
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
