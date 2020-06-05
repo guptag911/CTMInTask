@@ -53,6 +53,7 @@ export default function SimpleCard(props) {
 
   let [data, getData] = useState(null);
   useEffect(() => {
+    console.log('No bug!!');
     if (props.product === "gsuites") {
       GsuiteDataGet()
         .then((data) => {
