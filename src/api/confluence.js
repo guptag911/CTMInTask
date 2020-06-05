@@ -1,7 +1,27 @@
+import {
+  googleProvider,
+  firebaseAuth,
+  firebaseConfig,
+  db,
+} from "../config/config";
 import * as conf from "../helper/confAuth";
 import * as userConf from "../helper/confUserAuth";
 import axios from "axios";
+import { save_confluenceData, get_confluenceData , get_confluenceID } from "./atlassian";
 const cheerio = require('cheerio');
+
+/*
+user_schema = {
+  content_id:
+  task_id:
+  status: 
+  page_title:
+  space_name: 
+  url: 
+  due_date: if given else null
+  task_name:
+}
+*/
 
 async function content(content_id) {
   const apiPath = "rest/api/content/" + content_id;
@@ -74,15 +94,48 @@ async function get_data() {
     let tasklist = await task(account_ID);
     console.log(tasklist);
     tasklist.forEach(async (element) => {
-      user_schema['content_id'] = element.contentId;
-      let data = await content(user_schema['content_id']);
+      let content_ID = element.contentId;
+      let task_ID  = String(content_ID)+String(element.id);
+      let status = element.status;
+      //fetching task ids from firestore
+      let db_ids = await get_confluenceID();
+      if(db_ids.includes(task_ID))
+      {
+        //change the status accordingly
+        try
+        {
+          const uid = firebaseAuth.currentUser.uid;
+          const useref = await db
+          .collection("users")
+          .doc(uid)
+          .collection("tasks")
+          .doc("atlassian")
+          .collection("confluence")
+          .doc(task_ID)
+          .get();
+
+          let my_data = useref.data();
+          my_data["status"] = status;
+        }
+        catch(err)
+        {
+          console.log("error!",err);
+        }
+      }
+      else
+      {
+      let data = await content(content_ID);
+      //making user schema
+      user_schema['content_id'] = content_ID;
+      user_schema['task_id'] = task_ID;
+      user_schema['status'] = status;
       user_schema['page_title'] = data.title;
       user_schema['space_name'] = data.space.name;
       user_schema['url'] = "https://innovaccer.atlassian.net/wiki" + data._links.webui;
-      user_schema['status'] = element.status;
       user_schema['due_date'] = null;
       if (element.dueDate)
         user_schema['due_date'] = await get_date(element.dueDate);
+      //fetching the task description
       let body = element.body;
       const $ = cheerio.load(body);
       let task_name = $('span[class=placeholder-inline-tasks]').text();
@@ -90,6 +143,9 @@ async function get_data() {
         task_name += user_schema['due_date'];
       user_schema['task_name'] = task_name;
       console.log(user_schema);
+      //saving the data
+      let db_data =  await save_confluenceData(user_schema["task_id"], user_schema);
+      }
     });
   }
   catch (err) {
@@ -97,4 +153,4 @@ async function get_data() {
   }
 }
 
-get_data();
+//get_data();

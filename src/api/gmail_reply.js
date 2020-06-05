@@ -136,6 +136,7 @@ import {
     let user_schema = {};
     let user_list = JSON.parse(window.localStorage.getItem("topEmails"));
     //console.log(user_list);
+    let my_list = [];
     user_list.forEach((id)=>{
         my_list.push(id);
     });
