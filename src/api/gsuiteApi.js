@@ -160,7 +160,7 @@ export const GsuiteDataGetReplyFalse = async () => {
     userRef.forEach((data) => {
       finalData.push(data.data());
     });
-    console.log("Data is ", finalData);
+    // console.log("Data is ", finalData);
     return finalData;
   } catch (e) {
     console.log("error is ", e);

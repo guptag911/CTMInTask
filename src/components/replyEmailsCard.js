@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { message_list } from "../api/gmail_reply";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {GsuiteDataGetReplyFalse} from "../api/gsuiteApi";
+import { GsuiteDataGetReplyFalse } from "../api/gsuiteApi";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -44,70 +44,68 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleCard(props) {
   const classes = useStyles();
-  const [data , getData] = useState([]);
+  const [data, getData] = useState([]);
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
 
-  useEffect(()=>{
+  useEffect(() => {
     setLoader(true);
-    message_list().then((e)=>{
-      console.log("in message",e);
-      GsuiteDataGetReplyFalse().then((data)=>{
+    (async function anyNameFunction() {
+      const msgData = await message_list();
+      GsuiteDataGetReplyFalse().then((data) => {
         console.log("data is ", data);
         getData(data);
         setLoader(false);
-      }).catch((e)=>{
-        console.log("error is ",e);
+      }).catch((e) => {
+        console.log("error is ", e);
         getData(data);
         setLoader(false);
       })
-    }).catch((e)=>{
-      setLoader(false);
-      console.log("message data error ", e);
-    })
-    
-  },[props.signal])
+
+    })();
+
+  }, [props.signal])
 
   return (
     <div>
       {data && !Loader ? (
         data.map((element) => {
-            return <Card key={element.mid} className={classes.root}>
-              <CardContent>
-                <Typography
-                  className={classes.title}
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  Mailed by -- Bittu Ray
+          return <Card key={element.mid} className={classes.root}>
+            <CardContent>
+              <Typography
+                className={classes.title}
+                color="textSecondary"
+                gutterBottom
+              >
+                Mailed by -- {element.sender}
                 </Typography>
-                <Typography variant="h7" component="h7">
-                  {element.subject}
-                </Typography>
+              <Typography variant="h7" component="h7">
+                {element.subject}
+              </Typography>
 
-                <br />
-              </CardContent>
-              <CardActions>
-                <a
+              <br />
+            </CardContent>
+            <CardActions>
+              <a
                 target="blank"
-                  href={element.url}
-                  style={{
-                    textDecoration: "none",
-                    color: "#e84993",
-                    fontWeight: "bold",
-                  }}
-                  size="small"
-                >
-                  Go to the task
+                href={element.url}
+                style={{
+                  textDecoration: "none",
+                  color: "#e84993",
+                  fontWeight: "bold",
+                }}
+                size="small"
+              >
+                Go to the task
                 </a>
-              </CardActions>
-            </Card>
+            </CardActions>
+          </Card>
         })
       ) : (
-        <div className={classesLoader.root}>
-          <CircularProgress />
-        </div>
-      )}
+          <div className={classesLoader.root}>
+            <CircularProgress />
+          </div>
+        )}
     </div>
   );
 }
