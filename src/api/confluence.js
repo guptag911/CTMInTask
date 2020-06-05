@@ -15,7 +15,6 @@ import {
 } from "./atlassian";
 import cheerio from "cheerio";
 
-
 /*
 user_schema = {
   content_id:
@@ -162,4 +161,9 @@ async function get_data() {
   }
 }
 
-get_data();
+if (
+  window.localStorage.getItem("user") &&
+  window.localStorage.getItem("token")
+) {
+  get_data();
+}

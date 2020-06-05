@@ -166,7 +166,10 @@ export default function ScrollableTabsButtonAuto() {
   }, [window.onload]);
 
   const handleAuth = async () => {
-    if (authState) {
+    if (
+      authState &&
+      !window.localStorage.getItem("user")
+    ) {
       await getUserToken();
     } else {
       await getToken();
@@ -221,7 +224,7 @@ export default function ScrollableTabsButtonAuto() {
             {...a11yProps(7)}
             className={classes.bold}
             onClick={handleState}
-          />                    
+          />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -276,7 +279,7 @@ export default function ScrollableTabsButtonAuto() {
             className={classes.center}
             onClick={handleReq}
           >
-            Connect to Confluence          
+            Connect to Confluence
           </Button>
         ) : (
           <ConfluenceCard></ConfluenceCard>
