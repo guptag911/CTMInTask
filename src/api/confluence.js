@@ -24,7 +24,7 @@ user_schema = {
 */
 
 async function content(content_id) {
-  const apiPath = "rest/api/content/" + content_id;
+  const apiPath = "rest/api/content/" + String(content_id);
   const reqUrl = await conf.constrRequestUrl(apiPath);
   const token = await conf.getToken();
   const result = await axios.get(reqUrl, {
