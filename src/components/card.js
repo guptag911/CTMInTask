@@ -53,6 +53,7 @@ export default function SimpleCard(props) {
 
   let [data, getData] = useState(null);
   useEffect(() => {
+    console.log('No bug!!');
     if (props.product === "gsuites") {
       GsuiteDataGet()
         .then((data) => {
@@ -82,7 +83,7 @@ export default function SimpleCard(props) {
           console.log("err is ", err);
         });
     }
-  });
+  },[]);
 
   const handleChange = async (mid, element) => {
     setLoader(true);
