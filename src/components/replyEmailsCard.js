@@ -51,7 +51,7 @@ export default function SimpleCard(props) {
   useEffect(()=>{
     setLoader(true);
     message_list().then((e)=>{
-      console.log("in message", e);
+      console.log("in message",);
       GsuiteDataGetReplyFalse().then((data)=>{
         console.log("data is ", data);
         getData(data);
