@@ -42,18 +42,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let topEmails ={};
+
 export default function SimpleCard(props) {
   const classes = useStyles();
-  const [data, getData] = useState([]);
+  const [data, getData] = useState(null);
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
 
   useEffect(() => {
+    // console.log("in useEffect ------------------------------------------------------------------------");
+    let userdata = JSON.parse(window.localStorage.getItem("topEmails"));
+    topEmails={};
+    for(let data in userdata){
+      topEmails[userdata[data]]=1;
+    }
+    // console.log("topEmails is ", topEmails);
     setLoader(true);
     (async function anyNameFunction() {
       const msgData = await message_list();
       GsuiteDataGetReplyFalse().then((data) => {
-        console.log("data is ", data);
+        // console.log("data is ", data);
         getData(data);
         setLoader(false);
       }).catch((e) => {
@@ -66,11 +75,12 @@ export default function SimpleCard(props) {
 
   }, [props.signal])
 
+
   return (
     <div>
       {data && !Loader ? (
         data.map((element) => {
-          return <Card key={element.mid} className={classes.root}>
+          return topEmails[element.sender] ? (<Card key={element.mid} className={classes.root}>
             <CardContent>
               <Typography
                 className={classes.title}
@@ -100,6 +110,7 @@ export default function SimpleCard(props) {
                 </a>
             </CardActions>
           </Card>
+          ):null
         })
       ) : (
           <div className={classesLoader.root}>

@@ -85,6 +85,9 @@ export const GsuiteDataSaveReply = async (tid, userdata) => {
       firebaseAuth.currentUser.uid === null
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
+
+        // userdata.sender.split("<")[1] ? userdata.sender.split("<")[1].split(">")[0] : userdata.sender
+        userdata.sender = userdata.sender.split("<")[1] ? userdata.sender.split("<")[1].split(">")[0] : userdata.sender;
     const userRef = await db
       .collection("users")
       .doc(uid)

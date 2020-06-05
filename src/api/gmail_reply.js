@@ -135,7 +135,7 @@ import {
     let IDs = [];
     let user_schema = {};
     let user_list = JSON.parse(window.localStorage.getItem("topEmails"));
-    console.log("user list is ",user_list);
+    // console.log("user list is ",user_list);
     let my_list =[];
     for(let mail in user_list){
       my_list.push(user_list[mail]);
@@ -143,7 +143,7 @@ import {
     // user_list.forEach((id)=>{
     //     my_list.push(id);
     // });
-    console.log("my list is ", my_list);
+    // console.log("my list is ", my_list);
     let email = await get_profile();
     let username = await get_username(email);
     let query = (await (query_para(my_list))).toString();
