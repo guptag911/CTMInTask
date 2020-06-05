@@ -106,7 +106,7 @@ export default function ScrollableTabsButtonAuto() {
   };
 
   const handleState = (e) => {
-    console.log("bjdvbdbn jbdfvkdbf");
+    e.preventDefault();
     if (!window.localStorage.getItem("token")) {
       alert(
         'Connect to confluence and then Click the "Identify Yourself" button to identify yourself'
@@ -138,6 +138,7 @@ export default function ScrollableTabsButtonAuto() {
       Jira: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
+
     const res = await hubAuth();
     window.location.href = res;
   };
@@ -219,7 +220,7 @@ export default function ScrollableTabsButtonAuto() {
             {...a11yProps(7)}
             className={classes.bold}
             onClick={handleState}
-          />
+          />                    
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -274,7 +275,7 @@ export default function ScrollableTabsButtonAuto() {
             className={classes.center}
             onClick={handleReq}
           >
-            Connect to Confluence
+            Connect to Confluence          
           </Button>
         ) : (
           <CardView product="Confluence" data="confluence"></CardView>
