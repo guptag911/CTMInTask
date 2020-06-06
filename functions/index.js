@@ -93,7 +93,7 @@ app.post("/code", async (req, res) => {
   const options = {
     method: "POST",
     uri: "https://api.hubapi.com/oauth/v1/token",
-    body: config,
+    form: config,
     json: true,
   };
 
