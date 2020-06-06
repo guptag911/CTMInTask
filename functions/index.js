@@ -103,7 +103,7 @@ app.post("/code", async (req, res) => {
   console.log("response data is ", tokens);
 
   // const tokens = JSON.parse(responseBody);
-  console.log("token is ", token);
+  // console.log("token is ", token);
   refreshTokenStore[req.sessionID] = tokens.refresh_token;
   accessTokenCache.set(
     req.sessionID,
