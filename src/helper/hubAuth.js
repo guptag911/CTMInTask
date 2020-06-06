@@ -9,10 +9,12 @@ export async function hubAuth() {
 }
 
 export async function getHubToken() {
+  const proxyurl = "https://cors-anywhere.herokuapp.com/";
+  console.log("---------------------------------------------------------------------------")
   const params = new URLSearchParams(window.location.search);
   const authCode = params.get("code");
   console.log( "auth code is --------------------------------------------------------------------",authCode);
-  const result = await axios.post(
+  const result = await axios.post(proxyurl+
     "https://us-central1-ctmintask.cloudfunctions.net/api/code",
     {
       authCode: `${authCode}`,
