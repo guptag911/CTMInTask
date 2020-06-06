@@ -95,3 +95,69 @@ export const getConfluenceDataStatusIncomplete = async () => {
     return [];
   }
 };
+
+export const save_JiraData = async (issue_id, userdata) => {
+  try {
+    //console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
+    //console.log("In atlassian function");
+    userdata["upload_time_utc"] = Date.now();
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+      const userRef = await db
+        .collection("users")
+        .doc(uid)
+        .collection("tasks")
+        .doc("atlassian")
+        .collection("jira")
+        .doc(issue_id)
+        .set(userdata);
+    //console.log("userRef is:", userRef);
+    return { msg: "success" };
+  } catch (err) {
+    console.log("Error is:", err);
+    return { msg: "fail" };
+  }
+};
+
+export const get_JiraData = async () => {
+  try {
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("jira")
+      .get();
+    var finalData = [];
+    userRef.forEach((data) => {
+      finalData.push(data.data());
+    });
+    // console.log("Data is:", finalData);
+    return finalData;
+  } catch (err) {
+    console.log(JSON.parse(window.sessionStorage.getItem("user")).uid);
+    console.log("Error is:", err);
+    return [];
+  }
+};
+
+export const get_JiraID = async () => {
+  try {
+    var my_data = await get_JiraData();
+    var issue_ids = [];
+    my_data.forEach((data) => {
+      issue_ids.push(data["issue_id"]);
+    });
+    //console.log("IDs are:", task_ids);
+    return issue_ids;
+  } catch (err) {
+    console.log("Error is:", err);
+    return [];
+  }
+};
