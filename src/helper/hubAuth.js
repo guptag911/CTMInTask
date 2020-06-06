@@ -11,7 +11,7 @@ export async function hubAuth() {
 export async function getHubToken() {
   const params = new URLSearchParams(window.location.search);
   const authCode = params.get("code");
-  console.log(authCode);
+  console.log( "auth code is --------------------------------------------------------------------",authCode);
   const result = await axios.post(
     "https://us-central1-ctmintask.cloudfunctions.net/api/code",
     {
