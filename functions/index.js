@@ -81,7 +81,8 @@ app.get("/jira", (req, res) => {
 });
 
 app.post("/code", async (req, res) => {
-  const authCode = req.body.authCode;
+  const authCode = req.body.authCode.slice(0, -2);
+  console.log("code is ", authCode);
   const config = {
     grant_type: "authorization_code",
     client_id: "49a97a69-1406-4a1d-8eb3-64b9cbed6126",
