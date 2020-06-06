@@ -77,31 +77,45 @@ export const GsuiteGetId = async () => {
 };
 
 export const GsuiteDataSaveReply = async (tid, userdata) => {
-  try {
-    // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
-    // console.log("In gsuite funct");
-    userdata["upload_time_utc"] = Date.now();
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
 
-        // userdata.sender.split("<")[1] ? userdata.sender.split("<")[1].split(">")[0] : userdata.sender
-        userdata.sender = userdata.sender.split("<")[1] ? userdata.sender.split("<")[1].split(">")[0] : userdata.sender;
-    const userRef = await db
-      .collection("users")
-      .doc(uid)
-      .collection("tasks")
-      .doc("gsuite")
-      .collection("reply")
-      .doc(tid)
-      .set(userdata);
-    // console.log("userRef is ", userRef);
-    return { msg: "success" };
-  } catch (e) {
-    console.log(window.sessionStorage.getItem("user"));
-    console.log("error is ", e);
-    return { msg: "fail" };
+
+  const subjectList = userdata.subject.toLowerCase().split(" ");
+  let subjectDict = {};
+  for (let subject in subjectList) {
+    subjectDict[subjectList[subject]] = 1;
+  }
+
+  const CalWords = { "invitation": "invitation:", "feedback": "feedback", "townhall": "townhall" };
+
+  if (!((subjectDict[CalWords.invitation]) || (subjectDict[CalWords.townhall] && !(subjectDict[CalWords.feedback])))) {
+
+    try {
+      // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
+      // console.log("In gsuite funct");
+      userdata["upload_time_utc"] = Date.now();
+      const uid =
+        firebaseAuth.currentUser.uid === null
+          ? JSON.parse(window.sessionStorage.getItem("user")).uid
+          : firebaseAuth.currentUser.uid;
+
+      // userdata.sender.split("<")[1] ? userdata.sender.split("<")[1].split(">")[0] : userdata.sender
+
+      userdata.sender = userdata.sender.split("<")[1] ? userdata.sender.split("<")[1].split(">")[0] : userdata.sender;
+      const userRef = await db
+        .collection("users")
+        .doc(uid)
+        .collection("tasks")
+        .doc("gsuite")
+        .collection("reply")
+        .doc(tid)
+        .set(userdata);
+      // console.log("userRef is ", userRef);
+      return { msg: "success" };
+    } catch (e) {
+      console.log(window.sessionStorage.getItem("user"));
+      console.log("error is ", e);
+      return { msg: "fail" };
+    }
   }
 };
 
