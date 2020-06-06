@@ -98,9 +98,9 @@ app.post("/code", async (req, res) => {
     json: true,
   };
 
-  const token = await request(options);
+  const tokens = await request(options);
 
-  console.log("response data is ", token);
+  console.log("response data is ", tokens);
 
   // const tokens = JSON.parse(responseBody);
   console.log("token is ", token);
