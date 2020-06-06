@@ -132,60 +132,283 @@ exports.onUserDelete = functions.auth.user().onDelete((user) => {
 
 // ChatBot code
 
-const arr = [];
-
 // eslint-disable-next-line promise/catch-or-return
-db.collection("users")
-  .get()
-  .then((res) => {
-    res.docs.forEach((ele) => {
-      const newObj = {};
-      newObj.uid = ele.data().uid;
-      newObj.email = ele.data().email;
-      arr.push(newObj);
-    });
-  });
 
-exports.helloHangoutsChat = functions.https.onRequest((req, res) => {
+const UIDData = async () => {
+
+  let arr = {}
+  try {
+    let data = await db.collection("users").get();
+    data.docs.forEach((ele) => {
+      arr[ele.data().email] = ele.data().uid;
+    });
+    return arr;
+  }
+  catch (e) {
+    return arr;
+  }
+}
+
+exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
+
+  // let arr = await UIDData();
+  // let data =await getDocTasks(arr['raybittu242@gmail.com']);
+  // res.send(data);
+
   if (req.method === "GET" || !req.body.message) {
     res.send(
       "Hello! This function is meant to be used in a Hangouts Chat " + "Room."
     );
   }
-  console.log(arr);
 
-  const sender = req.body.message.sender.displayName;
-  const image = req.body.message.sender.avatarUrl;
+  try {
+    let arr = await UIDData();
+    // console.log("arr is ", arr);
+    // let data =await getDocTasks(arr['raybittu242@gmail.com']);
+    // console.log("data is ", data);
+    // console.log("arr is ", arr);
+    // console.log("body is ", req.body);
 
-  const data = createMessage(sender, image);
+    const sender = req.body.message.sender.displayName;
+    const image = req.body.message.sender.avatarUrl;
+    const email = req.body.message.sender.email
+    const textList = req.body.message.text.toLowerCase().split(" ");
 
-  res.send(data);
+    const showTasktext = { "show": 1, "task": 1, "tasks": 1 };
+    showtaskcount = 0;
+    for (let text in textList) {
+      if (showTasktext[textList[text]]) {
+        showtaskcount += 1;
+      }
+    }
+
+    if (showtaskcount >= Object.keys(showTasktext).length - 1) {
+      const data = await createMessage(sender, image, email, arr[email]);
+
+      res.send(data);
+    }
+
+    const showEventText = { "show": 1, "calendar": 1, "event": 1, "events": 1 }
+    showeventcount = 0;
+    for (let text in textList) {
+      if (showEventText[textList[text]]) {
+        showeventcount += 1;
+      }
+    }
+
+    if (showeventcount >= Object.keys(showEventText).length - 2) {
+      const data = await getDocTasks(arr[email]);
+
+      res.send({
+        "cards": [
+          {
+            "header": {
+              "title": sender,
+              "subtitle": email,
+              "imageUrl": image,
+              "imageStyle": "AVATAR"
+            },
+            "sections": data
+          }
+        ]
+      }
+      );
+    }
+
+    else {
+      res.send({
+        "cards": [
+          {
+            "header": {
+              "title": sender,
+              "subtitle": email,
+              "imageUrl": image,
+              "imageStyle": "AVATAR"
+            },
+            "sections": [
+              {
+                "widgets": [
+                  {
+                    "textParagraph": {
+                      "text": "Hello, <b>" + sender + "</b>."
+                    }
+                  }
+                ]
+
+              },
+              {
+                "widgets": [
+                  {
+                    "textParagraph": {
+                      "text": "To see Tasklists, type <font color=\"#ff0000\"><b>show tasks</b></font> <br /> or To see your calender Events, type <font color=\"#ff0000\"><b>show events</b></font>"
+                    }
+                  }
+                ]
+
+              }
+            ]
+          }
+        ]
+      }
+      );
+    }
+
+
+    // const data = await createMessage(sender, image, email, arr[email]);
+
+  } catch (e) {
+    console.log("in err", e);
+    res.send({
+      "text": "Something went wrong"
+    }
+    );
+  }
 });
 
-function createMessage(displayName, imageURL) {
-  const cardHeader = {
-    title: "Hello " + displayName + "!",
-  };
+const createMessage = async (displayName, imageURL, email, uid) => {
 
-  const avatarWidget = {
-    textParagraph: { text: "Your avatar picture: " },
-  };
+  console.log("arr email ", uid, email);
 
-  const avatarImageWidget = {
-    image: { imageUrl: imageURL },
-  };
 
-  const avatarSection = {
-    widgets: [avatarWidget, avatarImageWidget],
-  };
+  try {
+    let taskData = []
+    let data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
+    data.docs.forEach((element) => {
+      if (!(element.data().status === "completed" && element.data().taskid === null)) {
+        console.log("docs data ", element.data());
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().sender.split("<")[0],
+                "content": element.data().task_desc,
+                "contentMultiline": "true",
+                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "Visit Document",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
 
-  return {
-    cards: [
+            }
+          ]
+        }
+        taskData.push(widgets);
+      }
+    })
+
+    const notData = [
       {
-        name: "Avatar Card",
-        header: cardHeader,
-        sections: [avatarSection],
-      },
-    ],
-  };
+        "widgets": [
+          {
+            "textParagraph": {
+              "text": "<font color=\"#ff0000\">You do not have any task left.</font>"
+            }
+          }
+        ]
+
+      }
+    ]
+
+    return {
+      "cards": [
+        {
+          "header": {
+            "title": displayName,
+            "subtitle": email,
+            "imageUrl": imageURL,
+            "imageStyle": "AVATAR"
+          },
+          "sections": taskData.length === 0 ? notData : taskData
+        }
+      ]
+    }
+  } catch (e) {
+    console.log("err is ", e);
+    return {
+      "cards": [
+        {
+          "header": {
+            "title": displayName,
+            "subtitle": email,
+            "imageUrl": imageURL,
+            "imageStyle": "AVATAR"
+          },
+          "sections": [
+            {
+              "widgets": [
+                {
+                  "textParagraph": {
+                    "text": "<font color=\"#ff0000\">You Register first</font>"
+                  }
+                }
+              ]
+
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+
+
+
+
+const getDocTasks = async (uid) => {
+  let EventData = []
+  console.log("uid is ", uid);
+  try {
+    let data = await db.collection('users').doc(uid).collection('calender').get();
+    // console.log(data.docs);
+    data.docs.forEach((element) => {
+      console.log("docs data ", element.data());
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().creator,
+              "content": element.data().summary,
+              "contentMultiline": "true",
+              "bottomLabel": new Date(element.data().start_time).toString(),
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Visit Event",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().htmlLink
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      EventData.push(widgets);
+    });
+    return EventData;
+  }
+  catch (e) {
+    console.log("in error ", e);
+    return EventData;
+  }
+
 }
