@@ -47,7 +47,10 @@ const suggestions = [
   { name: "British Indian Ocean Territory" },
   { name: "Brunei Darussalam" },
   {name: "shubham.kamra@innovaccer.com"},
-  {name: "mrinalini.mittal@innovaccer.com"}
+  {name: "mrinalini.mittal@innovaccer.com"},
+  {name: "ankit.maheshwari@innovaccer.com"},
+  {name: "ambuj.singh@innovaccer.com"},
+  {name: "satyajit.menon@innovaccer.com"}
 ];
 
 function renderInput(inputProps) {
