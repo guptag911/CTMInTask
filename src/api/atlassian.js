@@ -9,7 +9,6 @@ export const save_confluenceData = async (task_id, userdata) => {
       firebaseAuth.currentUser.uid === null
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
-    if (userdata.status === "incomplete") {
       const userRef = await db
         .collection("users")
         .doc(uid)
@@ -18,10 +17,7 @@ export const save_confluenceData = async (task_id, userdata) => {
         .collection("confluence")
         .doc(task_id)
         .set(userdata);
-    } else {
-      console.log("its a completed task");
-    }
-
+    
     // console.log("userRef is:", userRef);
     return { msg: "success" };
   } catch (err) {
