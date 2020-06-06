@@ -10,12 +10,17 @@ export async function hubAuth() {
 
 export async function getHubToken() {
   const proxyurl = "https://cors-anywhere.herokuapp.com/";
-  console.log("---------------------------------------------------------------------------")
+  console.log(
+    "---------------------------------------------------------------------------"
+  );
   const params = new URLSearchParams(window.location.search);
   const authCode = params.get("code");
-  console.log( "auth code is --------------------------------------------------------------------",authCode);
-  const result = await axios.post(proxyurl+
-    "https://us-central1-ctmintask.cloudfunctions.net/api/code",
+  console.log(
+    "auth code is --------------------------------------------------------------------",
+    authCode
+  );
+  const result = await axios.post(
+    proxyurl + "https://us-central1-ctmintask.cloudfunctions.net/api/code",
     {
       authCode: `${authCode}`,
     },
@@ -26,11 +31,14 @@ export async function getHubToken() {
     }
   );
   let assignTime = new Date().getTime();
-  result.data.assignTime = assignTime;
-  localStorage.setItem("hub", JSON.stringify(result.data));
-  console.log(result);
 
-  return result.data.access_token;
+  let hub = {
+    access_token: result.data,
+    assignTime,
+  };
+  localStorage.setItem("hub", JSON.stringify(hub));
+
+  return result.data;
 }
 
 export async function getRequestUrl(apiPath) {

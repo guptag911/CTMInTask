@@ -84,9 +84,6 @@ export default function ScrollableTabsButtonAuto() {
     JSON.parse(localStorage.getItem("jira"))
   );
 
-  const [hub, setHub] = React.useState(false);
-  const [conf, setConf] = React.useState(false);
-  const [Jira, setJira] = React.useState(false);
   const [clickState, setclickState] = React.useState(
     JSON.parse(localStorage.getItem("state")) || {
       hub: false,
@@ -142,6 +139,7 @@ export default function ScrollableTabsButtonAuto() {
     localStorage.setItem("state", JSON.stringify(state));
 
     const res = await hubAuth();
+    console.log(res);
     window.location.href = res;
   };
 
@@ -171,10 +169,7 @@ export default function ScrollableTabsButtonAuto() {
   }, [window.onload]);
 
   const handleAuth = async () => {
-    if (
-      authState &&
-      !window.localStorage.getItem("user")
-    ) {
+    if (authState && !window.localStorage.getItem("user")) {
       await getUserToken();
     } else {
       await getToken();
