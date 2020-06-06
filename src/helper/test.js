@@ -1,4 +1,5 @@
 import axios from "axios";
+import qs from "qs";
 
 export const hubAuthURL =
   "https://app.hubspot.com/oauth/authorize?client_id=49a97a69-1406-4a1d-8eb3-64b9cbed6126&scope=contacts%20sales-email-read&redirect_uri=http://localhost:3000/";
@@ -15,7 +16,7 @@ export const hubAuthURL =
         code:authCode
       };
 
-    const result =await axios.post("https://api.hubapi.com/oauth/v1/token", {form:config});
+    const result =await axios.post(proxyurl+"https://api.hubapi.com/oauth/v1/token", qs.stringify(config));
     console.log("response is ", result);
 
   }

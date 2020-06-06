@@ -4,6 +4,7 @@ import { signout, signIn } from "../helper/auth";
 import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
 import { DataSave } from "../api/datagetting_pythonScript";
+import {TestAuth} from "../helper/test";
 
 const style = {
   width: "100px",
@@ -35,6 +36,10 @@ const Home = () => {
       return null;
     }
   });
+
+  useEffect(()=>{
+    TestAuth();
+  }, [])
 
   return (
     <div className="center">
