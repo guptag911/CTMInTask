@@ -34,7 +34,7 @@ export async function getToken() {
         client_secret:
           "wXIyWcPzxQCtgOzZrLSZBmUPPx-fqovQRqjiVAqDSTKpkelS9cpMxBMQMTvdMcp5",
         code: `${authCode}`,
-        redirect_uri: "https://ctmintask.web.app/#/dash",
+        redirect_uri: "http://localhost:3000/#/dash",
       },
       {
         headers: {

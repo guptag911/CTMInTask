@@ -13,7 +13,7 @@ export async function getJiraToken() {
   if (result && (new Date().getTime() - result.assignTime) / 1000 > 3600) {
     const newToken = await refreshJiraAccessToken(result.refresh_token);
     newToken["refresh_token"] = result.refresh_token;
-    let assignTime = new Date().getTime();                                   
+    let assignTime = new Date().getTime();
     newToken["assignTime"] = assignTime;
     localStorage.setItem("jira", JSON.stringify(newToken));
     return newToken.access_token;
@@ -34,7 +34,7 @@ export async function getJiraToken() {
         client_secret:
           "wXIyWcPzxQCtgOzZrLSZBmUPPx-fqovQRqjiVAqDSTKpkelS9cpMxBMQMTvdMcp5",
         code: `${authCode}`,
-        redirect_uri: "https://ctmintask.web.app/#/dash",
+        redirect_uri: "http://localhost:3000/#/dash",
       },
       {
         headers: {
