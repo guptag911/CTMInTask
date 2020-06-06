@@ -70,5 +70,5 @@ export async function refreshHubToken(refresh_token) {
 }
 
 export async function getRequestUrl(apiPath) {
-  return `https://api.atlassian.com/${apiPath}`;
+  return `https://api.hubapi.com/${apiPath}`;
 }
