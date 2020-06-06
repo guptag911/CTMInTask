@@ -16,7 +16,6 @@ import { hubAuth, getHubToken } from "../helper/hubAuth";
 import { ReactAutosuggestExample, EmailData } from "./reactAutoSuggest";
 import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 import ConfluenceCard from "./confluenceCard";
-import {hubAuthURL} from "../helper/test";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -154,10 +153,6 @@ export default function ScrollableTabsButtonAuto() {
     window.location.href = res;
   };
 
-  const handleTest = () =>{
-    window.location.href = hubAuthURL;
-  }
-
   React.useEffect(() => {
     if (clickState.hub) {
       handleHubAuth();
@@ -226,13 +221,8 @@ export default function ScrollableTabsButtonAuto() {
             className={classes.bold}
             onClick={handleState}
           />
-          <Tab
-            label="TestHub"
-            {...a11yProps(8)}
-            className={classes.bold}
-          />
+          <Tab label="TestHub" {...a11yProps(8)} className={classes.bold} />
         </Tabs>
-        
       </AppBar>
       <TabPanel value={value} index={0}>
         <CardView product="gsuites" data="gdocs"></CardView>
@@ -292,7 +282,7 @@ export default function ScrollableTabsButtonAuto() {
           <ConfluenceCard></ConfluenceCard>
         )}
       </TabPanel>
-      <TabPanel value={value} index={8}>
+      {/* <TabPanel value={value} index={8}>
           <Button
             variant="contained"
             color="primary"
@@ -301,7 +291,7 @@ export default function ScrollableTabsButtonAuto() {
           >
             Connect to TestHub
           </Button>
-      </TabPanel>
+      </TabPanel> */}
     </div>
   );
 }
