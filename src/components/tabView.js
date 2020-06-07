@@ -16,6 +16,7 @@ import { hubAuth, getHubToken } from "../helper/hubAuth";
 import { ReactAutosuggestExample, EmailData } from "./reactAutoSuggest";
 import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 import ConfluenceCard from "./confluenceCard";
+import HubSpotCard from "./hubspotCard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -97,7 +98,8 @@ export default function ScrollableTabsButtonAuto() {
     Jira: false,
   };
 
-  // console.log(hub, conf, Jira);
+  if(firebaseAuth.currentUser)
+  console.log("firebase user is ", firebaseAuth.currentUser.email);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -251,7 +253,7 @@ export default function ScrollableTabsButtonAuto() {
             Connect to HubSpot
           </Button>
         ) : (
-          <CardView product="HubSpot" data="hubspot"></CardView>
+          <HubSpotCard></HubSpotCard>
         )}
       </TabPanel>
       <TabPanel value={value} index={6}>
