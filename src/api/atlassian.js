@@ -161,31 +161,3 @@ export const get_JiraID = async () => {
     return [];
   }
 };
-
-
-
-export const get_JiraDataStatusUndone = async () => {
-  try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
-    const userRef = await db
-      .collection("users")
-      .doc(uid)
-      .collection("tasks")
-      .doc("atlassian")
-      .collection("jira")
-      .get();
-    var finalData = [];
-    userRef.forEach((data) => {
-      finalData.push(data.data());
-    });
-    // console.log("Data is:", finalData);
-    return finalData;
-  } catch (err) {
-    console.log(JSON.parse(window.sessionStorage.getItem("user")).uid);
-    console.log("Error is:", err);
-    return [];
-  }
-};

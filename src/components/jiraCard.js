@@ -5,7 +5,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { get_JiraDataStatusUndone } from "../api/atlassian";
+import { get_JiraData } from "../api/atlassian";
 
 const useStyleLoader = makeStyles((theme) => ({
     root: {
@@ -50,7 +50,7 @@ export default function SimpleCard(props) {
     useEffect(() => {
         console.log("in effect");
         setLoader(true);
-        get_JiraDataStatusUndone().then((data) => {
+        get_JiraData().then((data) => {
             console.log("data is ", data);
             getData(data);
             setLoader(false);
