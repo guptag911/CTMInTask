@@ -223,7 +223,6 @@ export default function ScrollableTabsButtonAuto() {
             className={classes.bold}
             onClick={handleState}
           />
-          <Tab label="TestHub" {...a11yProps(8)} className={classes.bold} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -240,7 +239,6 @@ export default function ScrollableTabsButtonAuto() {
       </TabPanel>
       <TabPanel value={value} index={4}>
         <ReactAutosuggestExample />
-        {/* <EmailCard></EmailCard> */}
       </TabPanel>
       <TabPanel value={value} index={5}>
         {firebaseAuth.currentUser && !hubState ? (
@@ -284,16 +282,6 @@ export default function ScrollableTabsButtonAuto() {
           <ConfluenceCard></ConfluenceCard>
         )}
       </TabPanel>
-      {/* <TabPanel value={value} index={8}>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.center}
-            onClick={handleTest}
-          >
-            Connect to TestHub
-          </Button>
-      </TabPanel> */}
     </div>
   );
 }
