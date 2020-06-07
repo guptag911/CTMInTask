@@ -35,7 +35,7 @@ export async function getHubToken() {
         client_id: "49a97a69-1406-4a1d-8eb3-64b9cbed6126",
         client_secret: "0840ac22-bc6d-49dc-90f0-06b472924e17",
         code: authCode,
-        redirect_uri: "http://localhost:3000/",
+        redirect_uri: "https://ctmintask.web.app/",
       })
     );
     let assignTime = new Date().getTime();
@@ -56,7 +56,7 @@ export async function refreshHubToken(refresh_token) {
       client_id: "49a97a69-1406-4a1d-8eb3-64b9cbed6126",
       client_secret: "0840ac22-bc6d-49dc-90f0-06b472924e17",
       refresh_token: `${refresh_token}`,
-      redirect_uri: "http://localhost:3000/",
+      redirect_uri: "https://ctmintask.web.app/",
     })
   );
 
