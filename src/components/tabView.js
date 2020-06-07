@@ -16,6 +16,7 @@ import { hubAuth, getHubToken } from "../helper/hubAuth";
 import { ReactAutosuggestExample, EmailData } from "./reactAutoSuggest";
 import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 import ConfluenceCard from "./confluenceCard";
+import HubSpotCard from "./hubspotCard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -83,9 +84,6 @@ export default function ScrollableTabsButtonAuto() {
     JSON.parse(localStorage.getItem("jira"))
   );
 
-  const [hub, setHub] = React.useState(false);
-  const [conf, setConf] = React.useState(false);
-  const [Jira, setJira] = React.useState(false);
   const [clickState, setclickState] = React.useState(
     JSON.parse(localStorage.getItem("state")) || {
       hub: false,
@@ -100,7 +98,8 @@ export default function ScrollableTabsButtonAuto() {
     Jira: false,
   };
 
-  // console.log(hub, conf, Jira);
+  if(firebaseAuth.currentUser)
+  console.log("firebase user is ", firebaseAuth.currentUser.email);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -141,6 +140,7 @@ export default function ScrollableTabsButtonAuto() {
     localStorage.setItem("state", JSON.stringify(state));
 
     const res = await hubAuth();
+    console.log(res);
     window.location.href = res;
   };
 
@@ -166,10 +166,7 @@ export default function ScrollableTabsButtonAuto() {
   }, [window.onload]);
 
   const handleAuth = async () => {
-    if (
-      authState &&
-      !window.localStorage.getItem("user")
-    ) {
+    if (authState && !window.localStorage.getItem("user")) {
       await getUserToken();
     } else {
       await getToken();
@@ -207,6 +204,7 @@ export default function ScrollableTabsButtonAuto() {
             {...a11yProps(2)}
             className={classes.bold}
           />
+
           <Tab
             label="Calendar Events"
             {...a11yProps(3)}
@@ -225,6 +223,7 @@ export default function ScrollableTabsButtonAuto() {
             className={classes.bold}
             onClick={handleState}
           />
+          <Tab label="TestHub" {...a11yProps(8)} className={classes.bold} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -254,7 +253,7 @@ export default function ScrollableTabsButtonAuto() {
             Connect to HubSpot
           </Button>
         ) : (
-          <CardView product="HubSpot" data="hubspot"></CardView>
+          <HubSpotCard></HubSpotCard>
         )}
       </TabPanel>
       <TabPanel value={value} index={6}>
@@ -285,6 +284,16 @@ export default function ScrollableTabsButtonAuto() {
           <ConfluenceCard></ConfluenceCard>
         )}
       </TabPanel>
+      {/* <TabPanel value={value} index={8}>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.center}
+            onClick={handleTest}
+          >
+            Connect to TestHub
+          </Button>
+      </TabPanel> */}
     </div>
   );
 }
