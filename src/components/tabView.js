@@ -17,6 +17,7 @@ import { ReactAutosuggestExample, EmailData } from "./reactAutoSuggest";
 import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 import ConfluenceCard from "./confluenceCard";
 import HubSpotCard from "./hubspotCard";
+import JiraCard from "./jiraCard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -98,8 +99,8 @@ export default function ScrollableTabsButtonAuto() {
     Jira: false,
   };
 
-  if(firebaseAuth.currentUser)
-  console.log("firebase user is ", firebaseAuth.currentUser.email);
+  // if(firebaseAuth.currentUser)
+  // console.log("firebase user is ", firebaseAuth.currentUser.email);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -265,7 +266,7 @@ export default function ScrollableTabsButtonAuto() {
             Connect to Jira
           </Button>
         ) : (
-          <CardView product="Jira" data="jira"></CardView>
+          <JiraCard></JiraCard>
         )}
       </TabPanel>
       <TabPanel value={value} index={7}>
