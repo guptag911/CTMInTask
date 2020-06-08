@@ -6,7 +6,9 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { message_list } from "../api/gmail_reply";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { GsuiteDataGetReplyFalse } from "../api/gsuiteApi";
+import { GsuiteDataGetReplyFalse, GmailReplyUpdateData } from "../api/gsuiteApi";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -42,20 +44,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let topEmails ={};
+let topEmails = {};
 
 export default function SimpleCard(props) {
   const classes = useStyles();
   const [data, getData] = useState(null);
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
+  let [markDone, setMark] = useState(1);
+
 
   useEffect(() => {
     // console.log("in useEffect ------------------------------------------------------------------------");
     let userdata = JSON.parse(window.localStorage.getItem("topEmails"));
-    topEmails={};
-    for(let data in userdata){
-      topEmails[userdata[data]]=1;
+    topEmails = {};
+    for (let data in userdata) {
+      topEmails[userdata[data]] = 1;
     }
     // console.log("topEmails is ", topEmails);
     setLoader(true);
@@ -73,14 +77,31 @@ export default function SimpleCard(props) {
 
     })();
 
-  }, [props.signal])
+  }, [props.signal, markDone])
+
+
+  const handleChange = async (id, element) => {
+    setLoader(true);
+    element.replied = true;
+    try {
+      const result = await GmailReplyUpdateData(id, element);
+      setMark(markDone + 1);
+    } catch (e) {
+      console.log("error is ", e);
+      setMark(markDone + 1);
+    }
+
+
+  }
+
+
 
 
   return (
     <div>
       {data && !Loader ? (
         data.map((element) => {
-          return topEmails[element.sender] ? (<Card key={element.mid} className={classes.root}>
+          return topEmails[element.sender] ? (<Card key={element.thread_id} className={classes.root}>
             <CardContent>
               <Typography
                 className={classes.title}
@@ -88,12 +109,25 @@ export default function SimpleCard(props) {
                 gutterBottom
               >
                 Mailed by -- {element.sender}
-                </Typography>
+              </Typography>
               <Typography variant="h7" component="h7">
                 {element.subject}
               </Typography>
 
               <br />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={element.replied}
+                    color="primary"
+                    onChange={(e) => {
+                      // setChecked(e.target.checked);
+                      handleChange(element.thread_id, element);
+                    }}
+                  />
+                }
+                label="Mark as Done"
+              />
             </CardContent>
             <CardActions>
               <a
@@ -110,7 +144,7 @@ export default function SimpleCard(props) {
                 </a>
             </CardActions>
           </Card>
-          ):null
+          ) : null
         })
       ) : (
           <div className={classesLoader.root}>
