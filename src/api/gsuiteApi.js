@@ -194,6 +194,7 @@ export const GmailReplyUpdateData = async (tid, userdata) => {
       firebaseAuth.currentUser.uid === null
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
+        console.log("data ----- ", userdata);
     const userRef = await db
       .collection("users")
       .doc(uid)

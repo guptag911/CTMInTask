@@ -77,7 +77,7 @@ export default function SimpleCard(props) {
 
     })();
 
-  }, [props.signal, markDone])
+  }, [props.signal])
 
 
   const handleChange = async (id, element) => {
@@ -86,6 +86,15 @@ export default function SimpleCard(props) {
     try {
       const result = await GmailReplyUpdateData(id, element);
       setMark(markDone + 1);
+      GsuiteDataGetReplyFalse().then((data) => {
+        // console.log("data is ", data);
+        getData(data);
+        setLoader(false);
+      }).catch((e) => {
+        console.log("error is ", e);
+        getData(data);
+        setLoader(false);
+      })
     } catch (e) {
       console.log("error is ", e);
       setMark(markDone + 1);
