@@ -101,6 +101,13 @@ const NavigationBar = () => {
   };
 
   const handleUserAuth = async (e) => {
+    let state = {
+      hub: false,
+      conf: false,
+      Jira: false,
+      user: true,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
     const res = await user();
     window.location.href = res;
   };

@@ -61,6 +61,7 @@ async function task(account_id) {
   }
 }
 
+
 async function user() {
   try {
     const apiPath = "https://api.atlassian.com/me";

@@ -13,7 +13,7 @@ export const save_confluenceData = async (task_id, userdata) => {
         .collection("users")
         .doc(uid)
         .collection("tasks")
-        .doc("atlassian")
+        .doc("atlassian")                               
         .collection("confluence")
         .doc(task_id)
         .set(userdata);

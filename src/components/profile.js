@@ -81,7 +81,7 @@ const Profile = (props) => {
   const handleLogOut = async () => {
     await signout();
     window.sessionStorage.clear();
-    window.localStorage.clear();
+    // window.localStorage.clear();
   };
 
   return (
