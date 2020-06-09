@@ -203,7 +203,7 @@ export const message_list = async () => {
             .get();
 
           var my_data = useref.data();
-          my_data["replied"] = user_schema["replied"];
+          my_data["replied"] = my_data["replied"] || user_schema["replied"];
           var mod_data = await insert_task(my_data["thread_id"], my_data);
           var Gdata = await GsuiteDataSaveReply(thread_ID, mod_data);
         } catch (e) {
