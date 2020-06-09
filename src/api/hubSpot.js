@@ -13,6 +13,7 @@ export const GetContactId = async () => {
         `https://api.hubapi.com/contacts/v1/search/query?q=${firebaseAuth.currentUser.email}`,
       { headers: { Authorization: `Bearer ${HubToken}` } }
     );
+    
     // console.log("contact is ", result);
 
     return result.data.total
