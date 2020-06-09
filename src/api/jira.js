@@ -58,27 +58,6 @@ async function user() {
   }
 }
 
-// async function subtasks_data(subtasks_list) {
-//   let subtasks = []; //list of subtasks
-//   try {
-//     subtasks_list.forEach(async (element) => {
-//       let sub_schema = {}; //schema of subtasks
-//       sub_schema["subtask_id"] = element.id;
-//       let fields_list = element.fields;
-//       sub_schema["subtask_name"] = fields_list.summary;
-//       //sub_schema['due_date'] = fields_list.duedate;
-//       sub_schema["status"] = fields_list.status.name;
-//       sub_schema["priority"] = fields_list.priority.name;
-//       //sub_schema['assigned_by'] = fields_list.creator.displayName;
-//       console.log(sub_schema);
-//       subtasks.push(sub_schema);
-//     });
-//     return subtasks;
-//   } catch (err) {
-//     console.log("Error is:", err);
-//   }
-// }
-
 async function issues_data() {
   let user_schema = {};
   try {
@@ -91,10 +70,9 @@ async function issues_data() {
           let issue_ID = element.id;
           let fields_list = element.fields;
           let status = fields_list.resolution;
-          if(status == null)
-            status = "incomplete";
-          else
-            status = "complete";
+          let issue_key = element.key;
+          if (status == null) status = "incomplete";
+          else status = "complete";
           //fetching issue ids from firestore
           let db_ids = await get_JiraID();
           if (db_ids.includes(issue_ID)) {
@@ -125,19 +103,14 @@ async function issues_data() {
             user_schema["project_name"] = fields_list.project.name;
             user_schema["project_type"] = fields_list.project.projectTypeKey;
             let project_key = fields_list.project.key;
-            let url = "https://innovaccer.atlassian.net/browse/" + project_key;
+            let url = `https://innovaccer.atlassian.net/jira/${user_schema.project_type}/projects/${project_key}/issues/${issue_key}`;
             user_schema["url"] = url;
             user_schema["issue_name"] = fields_list.summary;
             user_schema["due_date"] = fields_list.duedate;
             user_schema["status"] = status;
             user_schema["priority"] = fields_list.priority.name;
             user_schema["issue_type"] = fields_list.issuetype.name;
-            // let subtasks_list = fields_list.subtasks;
-            // if (subtasks_list !== null) {
-            //   user_schema["subtasks"] = await subtasks_data(subtasks_list);
-            // } else {
-            //   user_schema["subtasks"] = null;
-            // }
+
             console.log(user_schema);
             //saving the data
             let db_data = await save_JiraData(

@@ -9,15 +9,15 @@ export const save_confluenceData = async (task_id, userdata) => {
       firebaseAuth.currentUser.uid === null
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
-      const userRef = await db
-        .collection("users")
-        .doc(uid)
-        .collection("tasks")
-        .doc("atlassian")                               
-        .collection("confluence")
-        .doc(task_id)
-        .set(userdata);
-    
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("confluence")
+      .doc(task_id)
+      .set(userdata);
+
     // console.log("userRef is:", userRef);
     return { msg: "success" };
   } catch (err) {
@@ -67,8 +67,6 @@ export const get_confluenceID = async () => {
   }
 };
 
-
-
 export const getConfluenceDataStatusIncomplete = async () => {
   try {
     const uid =
@@ -81,7 +79,7 @@ export const getConfluenceDataStatusIncomplete = async () => {
       .collection("tasks")
       .doc("atlassian")
       .collection("confluence")
-      .where("status","==","incomplete")
+      .where("status", "==", "incomplete")
       .get();
     var finalData = [];
     userRef.forEach((data) => {
@@ -105,14 +103,14 @@ export const save_JiraData = async (issue_id, userdata) => {
       firebaseAuth.currentUser.uid === null
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
-      const userRef = await db
-        .collection("users")
-        .doc(uid)
-        .collection("tasks")
-        .doc("atlassian")
-        .collection("jira")
-        .doc(issue_id)
-        .set(userdata);
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("jira")
+      .doc(issue_id)
+      .set(userdata);
     //console.log("userRef is:", userRef);
     return { msg: "success" };
   } catch (err) {
@@ -157,6 +155,34 @@ export const get_JiraID = async () => {
     //console.log("IDs are:", task_ids);
     return issue_ids;
   } catch (err) {
+    console.log("Error is:", err);
+    return [];
+  }
+};
+
+
+export const getJiraDataStatusIncomplete = async () => {
+  try {
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("jira")
+      .where("status", "==", "incomplete")
+      .get();
+    let finalData = [];
+    userRef.forEach((data) => {
+      finalData.push(data.data());
+    });
+    console.log("Data is:", finalData);
+    return finalData;
+  } catch (err) {
+    console.log(JSON.parse(window.sessionStorage.getItem("user")).uid);
     console.log("Error is:", err);
     return [];
   }
