@@ -184,3 +184,30 @@ export const GsuiteDataGetReplyFalse = async () => {
     return [];
   }
 };
+
+
+
+export const GmailReplyUpdateData = async (tid, userdata) => {
+  try {
+    userdata["upload_time_utc"] = Date.now();
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+        console.log("data ----- ", userdata);
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("gsuite")
+      .collection("reply")
+      .doc(tid)
+      .set(userdata);
+    // console.log("userRef is ", userRef);
+    return { msg: "success" };
+  } catch (e) {
+    console.log(window.sessionStorage.getItem("user"));
+    console.log("error is ", e);
+    return { msg: "fail" };
+  }
+};

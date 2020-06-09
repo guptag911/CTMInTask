@@ -9,6 +9,20 @@ import {
 } from "../config/config";
 import { get_JiraID, get_JiraData, save_JiraData } from "./atlassian";
 
+/*
+user_schema = {
+  issue_id:
+  project_name: 
+  project_type: software or business
+  url: url of the project
+  issue_name:
+  status: complete or incomplete
+  due_date: null if not given
+  priority: low, high, medium etc
+  issue_type: bug, task etc  
+}
+*/
+
 async function issues(account_ID) {
   try {
     const apiPath = "rest/api/3/search?jql=assignee=" + account_ID;
@@ -76,7 +90,11 @@ async function issues_data() {
       ? issues_list.forEach(async (element) => {
           let issue_ID = element.id;
           let fields_list = element.fields;
-          let status = fields_list.status.name;
+          let status = fields_list.resolution;
+          if(status == null)
+            status = "incomplete";
+          else
+            status = "complete";
           //fetching issue ids from firestore
           let db_ids = await get_JiraID();
           if (db_ids.includes(issue_ID)) {
@@ -105,6 +123,7 @@ async function issues_data() {
           } else {
             user_schema["issue_id"] = issue_ID;
             user_schema["project_name"] = fields_list.project.name;
+            user_schema["project_type"] = fields_list.project.projectTypeKey;
             let project_key = fields_list.project.key;
             let url = "https://innovaccer.atlassian.net/browse/" + project_key;
             user_schema["url"] = url;
@@ -112,6 +131,7 @@ async function issues_data() {
             user_schema["due_date"] = fields_list.duedate;
             user_schema["status"] = status;
             user_schema["priority"] = fields_list.priority.name;
+            user_schema["issue_type"] = fields_list.issuetype.name;
             // let subtasks_list = fields_list.subtasks;
             // if (subtasks_list !== null) {
             //   user_schema["subtasks"] = await subtasks_data(subtasks_list);
