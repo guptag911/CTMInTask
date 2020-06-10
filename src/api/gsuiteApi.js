@@ -63,9 +63,9 @@ export const GsuiteDataGet = async () => {
 
 export const GsuiteGetId = async () => {
   try {
-    var my_data = GsuiteDataGet();
+    var my_data =await GsuiteDataGet();
     var ids = [];
-    (await my_data).forEach((data) => {
+    my_data.forEach((data) => {
       ids.push(data["mid"]);
     });
     //console.log("ids are->", ids)
@@ -78,7 +78,7 @@ export const GsuiteGetId = async () => {
 
 export const GsuiteDataSaveReply = async (tid, userdata) => {
 
-
+  // console.log("in db --------------------------", userdata);
   const subjectList = userdata.subject.toLowerCase().split(" ");
   let subjectDict = {};
   for (let subject in subjectList) {
@@ -136,7 +136,7 @@ export const GsuiteDataGetReply = async () => {
     userRef.forEach((data) => {
       finalData.push(data.data());
     });
-    // console.log("Data is ", finalData);
+    // console.log("Data is finsalData ", finalData);
     return finalData;
   } catch (e) {
     console.log("error is ", e);
@@ -146,11 +146,15 @@ export const GsuiteDataGetReply = async () => {
 
 export const GsuiteGetIdreply = async () => {
   try {
-    var my_data = GsuiteDataGetReply();
+    var my_data =await GsuiteDataGetReply();
     var ids = [];
-    (await my_data).forEach((data) => {
-      ids.push(data["tid"]);
-    });
+    // console.log("data in db ---------------- ", my_data);
+    for(let data in my_data){
+      ids.push(my_data[data["tid"]]);
+    }
+    // my_data.forEach((data) => {
+    //   ids.push(data["tid"]);
+    // });
     //console.log("ids are->", ids)
     return ids;
   } catch (e) {

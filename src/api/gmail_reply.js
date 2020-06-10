@@ -77,7 +77,7 @@ export const query_para = async (user_list) => {
 };
 
 export const message_list = async () => {
-  let ID_list = GsuiteGetIdreply();
+  let ID_list = await GsuiteDataGetReply();
   let IDs = [];
   let user_schema = {};
   let user_list = JSON.parse(window.localStorage.getItem("topEmails"));
@@ -134,6 +134,7 @@ export const message_list = async () => {
       } catch (err) {
         console.log("Error!", err);
       }
+      // console.log("until that point man--------------------------------------id is", IDs, thread_ID);
       //if thread ID is already in the database
       if (IDs.includes(thread_ID)) {
         try {
