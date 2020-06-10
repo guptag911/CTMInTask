@@ -6,7 +6,10 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { message_list } from "../api/gmail_reply";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { GsuiteDataGetReplyFalse, GmailReplyUpdateData } from "../api/gsuiteApi";
+import {
+  GsuiteDataGetReplyFalse,
+  GmailReplyUpdateData,
+} from "../api/gsuiteApi";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
@@ -53,7 +56,6 @@ export default function SimpleCard(props) {
   let [Loader, setLoader] = useState(true);
   let [markDone, setMark] = useState(1);
 
-
   useEffect(() => {
     // console.log("in useEffect ------------------------------------------------------------------------");
     let userdata = JSON.parse(window.localStorage.getItem("topEmails"));
@@ -63,22 +65,24 @@ export default function SimpleCard(props) {
     }
     // console.log("topEmails is ", topEmails);
     setLoader(true);
-    (async function anyNameFunction() {
-      const msgData = await message_list();
-      GsuiteDataGetReplyFalse().then((data) => {
+    anyNameFunction();
+  }, [props.signal]);
+
+  const anyNameFunction = async () => {
+    const msgData = await message_list();
+    console.log(msgData);
+    GsuiteDataGetReplyFalse()
+      .then((data) => {
         // console.log("data is ", data);
         getData(data);
         setLoader(false);
-      }).catch((e) => {
+      })
+      .catch((e) => {
         console.log("error is ", e);
         getData(data);
         setLoader(false);
-      })
-
-    })();
-
-  }, [props.signal])
-
+      });
+  };
 
   const handleChange = async (id, element) => {
     setLoader(true);
@@ -86,80 +90,78 @@ export default function SimpleCard(props) {
     try {
       const result = await GmailReplyUpdateData(id, element);
       setMark(markDone + 1);
-      GsuiteDataGetReplyFalse().then((data) => {
-        // console.log("data is ", data);
-        getData(data);
-        setLoader(false);
-      }).catch((e) => {
-        console.log("error is ", e);
-        getData(data);
-        setLoader(false);
-      })
+      GsuiteDataGetReplyFalse()
+        .then((data) => {
+          // console.log("data is ", data);
+          getData(data);
+          setLoader(false);
+        })
+        .catch((e) => {
+          console.log("error is ", e);
+          getData(data);
+          setLoader(false);
+        });
     } catch (e) {
       console.log("error is ", e);
       setMark(markDone + 1);
     }
-
-
-  }
-
-
-
+  };
 
   return (
     <div>
       {data && !Loader ? (
         data.map((element) => {
-          return topEmails[element.sender] ? (<Card key={element.thread_id} className={classes.root}>
-            <CardContent>
-              <Typography
-                className={classes.title}
-                color="textSecondary"
-                gutterBottom
-              >
-                Mailed by -- {element.sender}
-              </Typography>
-              <Typography variant="h7" component="h7">
-                {element.subject}
-              </Typography>
+          return topEmails[element.sender] ? (
+            <Card key={element.thread_id} className={classes.root}>
+              <CardContent>
+                <Typography
+                  className={classes.title}
+                  color="textSecondary"
+                  gutterBottom
+                >
+                  Mailed by -- {element.sender}
+                </Typography>
+                <Typography variant="h7" component="h7">
+                  {element.subject}
+                </Typography>
 
-              <br />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={element.replied}
-                    color="primary"
-                    onChange={(e) => {
-                      // setChecked(e.target.checked);
-                      handleChange(element.thread_id, element);
-                    }}
-                  />
-                }
-                label="Mark as Done"
-              />
-            </CardContent>
-            <CardActions>
-              <a
-                target="blank"
-                href={element.url}
-                style={{
-                  textDecoration: "none",
-                  color: "#e84993",
-                  fontWeight: "bold",
-                }}
-                size="small"
-              >
-                Go to the task
+                <br />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={element.replied}
+                      color="primary"
+                      onChange={(e) => {
+                        // setChecked(e.target.checked);
+                        handleChange(element.thread_id, element);
+                      }}
+                    />
+                  }
+                  label="Mark as Done"
+                />
+              </CardContent>
+              <CardActions>
+                <a
+                  target="blank"
+                  href={element.url}
+                  style={{
+                    textDecoration: "none",
+                    color: "#e84993",
+                    fontWeight: "bold",
+                  }}
+                  size="small"
+                >
+                  Go to the task
                 </a>
-            </CardActions>
-          </Card>
-          ) : null
+              </CardActions>
+            </Card>
+          ) : null;
         })
       ) : (
-          <div className={classesLoader.root}>
-            <CircularProgress />
-          </div>
-        )}
+        <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>
+      )}
     </div>
   );
 }
