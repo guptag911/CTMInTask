@@ -74,7 +74,7 @@ export const query_para = async (user_list) => {
   });
   let result = query.slice(0, query.length - 3);
   result += "-label:chats " + "-invite.ics " + "-invite.vcs";
-  return result; 
+  return result;
 };
 
 export const insert_task = async (data) => {
@@ -218,6 +218,7 @@ export const message_list = async () => {
           var mod_data = await insert_task(my_data);
           // console.log("mode_data is -----------------", mod_data);
           var Gdata = await GsuiteDataSaveReply(thread_ID, mod_data);
+          console.log("bsjfb");
         } catch (e) {
           console.log("Error is", e);
         }
