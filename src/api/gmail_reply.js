@@ -150,15 +150,7 @@ export const message_list = async () => {
           console.log(uid);
           let my_data = useref.data();
           my_data["replied"] = my_data["replied"] || user_schema["replied"];
-<<<<<<< HEAD
           let Gdata = await GsuiteDataSaveReply(thread_ID, my_data);
-=======
-          // my_data["thread_id"]
-          var mod_data = await insert_task(my_data);
-          // console.log("mode_data is -----------------", mod_data);
-          var Gdata = await GsuiteDataSaveReply(thread_ID, mod_data);
-          console.log("bsjfbhvjm");
->>>>>>> d8ea2ed8da0eb75569cecf92d6d4dcf2949f4cfc
         } catch (e) {
           console.log("Error is", e);
         }
