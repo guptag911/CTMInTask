@@ -73,7 +73,7 @@ export const query_para = async (user_list) => {
   });
   let result = query.slice(0, query.length - 3);
   result += "-label:chats " + "-invite.ics " + "-invite.vcs";
-  return result; 
+  return result;
 };
 
 export const message_list = async () => {
