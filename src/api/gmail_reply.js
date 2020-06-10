@@ -19,8 +19,7 @@ import {
     subject : subject of the mail          
     url:  url of the mail
     replied: true if replied else false
-    imp_mail: true or false according to the cloud function or null if it's the user's mail (Not used until NLP is applied)
-    taskId: task Id of google task else null
+    sender: me or sender
   }
   */
 
@@ -40,13 +39,13 @@ export const get_profile = async () => {
 
 export const get_username = async (email) => {
   try {
-    var pos1 = email.match(/\./);
-    var pos2 = email.match(/\@/);
-    var first_name = email.substring(0, pos1["index"]);
-    var last_name = email.substring(pos1["index"] + 1, pos2["index"]);
+    let pos1 = email.match(/\./);
+    let pos2 = email.match(/\@/);
+    let first_name = email.substring(0, pos1["index"]);
+    let last_name = email.substring(pos1["index"] + 1, pos2["index"]);
     first_name = first_name.charAt(0).toUpperCase() + first_name.slice(1);
     last_name = last_name.charAt(0).toUpperCase() + last_name.slice(1);
-    var name = first_name + " " + last_name;
+    let name = first_name + " " + last_name;
     console.log(name);
     return name;
   } catch (err) {
@@ -54,11 +53,11 @@ export const get_username = async (email) => {
   }
 };
 
-export const get_a_msg = async (msg_ID) => {
+export const get_thread = async (thread_ID) => {
   try {
-    var response = await window.gapi.client.gmail.users.threads.get({
+    let response = await window.gapi.client.gmail.users.threads.get({
       userId: "me",
-      id: msg_ID,
+      id: thread_ID,
     });
     return response.result;
   } catch (err) {
@@ -77,67 +76,12 @@ export const query_para = async (user_list) => {
   return result; 
 };
 
-export const insert_task = async (data) => {
-  try {
-    return await new Promise(async (resolve) => {
-      if (data["task_id"] == null) {
-        if (data["replied"] == false) {
-          var tite =
-            "There is an Email that you might be intrested in replying.";
-          var new_task = {
-            title: tite,
-            notes: data["url"],
-          };
-          try {
-            // var go = await  window.gapi.client.tasks.tasks.insert(
-            //     {tasklist : "@default"},
-            //     new_task
-            // );
-            data["taskid"] = null;
-          } catch (e) {
-            console.log("Error is ", e);
-          }
-          resolve(data);
-        } else {
-          console.log("Already Replied");
-          resolve(data);
-        }
-      } else {
-        if (data["replied"] == true) {
-          try {
-            var task = window.gapi.client.tasks.tasks.get({
-              tasklist: "@default",
-              task: data["taskid"],
-            });
-            task.result["status"] = "completed";
-            task.result["hidden"] = true;
-            var result = window.gapi.client.tasks.tasks.update(
-              { tasklist: "@default", task: task.result["id"] },
-              task.result
-            );
-            data["taskid"] = null;
-            resolve(data);
-          } catch (e) {
-            console.log("Error is ", e);
-          }
-        } else {
-          console.log("Still not replied");
-          resolve(data);
-        }
-        // task is already inserted, now cases handling will come.
-      }
-    });
-  } catch (e) {
-    console.log("error is", e);
-  }
-};
-
 export const message_list = async () => {
   let ID_list = GsuiteGetIdreply();
   let IDs = [];
   let user_schema = {};
   let user_list = JSON.parse(window.localStorage.getItem("topEmails"));
-  console.log("user list is ", user_list);
+  console.log("User list is: ", user_list);
   let my_list = [];
   for (let mail in user_list) {
     my_list.push(user_list[mail]);
@@ -145,11 +89,11 @@ export const message_list = async () => {
   // user_list.forEach((id)=>{
   //     my_list.push(id);
   // });
-  console.log("my list is ", my_list);
+  console.log("My list is: ", my_list);
   let email = await get_profile();
   let username = await get_username(email);
   let query = (await query_para(my_list)).toString();
-  //Fetching messages IDs from Firestore
+  //Fetching message IDs from Firestore
   (await ID_list).forEach((data) => {
     IDs.push(data);
   });
@@ -162,7 +106,7 @@ export const message_list = async () => {
     let messages = response.result.messages;
     messages.forEach(async (element) => {
       let thread_ID = element.threadId;
-      let mail_data = await get_a_msg(thread_ID);
+      let mail_data = await get_thread(thread_ID);
       //fetching the data of the last thread
       let last_index = mail_data.messages.length - 1;
       let last_index_data = mail_data.messages[last_index];
@@ -178,13 +122,14 @@ export const message_list = async () => {
         });
         let query = new RegExp(email);
         let pos = sender.match(query);
-        if (pos == null) {
+        if (pos === null) {
           // the last sender is not the user
           user_schema["replied"] = false;
           user_schema["sender"] = sender;
         } //the last sender is the user
         else {
           user_schema["replied"] = true;
+          user_schema["sender"] = "me";
         }
       } catch (err) {
         console.log("Error!", err);
@@ -201,11 +146,10 @@ export const message_list = async () => {
             .collection("reply")
             .doc(thread_ID)
             .get();
-
-          var my_data = useref.data();
+          console.log(uid);
+          let my_data = useref.data();
           my_data["replied"] = my_data["replied"] || user_schema["replied"];
-          var mod_data = await insert_task(my_data["thread_id"], my_data);
-          var Gdata = await GsuiteDataSaveReply(thread_ID, mod_data);
+          let Gdata = await GsuiteDataSaveReply(thread_ID, my_data);
         } catch (e) {
           console.log("Error is", e);
         }
@@ -221,18 +165,14 @@ export const message_list = async () => {
           }
         });
         //fetching the url
-        let url =
-          "https://mail.google.com/mail/u/2/#inbox/" + thread_ID.toString();
+        let url = "https://mail.google.com/mail/u/2/#inbox/" + thread_ID.toString();
         user_schema["url"] = url;
-        user_schema["taskid"] = null;
         //send the schema into the database
-        var new_data = await insert_task(user_schema);
         var Gdata = await GsuiteDataSaveReply(
           user_schema["thread_id"],
-          new_data
+          user_schema
         );
-        //var dump = insert_task(user_schema);
-        //console.log("dump is ", dump.data);
+        console.log(user_schema);
       }
     });
   } catch (err) {
