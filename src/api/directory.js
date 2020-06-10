@@ -27,7 +27,7 @@ export async function lang() {
 
   // Need to specify an encodingType to receive word offsets
   const encodingType = "UTF8";
-
+  const temp = await window.gapi.client.load();
   const res = await window.gapi.client.language.documents.analyzeSyntax({
     document,
     encodingType,

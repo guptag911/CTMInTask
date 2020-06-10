@@ -31,67 +31,67 @@ var MY_SCHEMA = {
 
 export const CalendarDataSave = async () => {
   try {
-    setTimeout(async () => {
-      let calendarData = await window.gapi.client.calendar.events.list({
-        calendarId: "primary",
-      });
+    // setTimeout(async () => {
+    let calendarData = await window.gapi.client.calendar.events.list({
+      calendarId: "primary",
+    });
 
-      // console.log("calender data is ", calendarData.result.items);
+    // console.log("calender data is ", calendarData.result.items);
 
-      calendarData.result.items.forEach(async (element) => {
-        if (
-          element.status === "confirmed" &&
-          element.start.dateTime &&
-          new Date(element.start.dateTime).toISOString() >=
-            new Date().toISOString()
-        ) {
-          let loc;
-          try {
-            loc = element.description.split('href="')[1].split('"')[0];
-          } catch (e) {
-            loc = null;
-          }
-          // console.log("loc is ", loc);
-          let calenderData = {
-            id: element.id,
-            creator: element.creator.email,
-            created_date: element.created,
-            start_time: element.start.dateTime,
-            end_time: element.end.dateTime,
-            timezone: element.end.dateTime ? element.end.dateTime : null,
-            icalUID: element.iCalUID,
-            htmlLink: element.htmlLink,
-            status: element.status,
-            summary: element.summary,
-            location: element.location ? element.location : loc,
-            organizer: {
-              email: element.organizer.email,
-              displayName: element.organizer.displayName
-                ? element.organizer.displayName
-                : null,
-            },
-            updated: element.updated,
-          };
-          try {
-            const uid =
-              firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
-            const userRef = await db
-              .collection("users")
-              .doc(uid)
-              .collection("calender")
-              .doc(element.id)
-              .set(calenderData);
-            // console.log("userRef is ", userRef);
-            return { msg: "success" };
-          } catch (e) {
-            // console.log("error in the cal is ", e);
-            return { msg: false };
-          }
+    calendarData.result.items.forEach(async (element) => {
+      if (
+        element.status === "confirmed" &&
+        element.start.dateTime &&
+        new Date(element.start.dateTime).toISOString() >=
+        new Date().toISOString()
+      ) {
+        let loc;
+        try {
+          loc = element.description.split('href="')[1].split('"')[0];
+        } catch (e) {
+          loc = null;
         }
-      });
-    }, 5000);
+        // console.log("loc is ", loc);
+        let calenderData = {
+          id: element.id,
+          creator: element.creator.email,
+          created_date: element.created,
+          start_time: element.start.dateTime,
+          end_time: element.end.dateTime,
+          timezone: element.end.dateTime ? element.end.dateTime : null,
+          icalUID: element.iCalUID,
+          htmlLink: element.htmlLink,
+          status: element.status,
+          summary: element.summary,
+          location: element.location ? element.location : loc,
+          organizer: {
+            email: element.organizer.email,
+            displayName: element.organizer.displayName
+              ? element.organizer.displayName
+              : null,
+          },
+          updated: element.updated,
+        };
+        try {
+          const uid =
+            firebaseAuth.currentUser.uid === null
+              ? JSON.parse(window.sessionStorage.getItem("user")).uid
+              : firebaseAuth.currentUser.uid;
+          const userRef = await db
+            .collection("users")
+            .doc(uid)
+            .collection("calender")
+            .doc(element.id)
+            .set(calenderData);
+          // console.log("userRef is ", userRef);
+          return { msg: "success" };
+        } catch (e) {
+          // console.log("error in the cal is ", e);
+          return { msg: false };
+        }
+      }
+    });
+    // }, 5000);
   } catch (e) {
     console.log(e);
   }

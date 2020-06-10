@@ -66,7 +66,7 @@ export default function SimpleCard(props) {
     (async function anyNameFunction() {
       const msgData = await message_list();
       GsuiteDataGetReplyFalse().then((data) => {
-        // console.log("data is ", data);
+        console.log("data is ", data);
         getData(data);
         setLoader(false);
       }).catch((e) => {
