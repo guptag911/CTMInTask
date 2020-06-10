@@ -85,9 +85,9 @@ export const GsuiteDataSaveReply = async (tid, userdata) => {
     subjectDict[subjectList[subject]] = 1;
   }
 
-  const CalWords = { "invitation": "invitation:", "feedback": "feedback", "townhall": "townhall" };
+  const CalWords = {"anniversary":"anniversary" ,"invitation": "invitation:", "feedback": "feedback", "townhall": "townhall","town_hall":"town hall","wishing":"wishing" };
 
-  if (!((subjectDict[CalWords.invitation]) || (subjectDict[CalWords.townhall] && !(subjectDict[CalWords.feedback])))) {
+  if (!((subjectDict[CalWords.invitation]) || (subjectDict[CalWords.townhall] && !(subjectDict[CalWords.feedback])) || (subjectDict[CalWords.town_hall])|| (subjectDict[CalWords.wishing])|| (subjectDict[CalWords.anniversary]))) {
 
     try {
       // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);

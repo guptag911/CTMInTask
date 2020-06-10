@@ -50,7 +50,8 @@ const suggestions = [
   {name: "mrinalini.mittal@innovaccer.com"},
   {name: "ankit.maheshwari@innovaccer.com"},
   {name: "ambuj.singh@innovaccer.com"},
-  {name: "satyajit.menon@innovaccer.com"}
+  {name: "satyajit.menon@innovaccer.com"},
+  {name:"hr@innovaccer.com"}
 ];
 
 function renderInput(inputProps) {

@@ -3,7 +3,7 @@ import { firebaseAuth, db } from "../config/config";
 export const save_confluenceData = async (task_id, userdata) => {
   try {
     // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
-    // console.log("In atlassian function");
+    console.log("In atlassian function confluence data is ", userdata);
     userdata["upload_time_utc"] = Date.now();
     const uid =
       firebaseAuth.currentUser.uid === null
