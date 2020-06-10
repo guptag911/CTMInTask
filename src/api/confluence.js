@@ -125,6 +125,8 @@ async function get_data() {
 
               let my_data = useref.data();
               my_data["status"] = status;
+
+              let db_data = await save_confluenceData(task_ID,my_data);
             } catch (err) {
               console.log("error!", err);
             }

@@ -92,9 +92,11 @@ async function issues_data() {
                 .collection("jira")
                 .doc(issue_ID)
                 .get();
-
+                
               let my_data = useref.data();
               my_data["status"] = status;
+
+              let db_data = await save_JiraData(issue_ID,my_data);
             } catch (err) {
               console.log("error!", err);
             }
