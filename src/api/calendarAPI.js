@@ -6,6 +6,7 @@ import {
   db,
 } from "../config/config";
 
+
 var MY_SCHEMA = {
   id: "id of the event",
   creator: "creator mail",
@@ -26,6 +27,7 @@ var MY_SCHEMA = {
   responded: "whether the user has responded or not",
   updated: "latest modification date-time",
 };
+
 
 export const CalendarDataSave = async () => {
   try {

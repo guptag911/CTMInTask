@@ -16,7 +16,7 @@ const Home = () => {
     if (currentUser) {
       await signout();
       window.sessionStorage.clear();
-      window.localStorage.clear();
+      // window.localStorage.clear();
     } else {
       await signIn();
     }

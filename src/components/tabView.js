@@ -90,6 +90,7 @@ export default function ScrollableTabsButtonAuto() {
       hub: false,
       conf: false,
       Jira: false,
+      user: false,
     }
   );
 
@@ -97,6 +98,7 @@ export default function ScrollableTabsButtonAuto() {
     hub: false,
     conf: false,
     Jira: false,
+    user: false,
   };
 
   // if(firebaseAuth.currentUser)
@@ -125,6 +127,7 @@ export default function ScrollableTabsButtonAuto() {
       hub: false,
       conf: true,
       Jira: false,
+      user: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
 
@@ -137,6 +140,7 @@ export default function ScrollableTabsButtonAuto() {
       hub: true,
       conf: false,
       Jira: false,
+      user: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
 
@@ -150,11 +154,60 @@ export default function ScrollableTabsButtonAuto() {
       hub: false,
       conf: false,
       Jira: true,
+      user: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
     const res = await jiraAuth();
     window.location.href = res;
   };
+
+  const params = new URLSearchParams(window.location.search);
+  const authCode = params.get("code");
+  setTimeout(() => {
+    if (clickState.hub && authCode) {
+      window.location.reload(false);
+      state = {
+        hub: false,
+        conf: false,
+        Jira: false,
+        user: false,
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+
+    if (clickState.Jira && authCode) {
+      window.location.reload(false);
+      state = {
+        hub: false,
+        conf: false,
+        Jira: false,
+        user: false,
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+
+    if (clickState.conf && authCode) {
+      window.location.reload(false);
+      state = {
+        hub: false,
+        conf: false,
+        Jira: false,
+        user: false,
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+
+    if (clickState.user && authCode) {
+      window.location.reload(false);
+      state = {
+        hub: false,
+        conf: false,
+        Jira: false,
+        user: false,
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+  }, 5000);
 
   React.useEffect(() => {
     if (clickState.hub) {
@@ -163,15 +216,17 @@ export default function ScrollableTabsButtonAuto() {
       handleJiraAuth();
     } else if (clickState.conf) {
       handleAuth();
+    } else if (clickState.user) {
+      handleUser();
     }
   }, [window.onload]);
 
   const handleAuth = async () => {
-    if (authState && !window.localStorage.getItem("user")) {
-      await getUserToken();
-    } else {
-      await getToken();
-    }
+    await getToken();
+  };
+
+  const handleUser = async () => {
+    await getUserToken();
   };
 
   const handleJiraAuth = async () => {
