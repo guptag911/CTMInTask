@@ -73,8 +73,8 @@ export const query_para = async (user_list) => {
     query += "from:" + element + " OR ";
   });
   let result = query.slice(0, query.length - 3);
-  result += "-label:chats" + "-invite.ics" + "-invite.vcs.";
-  return result;
+  result += "-label:chats " + "-invite.ics " + "-invite.vcs";
+  return result; 
 };
 
 export const insert_task = async (data) => {
