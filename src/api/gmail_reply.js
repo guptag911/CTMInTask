@@ -97,6 +97,7 @@ export const insert_task = async (data) => {
           } catch (e) {
             console.log("Error is ", e);
           }
+          // console.log("just before 1st resolve============================");
           resolve(data);
         } else {
           console.log("Already Replied");
@@ -116,6 +117,7 @@ export const insert_task = async (data) => {
               task.result
             );
             data["taskid"] = null;
+            // console.log("just before 3rd resolve============================");
             resolve(data);
           } catch (e) {
             console.log("Error is ", e);
@@ -133,7 +135,7 @@ export const insert_task = async (data) => {
 };
 
 export const message_list = async () => {
-  let ID_list = GsuiteGetIdreply();
+  let ID_list = await GsuiteDataGetReply();
   let IDs = [];
   let user_schema = {};
   let user_list = JSON.parse(window.localStorage.getItem("topEmails"));
@@ -150,9 +152,15 @@ export const message_list = async () => {
   let username = await get_username(email);
   let query = (await query_para(my_list)).toString();
   //Fetching messages IDs from Firestore
-  (await ID_list).forEach((data) => {
-    IDs.push(data);
-  });
+
+  for (let data in ID_list) {
+    IDs.push(ID_list[data]["thread_id"]);
+  }
+
+  // console.log("ids is this ----------------", ID_list);
+  // ID_list.forEach((data) => {
+  //   IDs.push(data);
+  // });
   try {
     let response = await window.gapi.client.gmail.users.messages.list({
       userId: "me",
@@ -189,6 +197,7 @@ export const message_list = async () => {
       } catch (err) {
         console.log("Error!", err);
       }
+      // console.log("until that point man--------------------------------------id is", IDs, thread_ID);
       //if thread ID is already in the database
       if (IDs.includes(thread_ID)) {
         try {
@@ -203,8 +212,11 @@ export const message_list = async () => {
             .get();
 
           var my_data = useref.data();
+          // console.log("my data is ", my_data, "\n------\n the user_schema is ", user_schema);
           my_data["replied"] = my_data["replied"] || user_schema["replied"];
-          var mod_data = await insert_task(my_data["thread_id"], my_data);
+          // my_data["thread_id"]
+          var mod_data = await insert_task(my_data);
+          // console.log("mode_data is -----------------", mod_data);
           var Gdata = await GsuiteDataSaveReply(thread_ID, mod_data);
         } catch (e) {
           console.log("Error is", e);
