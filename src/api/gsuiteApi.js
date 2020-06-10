@@ -144,7 +144,7 @@ export const GsuiteDataGetReply = async () => {
   }
 };
 
-export const GsuiteGetIdreply = async () => {
+/*export const GsuiteGetIdreply = async () => {
   try {
     var my_data =await GsuiteDataGetReply();
     var ids = [];
@@ -161,7 +161,7 @@ export const GsuiteGetIdreply = async () => {
     console.log("Error is", e);
     return [];
   }
-};
+};*/
 
 export const GsuiteDataGetReplyFalse = async () => {
   try {

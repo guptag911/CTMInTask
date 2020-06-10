@@ -86,17 +86,14 @@ export const message_list = async () => {
   for (let mail in user_list) {
     my_list.push(user_list[mail]);
   }
-  // user_list.forEach((id)=>{
-  //     my_list.push(id);
-  // });
   console.log("My list is: ", my_list);
   let email = await get_profile();
   let username = await get_username(email);
   let query = (await query_para(my_list)).toString();
   //Fetching message IDs from Firestore
-  (await ID_list).forEach((data) => {
-    IDs.push(data);
-  });
+  for(let data in ID_list){
+    IDs.push(ID_list[data]["thread_id"]);
+  }
   try {
     let response = await window.gapi.client.gmail.users.messages.list({
       userId: "me",
