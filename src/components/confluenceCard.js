@@ -4,7 +4,6 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import { message_list } from "../api/gmail_reply";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getConfluenceDataStatusIncomplete } from "../api/atlassian";
 
@@ -69,7 +68,7 @@ export default function SimpleCard(props) {
       {data && !Loader ? (
         data.map((element) => {
           return (
-            <Card key={element.content_id} className={classes.root}>
+            <Card key={element.task_id} className={classes.root}>
               <CardContent>
                 <Typography
                   className={classes.title}

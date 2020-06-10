@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as hub from "../helper/hubAuth";
-import { firebaseAuth } from "../config/config";
+import { firebaseAuth, db } from "../config/config";
 
 const proxyurl = "https://cors-anywhere.herokuapp.com/";
 
@@ -10,10 +10,10 @@ export const GetContactId = async () => {
     // console.log("token is ", HubToken);
     const result = await axios.get(
       proxyurl +
-        `https://api.hubapi.com/contacts/v1/search/query?q=${firebaseAuth.currentUser.email}`,
+      `https://api.hubapi.com/contacts/v1/search/query?q=${firebaseAuth.currentUser.email}`,
       { headers: { Authorization: `Bearer ${HubToken}` } }
     );
-    
+
     // console.log("contact is ", result);
 
     return result.data.total
@@ -25,7 +25,7 @@ export const GetContactId = async () => {
   }
 };
 
-export const HubSpotTasksGet = async () => {
+export const HubSpotTasksGetAPIData = async () => {
   try {
     const contactId = await GetContactId();
     // console.log("contact id is ", contactId);
@@ -33,16 +33,85 @@ export const HubSpotTasksGet = async () => {
       const HubToken = await hub.getHubToken();
       const result = await axios.get(
         proxyurl +
-          `https://api.hubapi.com/engagements/v1/engagements/associated/CONTACT/${contactId[0]}/paged`,
+        `https://api.hubapi.com/engagements/v1/engagements/associated/CONTACT/${contactId[0]}/paged`,
         { headers: { Authorization: `Bearer ${HubToken}` } }
       );
-      console.log("result data is ", result.data);
       result.data.results["url"] = contactId[1];
-      return result.data.results;
-    } else {
-      return [];
+
+      // console.log("result data is ", result.data);
+
+      const data = await HubSpotDataSave(result.data.results);
+
+      return {"msg":"success"}; 
     }
   } catch (e) {
+    console.log("error in Hubspot data getting saving api from hubspot.com");
+    return {"msg":"fail"};
+  }
+};
+
+
+
+
+
+export const HubSpotDataSave = async (userdata) => {
+  try {
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+    const url = userdata.url;
+    for (let data=0;data<userdata.length;data++) {
+      // console.log("data in HubSpot is ", userdata[data], "abcd--",userdata[data].engagement.id, "agga--",userdata[data].engagement.sourceId, "length is ", userdata.length);
+      // userdata[data]["url"] = url;
+      // userdata[data]["upload_time_utc"] = Date.now()
+      const userRef = await db
+        .collection("users")
+        .doc(uid)
+        .collection("tasks")
+        .doc("hubspot")
+        .collection("data")
+        .doc(userdata[data].engagement.id.toString())
+        .set({
+          "engagement":userdata[data].engagement,
+          "associations":userdata[data].associations,
+          "metadata":userdata[data].metadata,
+          "url":url,
+          "upload_time_utc":Date.now()
+        });
+      // console.log("userRef is ", userRef);
+    }
+    return { msg: "success" };
+  }
+  catch (e) {
+    console.log(window.sessionStorage.getItem("user"));
+    console.log("error is -----", e);
+    return { msg: "fail" };
+  }
+};
+
+
+export const HubSpotDataGet = async () => {
+  try {
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("hubspot")
+      .collection("data")
+      .get();
+    var finalData = [];
+    userRef.forEach((data) => {
+      finalData.push(data.data());
+    });
+    return finalData;
+  } catch (e) {
+    console.log(window.sessionStorage.getItem("user"));
+    console.log("error is ", e);
     return [];
   }
 };

@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { HubSpotTasksGet } from "../api/hubSpot";
+import { HubSpotTasksGetAPIData, HubSpotDataGet } from "../api/hubSpot";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -51,10 +51,18 @@ export default function SimpleCard(props) {
   useEffect(() => {
     setLoader(true);
     (async function anyNameFunction() {
-      const data = await HubSpotTasksGet();
-      console.log("in data ", data);
-      getData(data);
-      setLoader(false);
+      try {
+        const temp = await HubSpotTasksGetAPIData();
+        const data = await HubSpotDataGet();
+        console.log("in data ", data);
+        getData(data);
+        setLoader(false);
+      }
+      catch (e) {
+        console.log("Error is ", e);
+        getData([]);
+        setLoader(false);
+      }
     })();
   }, []);
 
@@ -153,10 +161,10 @@ export default function SimpleCard(props) {
           );
         })
       ) : (
-        <div className={classesLoader.root}>
-          <CircularProgress />
-        </div>
-      )}
+          <div className={classesLoader.root}>
+            <CircularProgress />
+          </div>
+        )}
     </React.Fragment>
   );
 }
