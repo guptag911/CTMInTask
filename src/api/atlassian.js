@@ -19,6 +19,7 @@ export const save_confluenceData = async (task_id, userdata) => {
       .set(userdata);
 
     // console.log("userRef is:", userRef);
+    console.log("In atlassian function confluence data is ", userdata);
     return { msg: "success" };
   } catch (err) {
     console.log("Error is:", err);
@@ -112,6 +113,8 @@ export const save_JiraData = async (issue_id, userdata) => {
       .doc(issue_id)
       .set(userdata);
     //console.log("userRef is:", userRef);
+    console.log("In atlassian function Jira data is ", userdata);
+
     return { msg: "success" };
   } catch (err) {
     console.log("Error is:", err);
@@ -159,7 +162,6 @@ export const get_JiraID = async () => {
     return [];
   }
 };
-
 
 export const getJiraDataStatusIncomplete = async () => {
   try {

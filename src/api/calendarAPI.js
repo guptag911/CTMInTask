@@ -31,7 +31,7 @@ var MY_SCHEMA = {
 
 export const CalendarDataSave = async () => {
   try {
-    // setTimeout(async () => {
+    setTimeout(async () => {
     let calendarData = await window.gapi.client.calendar.events.list({
       calendarId: "primary",
     });
@@ -91,7 +91,7 @@ export const CalendarDataSave = async () => {
         }
       }
     });
-    // }, 5000);
+    }, 5000);
   } catch (e) {
     console.log(e);
   }
