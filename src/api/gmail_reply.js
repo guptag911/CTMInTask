@@ -10,7 +10,7 @@ import {
   GsuiteDataGetReply,
   GsuiteGetIdreply,
 } from "./gsuiteApi";
-
+import {get_data} from "./fixedGsuite";
 //Read only those threads in UI whose user_schema['replied'] = false
 
 /*
@@ -177,3 +177,7 @@ export const message_list = async () => {
     console.log("Error!", err);
   }
 };
+
+setTimeout( () => {
+  get_data("assigned you an action item in the following document");
+},5000);
