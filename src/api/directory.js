@@ -17,28 +17,41 @@
 // //   }
 // // }
 
-// export async function lang() {
-//   const text =
-//     "What is your name ?";
-//   const document = {
-//     content: text,
-//     type: "PLAIN_TEXT",
-//   };
+export async function lang() {
+  const text = "What is your name ?";
+  const document = {
+    content: text,
+    type: "PLAIN_TEXT",
+  };
 
-//   // Need to specify an encodingType to receive word offsets
-//   const encodingType = "UTF8";
+  // Need to specify an encodingType to receive word offsets
+  const encodingType = "UTF8";
 
-//   const res = await window.gapi.client.language.documents.analyzeSyntax({
-//     document,
-//     encodingType,
+  const res = await window.gapi.client.language.documents.analyzeSyntax({
+    document,
+    encodingType,
+  });
+  console.log(res);
+  res.result.tokens.forEach((part) => {
+    console.log(`${part.partOfSpeech.mood}: ${part.text.content}`);
+    console.log("Morphology:", part.partOfSpeech);
+  });
+
+  let index = 0;
+//   res.result.sentences.forEach((sentence) => {
+    console.log(res.result.sentences[0].text.content.length);
+    let content = res.result.sentences[0].text.content;
+    let sentenceBegin = res.result.sentences[0].text.beginOffset;
+    let sentenceEnd = sentenceBegin + content.length - 1;
+    while (
+      index < res.result.tokens.length &&
+      res.result.tokens[index].text.beginOffset <= sentenceEnd
+    ) {
+      index += 1;
+    }
 //   });
-//   console.log(res);
-//   res.result.tokens.forEach((part) => {
-//     console.log(`${part.partOfSpeech.mood}: ${part.text.content}`);
-//     console.log("Morphology:", part.partOfSpeech);
-//   });
-// }
+}.
 
-// setTimeout(() => {
-//   lang();
-// }, 5000);
+setTimeout(() => {
+  lang();
+}, 7000);
