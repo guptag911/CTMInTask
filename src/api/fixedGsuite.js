@@ -13,6 +13,7 @@ export const get_thread = async (thread_ID) => {
         userId: "me",
         id: thread_ID,
       });
+      //console.log(thread_ID,response);
       return response.result;
     } catch (err) {
       console.log("Error!", err);
@@ -22,19 +23,18 @@ export const get_thread = async (thread_ID) => {
 export const get_data = async (query) => {
     //let db_ids  = await GsuiteGetId(); //fetching thread ids from firestore
     let user_schema = {};
+    let user_data = [];
     try {
       //fetching mails from the API
-      console.log("check!!!!!!!!!");
       let response = await window.gapi.client.gmail.users.messages.list({
         userId: "me",
         q: query,
         maxResults: 100,
       });
-      console.log("check--1!!!!!!!!!");
       let messages = response.result.messages;
-      console.log("total messages are ", response.result);
+      //console.log("Total messages are: ", response.result.messages);
       messages.forEach(async (element) => {
-        let thread_ID = element.thread_ID;
+        let thread_ID = element.threadId;
         /*if (db_ids.includes(thread_ID)) {
           try {
             const uid = firebaseAuth.currentUser.uid;
@@ -56,24 +56,28 @@ export const get_data = async (query) => {
         }*/
           let mail_data = await get_thread(thread_ID);
           user_schema["thread_id"] = thread_ID;
-          user_schema["date"] = mail_data.internalDate;
-          let payload = mail_data.payload;
+          //console.log(mail_data);
+          let payload = mail_data.messages[0].payload;
           let text;
           //getting the url
           try {
             let msg_raw = payload["parts"][0].body.data;
             let data = msg_raw;
-            var buff = new Buffer.from(data, "base64");
+            let buff = new Buffer.from(data, "base64");
             text = buff.toString();
+            //console.log(text);
           } catch (err) {
             console.log("Email body error!", err);
           }
+          //fetching the url
+          let urls;
           try {
             let regex_exp = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
             let email_body = text;
-            let my_url = email_body.match(regex_exp);
-            if (my_url !== null)
-                user_schema["url"] = my_url[0];
+            urls = email_body.match(regex_exp);
+            //console.log(urls);
+            if (urls !== null)
+                user_schema["url"] = urls[0];
             else 
                 user_schema["url"] = null;
           } catch (err) {
@@ -95,21 +99,47 @@ export const get_data = async (query) => {
                 console.log("No file ID!", err);
             }
           }
-          //fetching the comment ID
-          if (url === null)
-            user_schema["comment_id"] = null;
-          else {
-            try {
-              let start = url.match(/disco=/);
-              let end = url.match(/&ts/);
-              start["index"] += 6;
-              let comment_ID = url.substring(start["index"], end["index"]);
-              //console.log(comment_ID);
-              user_schema["comment_id"] = comment_ID;
-            } catch (err) {
-              console.log("No comment ID!", err);
-            }
+          let valid_urls = [];
+          if(url !== null)
+          {
+          try
+          {
+            urls.forEach( (url) => {
+               let exp = new RegExp(user_schema["file_id"]);
+               let pos = url.match(exp);
+               if(pos !== null)
+                valid_urls.push(url);   
+            });
           }
+          catch(err)
+          {
+            console.log("Error!",err);
+          }
+         }
+          //console.log(valid_urls);
+          //fetching the comment IDs
+          let comment_ids = new Set();
+          //console.log(comment_ids);
+          if(valid_urls !== null)
+          {
+          valid_urls.forEach( (url) => {
+            try {
+                let start = url.match(/disco=/);
+                let end1 = url.match(/&ts=/);
+                let end2 = url.match(/&usp=/);
+                if(start !== null && (end1 !== null) || (end2 !== null))
+                {
+                    start["index"] += 6;
+                    let comment_ID = url.substring(start["index"], Math.min(end1["index"],end2["index"]));
+                    comment_ids.add(comment_ID);
+                }
+                }
+                catch (err) {
+                console.log("No comment ID!", err);
+                }
+            });
+          }
+          //console.log(comment_ids);
           let header = payload.headers;
           header.forEach((head) => {
             //console.log("head is", head);
@@ -120,29 +150,30 @@ export const get_data = async (query) => {
               user_schema["sender"] = head["value"];
             }
           });
-          //getting the status
-          try {
-            let comment_list = await window.gapi.client.drive.comments.list({
-              fileId: user_schema["file_id"],
-              fields: "items/status, items/content, items/commentId",
-            });
-            let some_data = comment_list.result["items"];
-            let comment_ID = user_schema["comment_id"];
-            some_data.forEach(async (comments) => {
-              if (comments["commentId"] === comment_ID) {
-                let title = comments["content"];
-                if (title)
-                    user_schema["task_desc"] = title;
-                else
-                    user_schema["task_desc"] = null;
-              }
-            });
-            console.log(user_schema);            
-          } catch (err) {
-            console.log("error in title fetching", err);
+          //getting the status and making schema
+          try
+          {
+          comment_ids.forEach( async (comment_ID) => {
+            try {
+                let response = await window.gapi.client.drive.comments.get({
+                  fileId: user_schema["file_id"],
+                  commentId: comment_ID,
+                });
+                user_schema["comment_id"] = comment_ID;
+                user_schema["status"] = response.result.status; 
+                console.log(user_schema);
+                user_data.push(user_schema);
+
+              } catch (err) {
+                console.log("no comment ID", err);
+                }   
+          });
           }
-        
-      });
+          catch(err)
+          {
+            console.log("Error!",err);
+          } 
+      })
     } catch (err) {
       console.log("error is ", err);
     }
