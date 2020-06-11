@@ -76,6 +76,17 @@ export const query_para = async (user_list) => {
   return result;
 };
 
+export const my_nlp = (body) => {
+    var word1 = /(important|asap|quick|urgent|quickly|due|immediately|emergency|vital|crucial|hurry up|intense|serious|critical|prior|priority|rushed|fast|hasty|dire)/i;
+    var exp = new RegExp(word1);
+    var pos = body.match(exp);
+    if(pos==null)
+      return "Low";
+    else{
+      return "High";
+    }
+}
+
 export const message_list = async () => {
   let ID_list = await GsuiteDataGetReply();
   let IDs = [];
@@ -156,12 +167,18 @@ export const message_list = async () => {
         user_schema["thread_id"] = thread_ID;
         //fetching the subject
         let payload = mail_data.messages[0].payload;
+        let body_data = payload.parts[0].body.data;
+        let binaryData = Buffer.from(body_data, "base64");
+        let parsed = binaryData.toString("utf8");
         let header = payload["headers"];
         header.forEach((head) => {
           if (head.name === "Subject") {
             user_schema["subject"] = head["value"];
           }
         });
+        var my_priority = my_nlp(parsed);
+        user_schema["priority"] = my_priority;
+
         //fetching the url
         let url = "https://mail.google.com/mail/u/2/#inbox/" + thread_ID.toString();
         user_schema["url"] = url;
