@@ -3,7 +3,7 @@ import { firebaseAuth, db } from "../config/config";
 export const save_confluenceData = async (task_id, userdata) => {
   try {
     // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
-    console.log("In atlassian function confluence data is ", userdata);
+    // console.log("In atlassian function confluence data is ", userdata);
     userdata["upload_time_utc"] = Date.now();
     const uid =
       firebaseAuth.currentUser.uid === null
@@ -19,7 +19,7 @@ export const save_confluenceData = async (task_id, userdata) => {
       .set(userdata);
 
     // console.log("userRef is:", userRef);
-    console.log("In atlassian function confluence data is ", userdata);
+    // console.log("In atlassian function confluence data is ", userdata);
     return { msg: "success" };
   } catch (err) {
     console.log("Error is:", err);
@@ -113,7 +113,7 @@ export const save_JiraData = async (issue_id, userdata) => {
       .doc(issue_id)
       .set(userdata);
     //console.log("userRef is:", userRef);
-    console.log("In atlassian function Jira data is ", userdata);
+    // console.log("In atlassian function Jira data is ", userdata);
 
     return { msg: "success" };
   } catch (err) {

@@ -27,7 +27,7 @@ export const GsuiteDataSave = async (mid, userdata) => {
       .collection("data")
       .doc(mid)
       .set(userdata);
-    // console.log("userRef is ", userRef);
+    console.log("userRef is ", userRef);
     return { msg: "success" };
   } catch (e) {
     console.log(window.sessionStorage.getItem("user"));
@@ -49,10 +49,12 @@ export const GsuiteDataGet = async () => {
       .doc("gsuite")
       .collection("data")
       .get();
-    var finalData = [];
+    let finalData = [];
     userRef.forEach((data) => {
       finalData.push(data.data());
     });
+
+    // console.log(finalData, userRef);
     return finalData;
   } catch (e) {
     console.log(window.sessionStorage.getItem("user"));
@@ -63,7 +65,7 @@ export const GsuiteDataGet = async () => {
 
 export const GsuiteGetId = async () => {
   try {
-    var my_data =await GsuiteDataGet();
+    var my_data = await GsuiteDataGet();
     var ids = [];
     my_data.forEach((data) => {
       ids.push(data["mid"]);
@@ -77,7 +79,6 @@ export const GsuiteGetId = async () => {
 };
 
 export const GsuiteDataSaveReply = async (tid, userdata) => {
-
   // console.log("in db --------------------------", userdata);
   const subjectList = userdata.subject.toLowerCase().split(" ");
   let subjectDict = {};
@@ -85,10 +86,24 @@ export const GsuiteDataSaveReply = async (tid, userdata) => {
     subjectDict[subjectList[subject]] = 1;
   }
 
-  const CalWords = {"anniversary":"anniversary" ,"invitation": "invitation:", "feedback": "feedback", "townhall": "townhall","town_hall":"town hall","wishing":"wishing" };
+  const CalWords = {
+    anniversary: "anniversary",
+    invitation: "invitation:",
+    feedback: "feedback",
+    townhall: "townhall",
+    town_hall: "town hall",
+    wishing: "wishing",
+  };
 
-  if (!((subjectDict[CalWords.invitation]) || (subjectDict[CalWords.townhall] && !(subjectDict[CalWords.feedback])) || (subjectDict[CalWords.town_hall])|| (subjectDict[CalWords.wishing])|| (subjectDict[CalWords.anniversary]))) {
-
+  if (
+    !(
+      subjectDict[CalWords.invitation] ||
+      (subjectDict[CalWords.townhall] && !subjectDict[CalWords.feedback]) ||
+      subjectDict[CalWords.town_hall] ||
+      subjectDict[CalWords.wishing] ||
+      subjectDict[CalWords.anniversary]
+    )
+  ) {
     try {
       // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
       // console.log("In gsuite funct");
@@ -100,7 +115,9 @@ export const GsuiteDataSaveReply = async (tid, userdata) => {
 
       // userdata.sender.split("<")[1] ? userdata.sender.split("<")[1].split(">")[0] : userdata.sender
 
-      userdata.sender = userdata.sender.split("<")[1] ? userdata.sender.split("<")[1].split(">")[0] : userdata.sender;
+      userdata.sender = userdata.sender.split("<")[1]
+        ? userdata.sender.split("<")[1].split(">")[0]
+        : userdata.sender;
       const userRef = await db
         .collection("users")
         .doc(uid)
@@ -189,8 +206,6 @@ export const GsuiteDataGetReplyFalse = async () => {
   }
 };
 
-
-
 export const GmailReplyUpdateData = async (tid, userdata) => {
   try {
     userdata["upload_time_utc"] = Date.now();
@@ -198,7 +213,7 @@ export const GmailReplyUpdateData = async (tid, userdata) => {
       firebaseAuth.currentUser.uid === null
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
-        console.log("data ----- ", userdata);
+    console.log("data ----- ", userdata);
     const userRef = await db
       .collection("users")
       .doc(uid)

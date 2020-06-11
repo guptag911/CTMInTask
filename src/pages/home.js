@@ -25,10 +25,13 @@ const Home = () => {
   firebaseAuth.onAuthStateChanged((user) => {
     if (user) {
       setCurrentUser(user);
-      window.sessionStorage.setItem(
-        "user",
-        JSON.stringify(user.providerData[0])
-      );
+      let userData = {
+        displayNam: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        uid: user.uid,
+      };
+      window.sessionStorage.setItem("user", JSON.stringify(userData));
       return user;
     } else {
       setCurrentUser(null);

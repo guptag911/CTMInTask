@@ -6,7 +6,6 @@ import {
   db,
 } from "../config/config";
 
-
 var MY_SCHEMA = {
   id: "id of the event",
   creator: "creator mail",
@@ -28,7 +27,6 @@ var MY_SCHEMA = {
   updated: "latest modification date-time",
 };
 
-
 export const CalendarDataSave = async () => {
   try {
     // setTimeout(async () => {
@@ -43,7 +41,7 @@ export const CalendarDataSave = async () => {
         element.status === "confirmed" &&
         element.start.dateTime &&
         new Date(element.start.dateTime).toISOString() >=
-        new Date().toISOString()
+          new Date().toISOString()
       ) {
         let loc;
         try {
@@ -83,7 +81,6 @@ export const CalendarDataSave = async () => {
             .collection("calender")
             .doc(element.id)
             .set(calenderData);
-          // console.log("userRef is ", userRef);
           return { msg: "success" };
         } catch (e) {
           // console.log("error in the cal is ", e);
@@ -109,7 +106,7 @@ export const CalendarDataGet = async () => {
       .collection("calender")
       .orderBy("start_time", "asc")
       .get();
-    var finalData = [];
+    let finalData = [];
     userRef.forEach((data) => {
       // console.log(" the date comparison ", new Date(data.data().start_time).toISOString(), new Date().toISOString())
       if (
@@ -119,10 +116,10 @@ export const CalendarDataGet = async () => {
         finalData.push(data.data());
       }
     });
-    // console.log("Data is ", finalData);
+    console.log("Data is ", finalData);
     return finalData;
   } catch (e) {
-    // console.log("error is ", e);
+    console.log("error is ", e);
     return [];
   }
 };

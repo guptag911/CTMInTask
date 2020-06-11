@@ -10,7 +10,7 @@ import {
   GsuiteDataGetReply,
   GsuiteGetIdreply,
 } from "./gsuiteApi";
-import {get_data} from "./fixedGsuite";
+// import { get_data } from "./fixedGsuite";
 //Read only those threads in UI whose user_schema['replied'] = false
 
 /*
@@ -30,6 +30,7 @@ export const get_profile = async () => {
       userId: "me",
     });
 
+    // get_data("assigned you in an action document");
     console.log(response);
     return response.result.emailAddress;
   } catch (err) {
@@ -77,15 +78,14 @@ export const query_para = async (user_list) => {
 };
 
 export const my_nlp = (body) => {
-    var word1 = /(important|asap|quick|urgent|quickly|due|immediately|emergency|vital|crucial|hurry up|intense|serious|critical|prior|priority|rushed|fast|hasty|dire)/i;
-    var exp = new RegExp(word1);
-    var pos = body.match(exp);
-    if(pos==null)
-      return "Low";
-    else{
-      return "High";
-    }
-}
+  var word1 = /(important|asap|quick|urgent|quickly|due|immediately|emergency|vital|crucial|hurry up|intense|serious|critical|prior|priority|rushed|fast|hasty|dire)/i;
+  var exp = new RegExp(word1);
+  var pos = body.match(exp);
+  if (pos == null) return "Low";
+  else {
+    return "High";
+  }
+};
 
 export const message_list = async () => {
   let ID_list = await GsuiteDataGetReply();
@@ -102,7 +102,7 @@ export const message_list = async () => {
   let username = await get_username(email);
   let query = (await query_para(my_list)).toString();
   //Fetching message IDs from Firestore
-  for(let data in ID_list){
+  for (let data in ID_list) {
     IDs.push(ID_list[data]["thread_id"]);
   }
   try {
@@ -180,7 +180,8 @@ export const message_list = async () => {
         user_schema["priority"] = my_priority;
 
         //fetching the url
-        let url = "https://mail.google.com/mail/u/2/#inbox/" + thread_ID.toString();
+        let url =
+          "https://mail.google.com/mail/u/2/#inbox/" + thread_ID.toString();
         user_schema["url"] = url;
         //send the schema into the database
         var Gdata = await GsuiteDataSaveReply(
@@ -194,7 +195,3 @@ export const message_list = async () => {
     console.log("Error!", err);
   }
 };
-
-setTimeout( () => {
-  get_data("assigned you an action item in the following document");
-},5000);

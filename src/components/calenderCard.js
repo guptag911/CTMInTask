@@ -4,7 +4,7 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import { CalendarDataGet } from "../api/calendarAPI";
+import { CalendarDataGet, CalendarDataSave } from "../api/calendarAPI";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyleLoader = makeStyles((theme) => ({
@@ -41,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function CalendarCard(props) {
   const classes = useStyles();
   const classesLoader = useStyleLoader();
@@ -49,20 +48,20 @@ export default function CalendarCard(props) {
   let [data, getData] = useState(null);
 
   useEffect(() => {
-    CalendarDataGet()
-      .then((resp) => {
-        getData(resp);
-        setLoader(false);
-      })
-      .catch((e) => {
-        console.log("error is ", e);
-        setLoader(false);
-      });
+    CalendarDataSave();
+    dataGetCal();
   }, []);
+
+  const dataGetCal = async () => {
+    const resp = await CalendarDataGet();
+    console.log(resp);
+    getData(resp);
+    setLoader(false);
+  };
 
   return (
     <React.Fragment>
-      {data && !Loader? (
+      {data && !Loader ? (
         data.map((element) => {
           return (
             <Card className={classes.root}>

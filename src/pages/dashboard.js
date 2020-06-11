@@ -13,7 +13,6 @@ import { CalendarDataSave } from "../api/calendarAPI";
 const Dashboard = () => {
   React.useEffect(()=>{
     MessageList();
-    CalendarDataSave();
   }, []);
 
   return (

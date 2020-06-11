@@ -57,25 +57,28 @@ export default function SimpleCard(props) {
     if (props.product === "gsuites") {
       GsuiteDataGet()
         .then((data) => {
+          console.log(data);
           let ndata = [];
-          if (props.data === "gdocs") {
-            data.forEach((ele) => {
-              if (ele.sender.split("(")[1].split(")")[0] === "Google Docs") {
-                ndata.push(ele);
-              }
-            });
-          } else if (props.data === "gslides") {
-            data.forEach((ele) => {
-              if (ele.sender.split("(")[1].split(")")[0] === "Google Slides") {
-                ndata.push(ele);
-              }
-            });
-          } else if (props.data === "gsheets") {
-            data.forEach((ele) => {
-              if (ele.sender.split("(")[1].split(")")[0] === "Google Sheets") {
-                ndata.push(ele);
-              }
-            });
+          if (data !== null) {
+            if (props.data === "gdocs") {
+              data.forEach((ele) => {
+                if (ele.sender.includes("Google Docs")) {
+                  ndata.push(ele);
+                }
+              });
+            } else if (props.data === "gslides") {
+              data.forEach((ele) => {
+                if (ele.sender.includes("Google Slides")) {
+                  ndata.push(ele);
+                }
+              });
+            } else if (props.data === "gsheets") {
+              data.forEach((ele) => {
+                if (ele.sender.includes("Google Sheets")) {
+                  ndata.push(ele);
+                }
+              });
+            }
           }
           getData(ndata);
           setLoader(false);
@@ -112,23 +115,19 @@ export default function SimpleCard(props) {
             let ndata = [];
             if (props.data === "gdocs") {
               resp.forEach((ele) => {
-                if (ele.sender.split("(")[1].split(")")[0] === "Google Docs") {
+                if (ele.sender.includes("Google Docs")) {
                   ndata.push(ele);
                 }
               });
             } else if (props.data === "gslides") {
               resp.forEach((ele) => {
-                if (
-                  ele.sender.split("(")[1].split(")")[0] === "Google Slides"
-                ) {
+                if (ele.sender.includes("Google Slides")) {
                   ndata.push(ele);
                 }
               });
             } else if (props.data === "gsheets") {
               resp.forEach((ele) => {
-                if (
-                  ele.sender.split("(")[1].split(")")[0] === "Google Sheets"
-                ) {
+                if (ele.sender.includes("Google Sheets")) {
                   ndata.push(ele);
                 }
               });
@@ -179,7 +178,7 @@ export default function SimpleCard(props) {
               </CardContent>
               <CardActions>
                 <a
-                target="blank"
+                  target="blank"
                   href={element.url}
                   style={{
                     textDecoration: "none",
