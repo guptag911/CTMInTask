@@ -30,7 +30,8 @@ export const get_profile = async () => {
       userId: "me",
     });
 
-    // get_data("assigned you in an action document");
+  //  await get_data("from: comments-noreply@docs.google.com");
+
     console.log(response);
     return response.result.emailAddress;
   } catch (err) {
