@@ -122,13 +122,14 @@ import {
             }
             //console.log(comment_ids);
             let header = payload.headers;
+            let sender, receiver;
             header.forEach((head) => {
               //console.log("head is", head);
               if (head.name === "Delivered-To") {
-                user_schema["receiver"] = head["value"];
+                receiver = head["value"];
               }
               if (head.name === "From") {
-                user_schema["sender"] = head["value"];
+                sender = head["value"];
               }
             });
             //getting the status and making schema
@@ -145,8 +146,8 @@ import {
                   schema["file_id"] = user_schema["file_id"];
                   schema["comment_id"] = comment_ID;
                   schema["status"] = response.result.status;
-                  schema["sender"] = user_schema["sender"];
-                  schema["receiver"] = user_schema["receiver"];
+                  schema["sender"] = sender;
+                  schema["receiver"] = receiver;
                   schema["url"] = url;
                   schema["task_desc"] = response.result.content; 
                   console.log(schema);

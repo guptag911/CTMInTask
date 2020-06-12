@@ -10,7 +10,7 @@ import {
   GsuiteDataGetReply,
   GsuiteGetIdreply,
 } from "./gsuiteApi";
-import {get_data} from "./fixedGsuite";
+
 //Read only those threads in UI whose user_schema['replied'] = false
 
 /*
@@ -29,8 +29,6 @@ export const get_profile = async () => {
     var response = await window.gapi.client.gmail.users.getProfile({
       userId: "me",
     });
-
-   await get_data("from: comments-noreply@docs.google.com");
 
     console.log(response);
     return response.result.emailAddress;
@@ -79,15 +77,14 @@ export const query_para = async (user_list) => {
 };
 
 export const my_nlp = (body) => {
-    var word1 = /(important|asap|quick|urgent|quickly|due|immediately|emergency|vital|crucial|hurry up|intense|serious|critical|prior|priority|rushed|fast|hasty|dire)/i;
-    var exp = new RegExp(word1);
-    var pos = body.match(exp);
-    if(pos==null)
-      return "Low";
-    else{
-      return "High";
-    }
-}
+  var word1 = /(important|asap|quick|urgent|quickly|due|immediately|emergency|vital|crucial|hurry up|intense|serious|critical|prior|priority|rushed|fast|hasty|dire)/i;
+  var exp = new RegExp(word1);
+  var pos = body.match(exp);
+  if (pos == null) return "Low";
+  else {
+    return "High";
+  }
+};
 
 export const message_list = async () => {
   let ID_list = await GsuiteDataGetReply();
@@ -104,7 +101,7 @@ export const message_list = async () => {
   let username = await get_username(email);
   let query = (await query_para(my_list)).toString();
   //Fetching message IDs from Firestore
-  for(let data in ID_list){
+  for (let data in ID_list) {
     IDs.push(ID_list[data]["thread_id"]);
   }
   try {
@@ -148,7 +145,10 @@ export const message_list = async () => {
       //if thread ID is already in the database
       if (IDs.includes(thread_ID)) {
         try {
-          const uid = firebaseAuth.currentUser.uid;
+          const uid =
+            firebaseAuth.currentUser.uid === null
+              ? JSON.parse(window.sessionStorage.getItem("user")).uid
+              : firebaseAuth.currentUser.uid;
           const useref = await db
             .collection("users")
             .doc(uid)
@@ -170,6 +170,7 @@ export const message_list = async () => {
         //fetching the subject
         let payload = mail_data.messages[0].payload;
         let body_data = payload.parts[0].body.data;
+        // console.log(body_data, payload);
         let binaryData = Buffer.from(body_data, "base64");
         let parsed = binaryData.toString("utf8");
         let header = payload["headers"];
@@ -182,18 +183,18 @@ export const message_list = async () => {
         user_schema["priority"] = my_priority;
 
         //fetching the url
-        let url = "https://mail.google.com/mail/u/2/#inbox/" + thread_ID.toString();
+        let url =
+          "https://mail.google.com/mail/u/2/#inbox/" + thread_ID.toString();
         user_schema["url"] = url;
         //send the schema into the database
         var Gdata = await GsuiteDataSaveReply(
           user_schema["thread_id"],
           user_schema
         );
-        console.log(user_schema);
+        // console.log(user_schema);
       }
     });
   } catch (err) {
     console.log("Error!", err);
   }
 };
-

@@ -21,7 +21,7 @@ export const firebaseConfig = {
     "https://www.googleapis.com/auth/tasks",
     "https://www.googleapis.com/auth/analytics",
     "https://www.googleapis.com/auth/admin.directory.user.readonly",
-    "https://www.googleapis.com/auth/cloud-language",
+    // "https://www.googleapis.com/auth/cloud-language",
   ],
   discoveryDocs: [
     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
@@ -29,7 +29,7 @@ export const firebaseConfig = {
     "https://www.googleapis.com/discovery/v1/apis/drive/v2/rest",
     "https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest",
     "https://www.googleapis.com/discovery/v1/apis/admin/directory_v1/rest",
-    "https://language.googleapis.com/$discovery/rest?version=v1",
+    // "https://language.googleapis.com/$discovery/rest?version=v1",
   ],
 };
 
