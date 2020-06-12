@@ -1,46 +1,13 @@
 import {
-  googleProvider,
-  firebaseAuth,
-  firebaseConfig,
-  db,
-} from "../config/config";
-import axios from "axios";
-//import { GsuiteDataSave, GsuiteDataGet, GsuiteGetId } from "./gsuiteApi";
-
-export const get_thread = async (thread_ID) => {
-  try {
-    var response = await window.gapi.client.gmail.users.threads.get({
-      userId: "me",
-      id: thread_ID,
-    });
-    //console.log(thread_ID,response);
-    return response.result;
-  } catch (err) {
-    console.log("Error!", err);
-  }
-};
-
-export const get_data = async (query) => {
-  //let db_ids  = await GsuiteGetId(); //fetching thread ids from firestore
-  let user_data = [];
-  try {
-    //fetching mails from the API
-    let response = await window.gapi.client.gmail.users.messages.list({
-      userId: "me",
-      q: query,
-      maxResults: 100,
-    });
-    let messages = response.result.messages;
-    //console.log("Total messages are: ", response.result.messages);
-    messages.forEach(async (element) => {
-      let user_schema = {};
-      let thread_ID = element.threadId;
-      let mail_data = await get_thread(thread_ID);
-      user_schema["thread_id"] = thread_ID;
-      //console.log(mail_data);
-      let payload = mail_data.messages[0].payload;
-      let text;
-      //getting the url
+    googleProvider,
+    firebaseAuth,
+    firebaseConfig,
+    db,
+  } from "../config/config";
+  import axios from "axios";
+  import { getGsuiteID, getGsuiteData, saveGsuiteData } from "./fixedDb";
+  
+  export const get_thread = async (thread_ID) => {
       try {
         let msg_raw = payload["parts"][0].body.data;
         let data = msg_raw;
@@ -50,8 +17,11 @@ export const get_data = async (query) => {
       } catch (err) {
         console.log("Email body error!", err);
       }
-      //fetching the url
-      let urls;
+    };
+  
+  export const get_data = async (query) => {
+      let db_ids  = await getGsuiteID(); //fetching thread ids from firestore
+      let user_data = [];
       try {
         let regex_exp = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
         let email_body = text;
@@ -107,31 +77,66 @@ export const get_data = async (query) => {
               );
               comment_ids.add(comment_ID);
             }
-          } catch (err) {
-            console.log("No comment ID!", err);
-          }
-        });
-      }
-      //console.log(comment_ids);
-      let header = payload.headers;
-      let sender, receiver;
-      header.forEach((head) => {
-        //console.log("head is", head);
-        if (head.name === "Delivered-To") {
-          receiver = head["value"];
-        }
-        if (head.name === "From") {
-          sender = head["value"];
-        }
-      });
-      //getting the status and making schema
-      try {
-        comment_ids.forEach(async (comment_ID) => {
-          let schema = {};
-          try {
-            let response = await window.gapi.client.drive.comments.get({
-              fileId: user_schema["file_id"],
-              commentId: comment_ID,
+            //console.log(comment_ids);
+            let header = payload.headers;
+            let sender, receiver;
+            header.forEach((head) => {
+              //console.log("head is", head);
+              if (head.name === "Delivered-To") {
+                receiver = head["value"];
+              }
+              if (head.name === "From") {
+                sender = head["value"];
+              }
+            });
+            //getting the status and making schema
+            try
+            {
+            comment_ids.forEach( async (comment_ID) => {
+              let schema = {};
+              try {
+                  let response = await window.gapi.client.drive.comments.get({
+                    fileId: user_schema["file_id"],
+                    commentId: comment_ID,
+                  });
+                  schema["status"] = response.result.status;
+                  if(db_ids.includes(comment_ID))
+                  {
+                    try {
+                      const uid =
+                        firebaseAuth.currentUser.uid === null
+                          ? JSON.parse(window.sessionStorage.getItem("user")).uid
+                          : firebaseAuth.currentUser.uid;
+                      const useref = await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("tasks")
+                        .doc("fixed gsuite")
+                        .collection("data")
+                        .doc(comment_ID)
+                        .get();
+                      console.log(uid);
+                      let my_data = useref.data();
+                      my_data["status"] = schema["status"] ;
+                      let db_data = await saveGsuiteData(comment_ID, my_data);
+                    } catch (e) {
+                      console.log("Error is", e);
+                    }
+                  }
+                  else {
+                  schema["thread_id"] = thread_ID;
+                  schema["file_id"] = user_schema["file_id"];
+                  schema["comment_id"] = comment_ID;
+                  schema["sender"] = sender;
+                  schema["receiver"] = receiver;
+                  schema["url"] = url;
+                  schema["task_desc"] = response.result.content; 
+                  console.log(schema);
+                  let db_data = await saveGsuiteData(comment_ID, schema);
+                  }
+                } catch (err) {
+                  console.log("no comment ID", err);
+                  }   
             });
             schema["thread_id"] = thread_ID;
             schema["file_id"] = user_schema["file_id"];
@@ -146,16 +151,13 @@ export const get_data = async (query) => {
           } catch (err) {
             console.log("no comment ID", err);
           }
-        });
+        }});
       } catch (err) {
         console.log("Error!", err);
       }
-    });
-  } catch (err) {
-    console.log("error is ", err);
-  }
-};
+    };
+
 
 setTimeout(() => {
   get_data("from: comments-noreply@docs.google.com");
-}, 3000);
+},3000);
