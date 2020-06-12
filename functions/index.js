@@ -219,6 +219,45 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
 
     }
 
+
+    const noeventdata =
+    {
+      "widgets": [
+        {
+          "textParagraph": {
+            "text": "<font color=\"#ff0000\">Your calendar does not have any event.</font>"
+          }
+        }
+      ]
+
+    }
+
+    const nocompletedeventdata =
+    {
+      "widgets": [
+        {
+          "textParagraph": {
+            "text": "<font color=\"#ff0000\">You do not have any completed event.</font>"
+          }
+        }
+      ]
+
+    }
+
+
+    const nopendingeventddata =
+    {
+      "widgets": [
+        {
+          "textParagraph": {
+            "text": "<font color=\"#ff0000\">You do not have any upcoming event.</font>"
+          }
+        }
+      ]
+
+    }
+
+
     const notrepliedmail =
     {
       "widgets": [
@@ -555,138 +594,204 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
             ]
           });
           break;
-          case "allSheetsTasks":
-            data = await SheetsGetAllTasks(arr[cardEmail], cardSender);
-            if (data.length === 2) {
-              data.push(noanydata);
-            }
-            res.send({
-              "actionResponse": {
-                "type": "UPDATE_MESSAGE"
-              },
-              "cards": [
-                {
-                  "header": {
-                    "title": sender,
-                    "subtitle": cardEmail,
-                    "imageUrl": image,
-                    "imageStyle": "AVATAR"
-                  },
-                  "sections": data,
-                }
-              ]
-            });
-            break;
-            case "completedSheetsTasks":
-              data = await SheetsGetCompletedTasks(arr[cardEmail], cardSender);
-              if (data.length === 2) {
-                data.push(nocompleteddata);
-              }
-              res.send({
-                "actionResponse": {
-                  "type": "UPDATE_MESSAGE"
+        case "allSheetsTasks":
+          data = await SheetsGetAllTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(noanydata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
                 },
-                "cards": [
-                  {
-                    "header": {
-                      "title": sender,
-                      "subtitle": cardEmail,
-                      "imageUrl": image,
-                      "imageStyle": "AVATAR"
-                    },
-                    "sections": data,
-                  }
-                ]
-              });
-              break;
-              case "pendingSheetsTasks":
-                data = await SheetsGetPendingTasks(arr[cardEmail], cardSender);
-                if (data.length === 2) {
-                  data.push(nopendingddata);
-                }
-                res.send({
-                  "actionResponse": {
-                    "type": "UPDATE_MESSAGE"
-                  },
-                  "cards": [
-                    {
-                      "header": {
-                        "title": sender,
-                        "subtitle": cardEmail,
-                        "imageUrl": image,
-                        "imageStyle": "AVATAR"
-                      },
-                      "sections": data,
-                    }
-                  ]
-                });
-                break;
-                case "allSlidesTasks":
-                  data = await SlidesGetAllTasks(arr[cardEmail], cardSender);
-                  if (data.length === 2) {
-                    data.push(noanydata);
-                  }
-                  res.send({
-                    "actionResponse": {
-                      "type": "UPDATE_MESSAGE"
-                    },
-                    "cards": [
-                      {
-                        "header": {
-                          "title": sender,
-                          "subtitle": cardEmail,
-                          "imageUrl": image,
-                          "imageStyle": "AVATAR"
-                        },
-                        "sections": data,
-                      }
-                    ]
-                  });
-                  break;
-                  case "completedSlidesTasks":
-                    data = await SlidesGetCompletedTasks(arr[cardEmail], cardSender);
-                    if (data.length === 2) {
-                      data.push(nocompleteddata);
-                    }
-                    res.send({
-                      "actionResponse": {
-                        "type": "UPDATE_MESSAGE"
-                      },
-                      "cards": [
-                        {
-                          "header": {
-                            "title": sender,
-                            "subtitle": cardEmail,
-                            "imageUrl": image,
-                            "imageStyle": "AVATAR"
-                          },
-                          "sections": data,
-                        }
-                      ]
-                    });
-                    break;
-                    case "pendingSlidesTasks":
-                      data = await SlidesGetPendingTasks(arr[cardEmail], cardSender);
-                      if (data.length === 2) {
-                        data.push(nopendingddata);
-                      }
-                      res.send({
-                        "actionResponse": {
-                          "type": "UPDATE_MESSAGE"
-                        },
-                        "cards": [
-                          {
-                            "header": {
-                              "title": sender,
-                              "subtitle": cardEmail,
-                              "imageUrl": image,
-                              "imageStyle": "AVATAR"
-                            },
-                            "sections": data,
-                          }
-                        ]
-                      });
-                      break;
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "completedSheetsTasks":
+          data = await SheetsGetCompletedTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nocompleteddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "pendingSheetsTasks":
+          data = await SheetsGetPendingTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nopendingddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "allSlidesTasks":
+          data = await SlidesGetAllTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(noanydata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "completedSlidesTasks":
+          data = await SlidesGetCompletedTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nocompleteddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "pendingSlidesTasks":
+          data = await SlidesGetPendingTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nopendingddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "allEvents":
+          data = await EventsGetAllData(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(noeventdata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "completedEvents":
+          data = await EventsGetCompletedData(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nocompletedeventdata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "upcomingEvents":
+          data = await EventsGetUpcomingData(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nopendingeventddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
       }
     }
     const textList = req.body.message.text.toLowerCase().split(" ");
@@ -2181,9 +2286,71 @@ const EventsGetAllData = async (uid, sender) => {
   wt = { "widgets": OptionSelecter }
   Taskdata.push(wt);
   try {
-    const data = await db.collection('users').doc(uid).collection('calender').get();
+    const data = await db.collection('users').doc(uid).collection('calender').orderBy("start_time", "ASC").get();
     data.docs.forEach((element) => {
-     
+
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().creator,
+              "content": element.data().summary,
+              "contentMultiline": "true",
+              "bottomLabel": `${new Date(element.data().start_time.toString())} - ${new Date(element.data().end_time.toString())}`,
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "VISIT EVENT",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().htmlLink
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
+
+const EventsGetCompletedData = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('calender').orderBy("start_time", "ASC").get();
+    data.docs.forEach((element) => {
+      if (new Date(data.data().start_time).toISOString() < new Date().toISOString()) {
         let widgets = {
           "widgets": [
             {
@@ -2191,7 +2358,7 @@ const EventsGetAllData = async (uid, sender) => {
                 "topLabel": element.data().creator,
                 "content": element.data().summary,
                 "contentMultiline": "true",
-                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
+                "bottomLabel": `${new Date(element.data().start_time.toString())} - ${new Date(element.data().end_time.toString())}`,
                 "onClick": {
                   "openLink": {
                     "url": "https://ctmintask.web.app/"
@@ -2199,10 +2366,10 @@ const EventsGetAllData = async (uid, sender) => {
                 },
                 "button": {
                   "textButton": {
-                    "text": "VISIT TASK",
+                    "text": "VISIT EVENT",
                     "onClick": {
                       "openLink": {
-                        "url": element.data().url
+                        "url": element.data().htmlLink
                       }
                     }
                   }
@@ -2213,6 +2380,68 @@ const EventsGetAllData = async (uid, sender) => {
           ]
         }
         Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+const EventsGetUpcomingData = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('calender').orderBy("start_time", "ASC").get();
+    data.docs.forEach((element) => {
+      if (new Date(data.data().start_time).toISOString() >= new Date().toISOString()) {
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().creator,
+                "content": element.data().summary,
+                "contentMultiline": "true",
+                "bottomLabel": `${new Date(element.data().start_time.toString())} - ${new Date(element.data().end_time.toString())}`,
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "VISIT EVENT",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().htmlLink
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+      }
     });
     return Taskdata;
   } catch (e) {
