@@ -1,6 +1,8 @@
 {
   "parserOptions": {
     // Required for certain syntax usages
+    "sourceType": "module",
+    "allowImportExportEverywhere": true,
     "ecmaVersion": 2017
   },
   "plugins": [

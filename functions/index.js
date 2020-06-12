@@ -7,6 +7,9 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const cors = require("cors");
 const express = require("express");
+const OptionSelecter = require("./chatbot/optiondata");
+
+
 
 const app = express();
 
@@ -158,6 +161,7 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
   // let arr = await UIDData();
   // let data =await getDocTasks(arr['raybittu242@gmail.com']);
   // res.send(data);
+  console.log("req data is ", req.body);
 
   if (req.method === "GET" || !req.body.message) {
     res.send(
@@ -172,12 +176,289 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
     // console.log("data is ", data);
     // console.log("arr is ", arr);
     // console.log("body is ", req.body);
-
     const sender = req.body.message.sender.displayName;
     const image = req.body.message.sender.avatarUrl;
     const email = req.body.message.sender.email
-    const textList = req.body.message.text.toLowerCase().split(" ");
 
+
+
+    const noanydata =
+    {
+      "widgets": [
+        {
+          "textParagraph": {
+            "text": "<font color=\"#ff0000\">You do not have any assigned task.</font>"
+          }
+        }
+      ]
+
+    }
+
+    const nocompleteddata =
+    {
+      "widgets": [
+        {
+          "textParagraph": {
+            "text": "<font color=\"#ff0000\">You do not have any completed task.</font>"
+          }
+        }
+      ]
+
+    }
+
+
+    const nopendingddata =
+    {
+      "widgets": [
+        {
+          "textParagraph": {
+            "text": "<font color=\"#ff0000\">You do not have any pending task.</font>"
+          }
+        }
+      ]
+
+    }
+
+
+
+
+
+
+
+
+
+
+    if (req.body.type === 'CARD_CLICKED') {
+      let cardEmail = req.body.user.email;
+      let cardSender = req.body.user.displayName;
+      console.log("in swaitch case email is ", cardEmail);
+      let data;
+      switch (req.body.action.actionMethodName) {
+        case "allConfluenceTasks":
+          data = await ConfluenceGetAllTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(noanydata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data
+              }
+            ]
+          })
+          break;
+        case "completedConfluenceTasks":
+          data = await ConfluenceGetCompletdTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nocompleteddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data
+              }
+            ]
+          });
+          break;
+        case "pendingConfluenceTasks":
+          data = await ConfluenceGetPendingTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nopendingddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "allJiraTasks":
+          data = await JiraGetAllTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(noanydata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "completedJiraTasks":
+          data = await JiraGetCompletdTasks(arr[cardEmail], cardSender);
+          // console.log("task length is ", data.length);
+          if (data.length === 2) {
+            data.push(nocompleteddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "pendingJiraTasks":
+          data = await JiraGetPendingTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nopendingddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "allHubspotTasks":
+          data = await HubspotGetAllTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(noanydata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "completedHubspotTasks":
+          data = await HubspotGetCompletdTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nocompleteddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "pendingHubspotTasks":
+          data = await HubspotGetPendingTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nopendingddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+          case "HubspotNotes":
+            data = await HubspotGetNotes(arr[cardEmail], cardSender);
+            if (data.length === 2) {
+              data.push(noanydata);
+            }
+            res.send({
+              "actionResponse": {
+                "type": "UPDATE_MESSAGE"
+              },
+              "cards": [
+                {
+                  "header": {
+                    "title": sender,
+                    "subtitle": cardEmail,
+                    "imageUrl": image,
+                    "imageStyle": "AVATAR"
+                  },
+                  "sections": data,
+                }
+              ]
+            });
+            break;
+      }
+    }
+    const textList = req.body.message.text.toLowerCase().split(" ");
+    console.log("outside function ");
     const showTasktext = { "show": 1, "task": 1, "tasks": 1 };
     showtaskcount = 0;
     for (let text in textList) {
@@ -234,21 +515,14 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
                 "widgets": [
                   {
                     "textParagraph": {
-                      "text": "Hello, <b>" + sender + "</b>."
+                      "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
                     }
                   }
                 ]
 
               },
               {
-                "widgets": [
-                  {
-                    "textParagraph": {
-                      "text": "To see Tasklists, type <font color=\"#ff0000\"><b>show tasks</b></font> <br /> or To see your calender Events, type <font color=\"#ff0000\"><b>show events</b></font>"
-                    }
-                  }
-                ]
-
+                "widgets": OptionSelecter
               }
             ]
           }
@@ -324,6 +598,10 @@ const createMessage = async (displayName, imageURL, email, uid) => {
 
       }
     ]
+
+
+
+
 
     return {
       "cards": [
@@ -414,5 +692,619 @@ const getDocTasks = async (uid) => {
     console.log("in error ", e);
     return EventData;
   }
+
+}
+
+
+
+
+
+
+//All the tasks/events functions for the ChatBot------------------------------------
+
+
+const ConfluenceGetAllTasks = async (uid, sender) => {
+  console.log("uid is ", uid);
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('atlassian').collection('confluence').get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().space_name,
+              "content": element.data().task_name,
+              "contentMultiline": "true",
+              "bottomLabel": element.data().due_date ? new Date(element.data().due_date).toString() : "No Due date",
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Task Link",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().url
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+
+
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+}
+
+
+const ConfluenceGetCompletdTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('atlassian').collection('confluence').where("status", "==", "complete").get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().space_name,
+              "content": element.data().task_name,
+              "contentMultiline": "true",
+              "bottomLabel": element.data().due_date ? new Date(element.data().due_date).toString() : "No Due date",
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Task Link",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().url
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+
+
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+}
+
+
+const ConfluenceGetPendingTasks = async (uid, sender) => {
+
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('atlassian').collection('confluence').where("status", "==", "incomplete").get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().space_name,
+              "content": element.data().task_name,
+              "contentMultiline": "true",
+              "bottomLabel": element.data().due_date ? new Date(element.data().due_date).toString() : "No Due date",
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Task Link",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().url
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+
+  } catch (e) {
+    return Taskdata;
+  }
+
+}
+
+
+
+const JiraGetAllTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('atlassian').collection('jira').get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().project_name,
+              "content": element.data().issue_name,
+              "contentMultiline": "true",
+              "bottomLabel": element.data().due_date ? new Date(element.data().due_date).toString() : "No Due date",
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Task Link",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().url
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+const JiraGetCompletdTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('atlassian').collection('jira').where("status", "==", "complete").get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().project_name,
+              "content": element.data().issue_name,
+              "contentMultiline": "true",
+              "bottomLabel": element.data().due_date ? new Date(element.data().due_date).toString() : "No Due date",
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Task Link",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().url
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+
+}
+
+
+
+const JiraGetPendingTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('atlassian').collection('jira').where("status", "==", "incomplete").get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().project_name,
+              "content": element.data().issue_name,
+              "contentMultiline": "true",
+              "bottomLabel": element.data().due_date ? new Date(element.data().due_date).toString() : "No Due date",
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Task Link",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().url
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
+const HubspotGetAllTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().metadata.subject,
+              "content": element.data().engagement.bodyPreview,
+              "contentMultiline": "true",
+              "bottomLabel": new Date(element.data().engagement.timestamp).toString(),
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Task Link",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().url
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+const HubspotGetCompletdTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+    data.docs.forEach((element) => {
+      if (element.data().metadata.status === "COMPLETED") {
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().metadata.subject,
+                "content": element.data().engagement.bodyPreview,
+                "contentMultiline": "true",
+                "bottomLabel": new Date(element.data().engagement.timestamp).toString(),
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "Task Link",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+
+}
+
+
+
+const HubspotGetPendingTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+    data.docs.forEach((element) => {
+      if (element.data().metadata.status !== "COMPLETED") {
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().metadata.subject,
+                "content": element.data().engagement.bodyPreview,
+                "contentMultiline": "true",
+                "bottomLabel": new Date(element.data().engagement.timestamp).toString(),
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "Task Link",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
+
+const HubspotGetNotes = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "NOTE").get();
+    data.docs.forEach((element) => {
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().engagement.sourceId,
+                "content": element.data().engagement.bodyPreview,
+                "contentMultiline": "true",
+                "bottomLabel": new Date(element.data().engagement.timestamp).toString(),
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "Task Link",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
 
 }
