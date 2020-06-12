@@ -621,7 +621,72 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
                   ]
                 });
                 break;
-            
+                case "allSlidesTasks":
+                  data = await SlidesGetAllTasks(arr[cardEmail], cardSender);
+                  if (data.length === 2) {
+                    data.push(noanydata);
+                  }
+                  res.send({
+                    "actionResponse": {
+                      "type": "UPDATE_MESSAGE"
+                    },
+                    "cards": [
+                      {
+                        "header": {
+                          "title": sender,
+                          "subtitle": cardEmail,
+                          "imageUrl": image,
+                          "imageStyle": "AVATAR"
+                        },
+                        "sections": data,
+                      }
+                    ]
+                  });
+                  break;
+                  case "completedSlidesTasks":
+                    data = await SlidesGetCompletedTasks(arr[cardEmail], cardSender);
+                    if (data.length === 2) {
+                      data.push(nocompleteddata);
+                    }
+                    res.send({
+                      "actionResponse": {
+                        "type": "UPDATE_MESSAGE"
+                      },
+                      "cards": [
+                        {
+                          "header": {
+                            "title": sender,
+                            "subtitle": cardEmail,
+                            "imageUrl": image,
+                            "imageStyle": "AVATAR"
+                          },
+                          "sections": data,
+                        }
+                      ]
+                    });
+                    break;
+                    case "pendingSlidesTasks":
+                      data = await SlidesGetCompletedTasks(arr[cardEmail], cardSender);
+                      if (data.length === 2) {
+                        data.push(nopendingddata);
+                      }
+                      res.send({
+                        "actionResponse": {
+                          "type": "UPDATE_MESSAGE"
+                        },
+                        "cards": [
+                          {
+                            "header": {
+                              "title": sender,
+                              "subtitle": cardEmail,
+                              "imageUrl": image,
+                              "imageStyle": "AVATAR"
+                            },
+                            "sections": data,
+                          }
+                        ]
+                      });
+                      break;
       }
     }
     const textList = req.body.message.text.toLowerCase().split(" ");
@@ -1868,6 +1933,195 @@ const SheetsGetPendingTasks = async (uid, sender) => {
     const data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
     data.docs.forEach((element) => {
       if (element.data().sender.split("<")[0].split("(")[1].split(")")[0] === "Google Sheets" && !(element.data().status === true && element.data().taskid === null)) {
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().sender.split("<")[0],
+                "content": element.data().task_desc,
+                "contentMultiline": "true",
+                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "VISIT TASK",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
+
+
+const SlidesGetAllTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
+    data.docs.forEach((element) => {
+      if (element.data().sender.split("<")[0].split("(")[1].split(")")[0] === "Google Slides") {
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().sender.split("<")[0],
+                "content": element.data().task_desc,
+                "contentMultiline": "true",
+                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "VISIT TASK",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
+
+const SlidesGetCompletedTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
+    data.docs.forEach((element) => {
+      if (element.data().sender.split("<")[0].split("(")[1].split(")")[0] === "Google Slides" && element.data().status === true && element.data().taskid === null) {
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().sender.split("<")[0],
+                "content": element.data().task_desc,
+                "contentMultiline": "true",
+                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "VISIT TASK",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
+const SlidesGetPendingTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
+    data.docs.forEach((element) => {
+      if (element.data().sender.split("<")[0].split("(")[1].split(")")[0] === "Google Slides" && !(element.data().status === true && element.data().taskid === null)) {
         let widgets = {
           "widgets": [
             {
