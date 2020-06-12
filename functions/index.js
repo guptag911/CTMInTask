@@ -666,7 +666,7 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
                     });
                     break;
                     case "pendingSlidesTasks":
-                      data = await SlidesGetCompletedTasks(arr[cardEmail], cardSender);
+                      data = await SlidesGetPendingTasks(arr[cardEmail], cardSender);
                       if (data.length === 2) {
                         data.push(nopendingddata);
                       }
@@ -2161,3 +2161,67 @@ const SlidesGetPendingTasks = async (uid, sender) => {
 
 
 }
+
+
+
+const EventsGetAllData = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('calender').get();
+    data.docs.forEach((element) => {
+     
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().creator,
+                "content": element.data().summary,
+                "contentMultiline": "true",
+                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "VISIT TASK",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
