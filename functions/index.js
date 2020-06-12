@@ -272,13 +272,6 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
 
 
 
-
-
-
-
-
-
-
     if (req.body.type === 'CARD_CLICKED') {
       let cardEmail = req.body.user.email;
       let cardSender = req.body.user.displayName;
@@ -794,50 +787,8 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
           break;
       }
     }
-    const textList = req.body.message.text.toLowerCase().split(" ");
-    console.log("outside function ");
-    const showTasktext = { "show": 1, "task": 1, "tasks": 1 };
-    showtaskcount = 0;
-    for (let text in textList) {
-      if (showTasktext[textList[text]]) {
-        showtaskcount += 1;
-      }
-    }
 
-    if (showtaskcount >= Object.keys(showTasktext).length - 1) {
-      const data = await createMessage(sender, image, email, arr[email]);
-
-      res.send(data);
-    }
-
-    const showEventText = { "show": 1, "calendar": 1, "event": 1, "events": 1 }
-    showeventcount = 0;
-    for (let text in textList) {
-      if (showEventText[textList[text]]) {
-        showeventcount += 1;
-      }
-    }
-
-    if (showeventcount >= Object.keys(showEventText).length - 2) {
-      const data = await getDocTasks(arr[email]);
-
-      res.send({
-        "cards": [
-          {
-            "header": {
-              "title": sender,
-              "subtitle": email,
-              "imageUrl": image,
-              "imageStyle": "AVATAR"
-            },
-            "sections": data
-          }
-        ]
-      }
-      );
-    }
-
-    else {
+    if (req.body.type === "MESSAGE") {
       res.send({
         "cards": [
           {
@@ -868,9 +819,6 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
       );
     }
 
-
-    // const data = await createMessage(sender, image, email, arr[email]);
-
   } catch (e) {
     console.log("in err", e);
     res.send({
@@ -879,158 +827,6 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
     );
   }
 });
-
-const createMessage = async (displayName, imageURL, email, uid) => {
-
-  console.log("arr email ", uid, email);
-
-
-  try {
-    let taskData = []
-    let data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
-    data.docs.forEach((element) => {
-      if (!(element.data().status === "completed" && element.data().taskid === null)) {
-        console.log("docs data ", element.data());
-        let widgets = {
-          "widgets": [
-            {
-              "keyValue": {
-                "topLabel": element.data().sender.split("<")[0],
-                "content": element.data().task_desc,
-                "contentMultiline": "true",
-                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
-                "onClick": {
-                  "openLink": {
-                    "url": "https://ctmintask.web.app/"
-                  }
-                },
-                "button": {
-                  "textButton": {
-                    "text": "Visit Document",
-                    "onClick": {
-                      "openLink": {
-                        "url": element.data().url
-                      }
-                    }
-                  }
-                }
-              }
-
-            }
-          ]
-        }
-        taskData.push(widgets);
-      }
-    })
-
-    const notData = [
-      {
-        "widgets": [
-          {
-            "textParagraph": {
-              "text": "<font color=\"#ff0000\">You do not have any task left.</font>"
-            }
-          }
-        ]
-
-      }
-    ]
-
-
-
-
-
-    return {
-      "cards": [
-        {
-          "header": {
-            "title": displayName,
-            "subtitle": email,
-            "imageUrl": imageURL,
-            "imageStyle": "AVATAR"
-          },
-          "sections": taskData.length === 0 ? notData : taskData
-        }
-      ]
-    }
-  } catch (e) {
-    console.log("err is ", e);
-    return {
-      "cards": [
-        {
-          "header": {
-            "title": displayName,
-            "subtitle": email,
-            "imageUrl": imageURL,
-            "imageStyle": "AVATAR"
-          },
-          "sections": [
-            {
-              "widgets": [
-                {
-                  "textParagraph": {
-                    "text": "<font color=\"#ff0000\">You Register first</font>"
-                  }
-                }
-              ]
-
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
-
-
-
-
-const getDocTasks = async (uid) => {
-  let EventData = []
-  console.log("uid is ", uid);
-  try {
-    let data = await db.collection('users').doc(uid).collection('calender').get();
-    // console.log(data.docs);
-    data.docs.forEach((element) => {
-      console.log("docs data ", element.data());
-      let widgets = {
-        "widgets": [
-          {
-            "keyValue": {
-              "topLabel": element.data().creator,
-              "content": element.data().summary,
-              "contentMultiline": "true",
-              "bottomLabel": new Date(element.data().start_time).toString(),
-              "onClick": {
-                "openLink": {
-                  "url": "https://ctmintask.web.app/"
-                }
-              },
-              "button": {
-                "textButton": {
-                  "text": "Visit Event",
-                  "onClick": {
-                    "openLink": {
-                      "url": element.data().htmlLink
-                    }
-                  }
-                }
-              }
-            }
-
-          }
-        ]
-      }
-      EventData.push(widgets);
-    });
-    return EventData;
-  }
-  catch (e) {
-    console.log("in error ", e);
-    return EventData;
-  }
-
-}
 
 
 
@@ -2350,7 +2146,7 @@ const EventsGetCompletedData = async (uid, sender) => {
   try {
     const data = await db.collection('users').doc(uid).collection('calender').orderBy("start_time", "ASC").get();
     data.docs.forEach((element) => {
-      if (new Date(data.data().start_time).toISOString() < new Date().toISOString()) {
+      if (new Date(element.data().start_time).toISOString() < new Date().toISOString()) {
         let widgets = {
           "widgets": [
             {
@@ -2411,7 +2207,7 @@ const EventsGetUpcomingData = async (uid, sender) => {
   try {
     const data = await db.collection('users').doc(uid).collection('calender').orderBy("start_time", "ASC").get();
     data.docs.forEach((element) => {
-      if (new Date(data.data().start_time).toISOString() >= new Date().toISOString()) {
+      if (new Date(element.data().start_time).toISOString() >= new Date().toISOString()) {
         let widgets = {
           "widgets": [
             {
