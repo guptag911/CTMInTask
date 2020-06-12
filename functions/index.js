@@ -219,6 +219,18 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
 
     }
 
+    const notrepliedmail =
+    {
+      "widgets": [
+        {
+          "textParagraph": {
+            "text": "<font color=\"#ff0000\">You do not have any un-replied important mail.</font>"
+          }
+        }
+      ]
+
+    }
+
 
 
 
@@ -433,28 +445,116 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
             ]
           });
           break;
-          case "HubspotNotes":
-            data = await HubspotGetNotes(arr[cardEmail], cardSender);
-            if (data.length === 2) {
-              data.push(noanydata);
-            }
-            res.send({
-              "actionResponse": {
-                "type": "UPDATE_MESSAGE"
-              },
-              "cards": [
-                {
-                  "header": {
-                    "title": sender,
-                    "subtitle": cardEmail,
-                    "imageUrl": image,
-                    "imageStyle": "AVATAR"
-                  },
-                  "sections": data,
-                }
-              ]
-            });
-            break;
+        case "HubspotNotes":
+          data = await HubspotGetNotes(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(noanydata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "allNonRepliedMails":
+          data = await ReplyMailGetAllNonRepliedMails(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(notrepliedmail);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "allDocsTasks":
+          data = await DocsGetAllTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(noanydata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "completedDocsTasks":
+          data = await DocsGetCompletedTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nocompleteddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
+        case "pendingDocsTasks":
+          data = await DocsGetPendingTasks(arr[cardEmail], cardSender);
+          if (data.length === 2) {
+            data.push(nopendingddata);
+          }
+          res.send({
+            "actionResponse": {
+              "type": "UPDATE_MESSAGE"
+            },
+            "cards": [
+              {
+                "header": {
+                  "title": sender,
+                  "subtitle": cardEmail,
+                  "imageUrl": image,
+                  "imageStyle": "AVATAR"
+                },
+                "sections": data,
+              }
+            ]
+          });
+          break;
       }
     }
     const textList = req.body.message.text.toLowerCase().split(" ");
@@ -1270,14 +1370,132 @@ const HubspotGetNotes = async (uid, sender) => {
   try {
     const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "NOTE").get();
     data.docs.forEach((element) => {
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().engagement.sourceId,
+              "content": element.data().engagement.bodyPreview,
+              "contentMultiline": "true",
+              "bottomLabel": new Date(element.data().engagement.timestamp).toString(),
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Task Link",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().url
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
+const ReplyMailGetAllNonRepliedMails = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('reply').where("replied", "==", false).get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        "widgets": [
+          {
+            "keyValue": {
+              "topLabel": element.data().sender,
+              "content": element.data().subject,
+              "contentMultiline": "true",
+              "onClick": {
+                "openLink": {
+                  "url": "https://ctmintask.web.app/"
+                }
+              },
+              "button": {
+                "textButton": {
+                  "text": "Mail Link",
+                  "onClick": {
+                    "openLink": {
+                      "url": element.data().url
+                    }
+                  }
+                }
+              }
+            }
+
+          }
+        ]
+      }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+const DocsGetAllTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
+    data.docs.forEach((element) => {
+      if (element.data().sender.split("<")[0].split("(")[1].split(")")[0] === "Google Docs") {
         let widgets = {
           "widgets": [
             {
               "keyValue": {
-                "topLabel": element.data().engagement.sourceId,
-                "content": element.data().engagement.bodyPreview,
+                "topLabel": element.data().sender.split("<")[0],
+                "content": element.data().task_desc,
                 "contentMultiline": "true",
-                "bottomLabel": new Date(element.data().engagement.timestamp).toString(),
+                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
                 "onClick": {
                   "openLink": {
                     "url": "https://ctmintask.web.app/"
@@ -1285,7 +1503,7 @@ const HubspotGetNotes = async (uid, sender) => {
                 },
                 "button": {
                   "textButton": {
-                    "text": "Task Link",
+                    "text": "Mail Link",
                     "onClick": {
                       "openLink": {
                         "url": element.data().url
@@ -1299,6 +1517,7 @@ const HubspotGetNotes = async (uid, sender) => {
           ]
         }
         Taskdata.push(widgets);
+      }
     });
     return Taskdata;
   } catch (e) {
@@ -1308,3 +1527,133 @@ const HubspotGetNotes = async (uid, sender) => {
 
 
 }
+
+
+
+
+const DocsGetCompletedTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
+    data.docs.forEach((element) => {
+      if (element.data().sender.split("<")[0].split("(")[1].split(")")[0] === "Google Docs" && element.data().status === true && element.data().taskid === null) {
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().sender.split("<")[0],
+                "content": element.data().task_desc,
+                "contentMultiline": "true",
+                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "Mail Link",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
+const DocsGetPendingTasks = async (uid, sender) => {
+  let Taskdata = [];
+  let wt =
+  {
+    "widgets": [
+      {
+        "textParagraph": {
+          "text": "Hello, <b>" + sender + "</b>! Kindly select one option."
+        }
+      }
+    ]
+
+  }
+  Taskdata.push(wt);
+  wt = { "widgets": OptionSelecter }
+  Taskdata.push(wt);
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('gsuite').collection('data').get();
+    data.docs.forEach((element) => {
+      if (element.data().sender.split("<")[0].split("(")[1].split(")")[0] === "Google Docs" && !(element.data().status === true && element.data().taskid === null)) {
+        let widgets = {
+          "widgets": [
+            {
+              "keyValue": {
+                "topLabel": element.data().sender.split("<")[0],
+                "content": element.data().task_desc,
+                "contentMultiline": "true",
+                "bottomLabel": element.data().sender.split("<")[0].split("(")[1].split(")")[0],
+                "onClick": {
+                  "openLink": {
+                    "url": "https://ctmintask.web.app/"
+                  }
+                },
+                "button": {
+                  "textButton": {
+                    "text": "Mail Link",
+                    "onClick": {
+                      "openLink": {
+                        "url": element.data().url
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          ]
+        }
+        Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+
+}
+
+
+
+
+
