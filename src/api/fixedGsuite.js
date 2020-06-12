@@ -22,7 +22,7 @@ import {
   
   export const get_data = async (query) => {
       let db_ids  = await getGsuiteID(); //fetching thread ids from firestore
-      let user_data = [];
+      //let user_data = [];
       try {
         //fetching mails from the API
         let response = await window.gapi.client.gmail.users.messages.list({
