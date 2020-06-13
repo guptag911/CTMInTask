@@ -12,46 +12,14 @@ import EmailCard from "./replyEmailsCard";
 let TopEmailData = [];
 
 const suggestions = [
-  { name: "Afghanistan" },
-  { name: "Aland Islands" },
-  { name: "Albania" },
-  { name: "Algeria" },
-  { name: "American Samoa" },
-  { name: "Andorra" },
-  { name: "Angola" },
-  { name: "Anguilla" },
-  { name: "Antarctica" },
-  { name: "Antigua and Barbuda" },
-  { name: "Argentina" },
-  { name: "Armenia" },
-  { name: "Aruba" },
-  { name: "Australia" },
-  { name: "Austria" },
-  { name: "Azerbaijan" },
-  { name: "Bahamas" },
-  { name: "Bahrain" },
-  { name: "Bangladesh" },
-  { name: "Barbados" },
-  { name: "Belarus" },
-  { name: "Belgium" },
-  { name: "Belize" },
-  { name: "Benin" },
-  { name: "Bermuda" },
-  { name: "Bhutan" },
-  { name: "Bolivia, Plurinational State of" },
-  { name: "Bonaire, Sint Eustatius and Saba" },
-  { name: "Bosnia and Herzegovina" },
-  { name: "Botswana" },
-  { name: "Bouvet Island" },
-  { name: "Brazil" },
-  { name: "British Indian Ocean Territory" },
-  { name: "Brunei Darussalam" },
-  {name: "shubham.kamra@innovaccer.com"},
-  {name: "mrinalini.mittal@innovaccer.com"},
-  {name: "ankit.maheshwari@innovaccer.com"},
-  {name: "ambuj.singh@innovaccer.com"},
-  {name: "satyajit.menon@innovaccer.com"},
-  {name:"hr@innovaccer.com"}
+  { name: "shubham.kamra@innovaccer.com" },
+  { name: "mrinalini.mittal@innovaccer.com" },
+  { name: "ankit.maheshwari@innovaccer.com" },
+  { name: "ambuj.singh@innovaccer.com" },
+  { name: "satyajit.menon@innovaccer.com" },
+  { name: "hr@innovaccer.com" },
+  { name: "animesh.sharma@innovaccer.com" },
+  { name: "garima.rawal@innovaccer.com" },
 ];
 
 function renderInput(inputProps) {
@@ -88,8 +56,8 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
               {part.text}
             </span>
           ) : (
-              <span key={String(index)}>{part.text}</span>
-            );
+            <span key={String(index)}>{part.text}</span>
+          );
         })}
       </div>
     </MenuItem>
@@ -118,16 +86,16 @@ function getSuggestions(value) {
   return inputLength === 0
     ? []
     : suggestions.filter((suggestion) => {
-      const keep =
-        count < 5 &&
-        suggestion.name.toLowerCase().slice(0, inputLength) === inputValue;
+        const keep =
+          count < 5 &&
+          suggestion.name.toLowerCase().slice(0, inputLength) === inputValue;
 
-      if (keep) {
-        count += 1;
-      }
+        if (keep) {
+          count += 1;
+        }
 
-      return keep;
-    });
+        return keep;
+      });
 }
 
 const styles = (theme) => ({
@@ -162,7 +130,7 @@ class ReactAutosuggest extends Component {
     suggestions: [],
     value: [],
     textFieldInput: "",
-    signal:0
+    signal: 0,
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {
@@ -205,24 +173,26 @@ class ReactAutosuggest extends Component {
     TopEmailData.splice(index, 1);
   }
 
-  handleOnSave=()=>{
+  handleOnSave = () => {
     // console.log(JSON.parse(window.localStorage.getItem("topEmails")));
-    let topEmails={};
-    let count=1;
-    TopEmailData.forEach((element)=>{
-      topEmails["email"+count]=element;
-      count+=1;
-    })
-    window.localStorage.setItem("topEmails",JSON.stringify(topEmails));
-    this.setState({signal:this.state.signal+1});
+    let topEmails = {};
+    let count = 1;
+    TopEmailData.forEach((element) => {
+      topEmails["email" + count] = element;
+      count += 1;
+    });
+    window.localStorage.setItem("topEmails", JSON.stringify(topEmails));
+    this.setState({ signal: this.state.signal + 1 });
+  };
 
-  }
-
-  componentDidMount(){
-    TopEmailData=[];
+  componentDidMount() {
+    TopEmailData = [];
     let emailData = JSON.parse(window.localStorage.getItem("topEmails"));
-    for(let email in emailData){
-      if (this.props.allowDuplicates || this.state.value.indexOf(emailData[email]) < 0) {
+    for (let email in emailData) {
+      if (
+        this.props.allowDuplicates ||
+        this.state.value.indexOf(emailData[email]) < 0
+      ) {
         this.setState(({ value }) => ({
           value: [...value, emailData[email]],
           textFieldInput: "",
@@ -231,8 +201,6 @@ class ReactAutosuggest extends Component {
       }
     }
   }
-
-
 
   render() {
     const { classes, ...other } = this.props;
@@ -268,10 +236,7 @@ class ReactAutosuggest extends Component {
           }}
         />
         <br></br>
-        <Button variant="contained"
-          color="primary"
-          onClick={this.handleOnSave}
-        >
+        <Button variant="contained" color="primary" onClick={this.handleOnSave}>
           Save
         </Button>
         <EmailCard signal={this.state.signal}></EmailCard>

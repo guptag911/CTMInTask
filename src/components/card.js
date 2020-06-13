@@ -6,8 +6,9 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
+// import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { getGsuiteData, saveGsuiteData } from "../api/fixedDb";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -55,7 +56,7 @@ export default function SimpleCard(props) {
   useEffect(() => {
     console.log("called");
     if (props.product === "gsuites") {
-      GsuiteDataGet()
+      getGsuiteData()
         .then((data) => {
           console.log(data);
           let ndata = [];
@@ -90,53 +91,36 @@ export default function SimpleCard(props) {
     }
   }, []);
 
-  const handleChange = async (mid, element) => {
+  const handleChange = async (comment_id, element) => {
     setLoader(true);
 
     if (props.product === "gsuites") {
       try {
-        var task = await window.gapi.client.tasks.tasks.get({
-          tasklist: "@default",
-          task: element.taskid,
-        });
-        // console.log("task is ", task.result);
-        task.result["status"] = "completed";
-        task.result["hidden"] = true;
-        var result = await window.gapi.client.tasks.tasks.update(
-          { tasklist: "@default", task: task.result["id"] },
-          task.result
-        );
-        // var result = axios.put('https://www.googleapis.com/tasks/v1/users/@me/lists/MkVoclhyZUZycUtubkNMWQ', {"id": "MkVoclhyZUZycUtubkNMWQ","title": "My task modified again with new tech"});
-        // console.log("result is ", result.result);
-        element.taskid = null;
-        element.status = "completed";
-        GsuiteDataSave(mid, element).then((data) => {
-          GsuiteDataGet().then((resp) => {
-            let ndata = [];
-            if (props.data === "gdocs") {
-              resp.forEach((ele) => {
-                if (ele.sender.includes("Google Docs")) {
-                  ndata.push(ele);
-                }
-              });
-            } else if (props.data === "gslides") {
-              resp.forEach((ele) => {
-                if (ele.sender.includes("Google Slides")) {
-                  ndata.push(ele);
-                }
-              });
-            } else if (props.data === "gsheets") {
-              resp.forEach((ele) => {
-                if (ele.sender.includes("Google Sheets")) {
-                  ndata.push(ele);
-                }
-              });
+        element.status = "resolved";
+        await saveGsuiteData(comment_id, element);
+        const resp = await getGsuiteData();
+        let ndata = [];
+        if (props.data === "gdocs") {
+          resp.forEach((ele) => {
+            if (ele.sender.includes("Google Docs")) {
+              ndata.push(ele);
             }
-            getData(ndata);
-            // console.log("data is in the card", data);
-            setLoader(false);
           });
-        });
+        } else if (props.data === "gslides") {
+          resp.forEach((ele) => {
+            if (ele.sender.includes("Google Slides")) {
+              ndata.push(ele);
+            }
+          });
+        } else if (props.data === "gsheets") {
+          resp.forEach((ele) => {
+            if (ele.sender.includes("Google Sheets")) {
+              ndata.push(ele);
+            }
+          });
+        }
+        getData(ndata);
+        setLoader(false);
       } catch (e) {
         console.log("error ", e);
       }
@@ -147,8 +131,8 @@ export default function SimpleCard(props) {
     <React.Fragment>
       {data && !Loader ? (
         data.map((element) => {
-          return !element.taskid && element.status ? null : (
-            <Card key={element.mid} className={classes.root}>
+          return element.status === "open" ? (
+            <Card key={element.comment_id} className={classes.root}>
               <CardContent>
                 <Typography
                   className={classes.title}
@@ -165,11 +149,11 @@ export default function SimpleCard(props) {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={!element.taskid && element.status}
+                      checked={element.status === "resolved"}
                       color="primary"
                       onChange={(e) => {
                         setChecked(e.target.checked);
-                        handleChange(element.mid, element);
+                        handleChange(element.comment_id, element);
                       }}
                     />
                   }
@@ -191,7 +175,7 @@ export default function SimpleCard(props) {
                 </a>
               </CardActions>
             </Card>
-          );
+          ) : null;
         })
       ) : (
         <div className={classesLoader.root}>

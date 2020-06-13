@@ -1,17 +1,5 @@
-import {
-  googleProvider,
-  firebaseAuth,
-  firebaseConfig,
-  db,
-} from "../config/config";
-import axios from "axios";
-import {
-  GsuiteDataSaveReply,
-  GsuiteDataGetReply,
-  GsuiteGetIdreply,
-} from "./gsuiteApi";
-
-import "./fixedGsuite";
+import { firebaseAuth, db } from "../config/config";
+import { GsuiteDataSaveReply, GsuiteGetIdreply } from "./gsuiteApi";
 
 //Read only those threads in UI whose user_schema['replied'] = false
 
@@ -79,9 +67,9 @@ export const query_para = async (user_list) => {
 };
 
 export const my_nlp = (body) => {
-  var word1 = /(important|asap|quick|urgent|quickly|due|immediately|emergency|vital|crucial|hurry up|intense|serious|critical|prior|priority|rushed|fast|hasty|dire)/i;
-  var exp = new RegExp(word1);
-  var pos = body.match(exp);
+  const word1 = /(important|asap|quick|urgent|quickly|due|immediately|emergency|vital|crucial|hurry up|intense|serious|critical|prior|priority|rushed|fast|hasty|dire)/i;
+  const exp = new RegExp(word1);
+  let pos = body.match(exp);
   if (pos == null) return "Low";
   else {
     return "High";
@@ -103,8 +91,8 @@ export const message_list = async () => {
   let username = await get_username(email);
   let query = (await query_para(my_list)).toString();
   //Fetching message IDs from Firestore
-  (await ID_list).forEach(id => {
-      IDs.push(id);
+  (await ID_list).forEach((id) => {
+    IDs.push(id);
   });
   console.log("IDs are", IDs);
   try {

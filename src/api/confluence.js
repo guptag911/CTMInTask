@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import {
-  googleProvider,
   firebaseAuth,
-  firebaseConfig,
   db,
 } from "../config/config";
 import * as conf from "../helper/confAuth";
@@ -10,7 +8,6 @@ import * as userConf from "../helper/confUserAuth";
 import axios from "axios";
 import {
   save_confluenceData,
-  get_confluenceData,
   get_confluenceID,
 } from "./atlassian";
 import cheerio from "cheerio";

@@ -2,17 +2,17 @@ import React from "react";
 import NavigationBar from "../components/NavBar";
 import Container from "@material-ui/core/Container";
 import TabView from "../components/tabView";
-import {
-  DataSave,
-  GetData,
-  MessageList,
-} from "../api/datagetting_pythonScript";
-import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
-import { CalendarDataSave } from "../api/calendarAPI";
+import { get_data } from "../api/fixedGsuite";
+import { delete_tasks, insert_tasks } from "../api/googleTasks";
 
 const Dashboard = () => {
-  React.useEffect(()=>{
-    MessageList();
+  React.useEffect(() => {
+    get_data("from: comments-noreply@docs.google.com");
+
+    setTimeout(() => {
+      delete_tasks();
+      insert_tasks();
+    }, 5000);
   }, []);
 
   return (

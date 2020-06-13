@@ -1,13 +1,8 @@
 /* eslint-disable no-unused-expressions */
 import axios from "axios";
 import * as jira from "../helper/jiraAuth";
-import {
-  googleProvider,
-  firebaseAuth,
-  firebaseConfig,
-  db,
-} from "../config/config";
-import { get_JiraID, get_JiraData, save_JiraData } from "./atlassian";
+import { firebaseAuth, db } from "../config/config";
+import { get_JiraID, save_JiraData } from "./atlassian";
 
 /*
 user_schema = {
@@ -92,11 +87,11 @@ async function issues_data() {
                 .collection("jira")
                 .doc(issue_ID)
                 .get();
-                
+
               let my_data = useref.data();
               my_data["status"] = status;
 
-              let db_data = await save_JiraData(issue_ID,my_data);
+              let db_data = await save_JiraData(issue_ID, my_data);
             } catch (err) {
               console.log("error!", err);
             }

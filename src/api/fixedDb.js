@@ -10,10 +10,10 @@ export const getGsuiteData = async () => {
       .collection("users")
       .doc(uid)
       .collection("tasks")
-      .doc("fixed gsuite")
+      .doc("gsuite")
       .collection("data")
       .get();
-    var finalData = [];
+    let finalData = [];
     userRef.forEach((data) => {
       finalData.push(data.data());
     });
@@ -28,8 +28,8 @@ export const getGsuiteData = async () => {
 
 export const getGsuiteID = async () => {
   try {
-    var my_data = await getGsuiteData();
-    var comment_ids = [];
+    let my_data = await getGsuiteData();
+    let comment_ids = [];
     (await my_data).forEach((data) => {
       comment_ids.push(data["comment_id"]);
     });
@@ -54,7 +54,7 @@ export const saveGsuiteData = async (comment_id, userdata) => {
       .collection("users")
       .doc(uid)
       .collection("tasks")
-      .doc("fixed gsuite")
+      .doc("gsuite")
       .collection("data")
       .doc(comment_id)
       .set(userdata);

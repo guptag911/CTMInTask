@@ -3,7 +3,6 @@ import Button from "@material-ui/core/Button";
 import { signout, signIn } from "../helper/auth";
 import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
-import { DataSave } from "../api/datagetting_pythonScript";
 
 const style = {
   width: "100px",
@@ -16,7 +15,6 @@ const Home = () => {
     if (currentUser) {
       await signout();
       window.sessionStorage.clear();
-      // window.localStorage.clear();
     } else {
       await signIn();
     }
