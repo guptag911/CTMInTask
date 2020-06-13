@@ -6,10 +6,48 @@ import {
   } from "../config/config";
 import axios from "axios";
 
-export const insert_task = async (task_desc,url) => {
+export const get_tasks = async () => {
+    try
+    {
+    let response = await window.gapi.client.tasks.tasks.list({
+        tasklist: "@default"
+    });
+    let tasks_list = response.result.items;
+    console.log(tasks_list);
+    let task_ids = [];
+    tasks_list.forEach(element => {
+        task_ids.push(element.id);
+    });
+    return task_ids;
+    }
+    catch(err)
+    {
+        console.log("Error in getting tasks! ",err);
+    }
+}
+
+export const delete_tasks = async () => {
+    let tasks_ids = await get_tasks();
+    tasks_ids.forEach(task_id => {
+    try
+    {
+        let response = await window.gapi.client.tasks.tasks.delete({
+            tasklist: "@default",
+            task: task_id
+        });
+    }
+    catch(err)
+    {
+        console.log("Error in deleting task! ",err);
+    } 
+    });
+}
+
+export const insert_tasks = async () => {
+    let task_data = await open_tasks();
     let body = {
-        title: task_desc,
-        notes: url
+        title: task_data["task_desc"],
+        notes: task_data["url"]
     }
     try
     {
@@ -17,37 +55,38 @@ export const insert_task = async (task_desc,url) => {
         tasklist: "@default",
         resource: body
     });
-    let task_info = {
-        task_id: response.items.id,
-        task_status: response.items.status
-    }
-    return task_info; //use this info to update in db
     }
     catch(err)
     {
-        console.log("Error in inserting task! ",err);
+        console.log("Error in inserting tasks! ",err);
     }
-} 
+}
 
-export const update_task = async (schema) => {
-    let task_status;
-    if(schema["status"] === open)
-        task_status = "needsAction";
-    else
-        task_status = "completed"
-    let body = {
-        status: task_status
-    }
-    try
-    {
-    let response = await window.gapi.client.tasks.tasks.update({
-        tasklist: "@default",
-        task: schema["task_id"],
-        resource: body
-    });
-    }
-    catch(err)
-    {
-        console.log("Error in updating task! ",err);
-    }
-} 
+export const open_tasks = async () => {
+    try {
+        const uid = firebaseAuth.currentUser.uid === null
+            ? JSON.parse(window.sessionStorage.getItem("user")).uid
+            : firebaseAuth.currentUser.uid;
+        const userRef = await db
+          .collection("users")
+          .doc(uid)
+          .collection("tasks")
+          .doc("fixed gsuite")
+          .collection("data")
+          .where("status", "==", open)
+          .get();
+        let final_data = [];
+        userRef.forEach((data) => {
+          final_data.push(data.data());
+        });
+        // console.log("Data is ", finalData);
+        return final_data;
+      } 
+      catch (err) 
+      {
+        console.log("Error in reading tasks! ", err);
+        return [];
+      }
+}
+
+get_tasks();
