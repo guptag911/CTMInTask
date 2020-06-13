@@ -6,6 +6,7 @@ import {
   } from "../config/config";
   import axios from "axios";
   import { getGsuiteID, getGsuiteData, saveGsuiteData } from "./fixedDb";
+  import {insert_task, update_task} from "./googleTasks";
   
   export const get_thread = async (thread_ID) => {
       try {
@@ -145,6 +146,7 @@ import {
                   schema["status"] = response.result.status;
                   if(db_ids.includes(comment_ID))
                   {
+                    //update the status in db
                     try {
                       const uid =
                         firebaseAuth.currentUser.uid === null
@@ -165,15 +167,23 @@ import {
                     } catch (e) {
                       console.log("Error is", e);
                     }
+                    //update in Google tasks
+                    await update_task(my_data);
                   }
                   else {
+                  let task_desc = response.result.content;
+                  //insert in Google Tasks
+                  let task_info = await insert_task(task_desc,url);
+                  //save in db
                   schema["thread_id"] = thread_ID;
                   schema["file_id"] = user_schema["file_id"];
                   schema["comment_id"] = comment_ID;
                   schema["sender"] = sender;
                   schema["receiver"] = receiver;
                   schema["url"] = url;
-                  schema["task_desc"] = response.result.content; 
+                  schema["task_desc"] = task_desc;
+                  schema["task_id"] = task_info.task_id;
+                  schema["task_status"] = task_info.task_status; 
                   console.log(schema);
                   let db_data = await saveGsuiteData(comment_ID, schema);
                   }
