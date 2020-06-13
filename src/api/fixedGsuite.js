@@ -164,16 +164,12 @@ import {
                       let my_data = useref.data();
                       my_data["status"] = schema["status"] ;
                       let db_data = await saveGsuiteData(comment_ID, my_data);
-                      //update in Google tasks
-                      //await update_task(my_data);
                     } catch (e) {
                       console.log("Error is", e);
                     }
                   }
                   else {
                   let task_desc = response.result.content;
-                  //insert in Google Tasks
-                  //let task_info = await insert_task(task_desc,url);
                   //save in db
                   schema["thread_id"] = thread_ID;
                   schema["file_id"] = user_schema["file_id"];
@@ -182,8 +178,6 @@ import {
                   schema["receiver"] = receiver;
                   schema["url"] = url;
                   schema["task_desc"] = task_desc;
-                  //schema["task_id"] = task_info.task_id;
-                  //schema["task_status"] = task_info.task_status; 
                   console.log(schema);
                   let db_data = await saveGsuiteData(comment_ID, schema);
                   }
