@@ -137,49 +137,44 @@ export const GsuiteDataSaveReply = async (tid, userdata) => {
 };
 
 export const GsuiteDataGetReply = async () => {
-  try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
-    const userRef = await db
-      .collection("users")
-      .doc(uid)
-      .collection("tasks")
-      .doc("gsuite")
-      .collection("reply")
-      .get();
-    var finalData = [];
-    userRef.forEach((data) => {
-      finalData.push(data.data());
-    });
-    // console.log("Data is finsalData ", finalData);
-    return finalData;
-  } catch (e) {
-    console.log("error is ", e);
-    return [];
-  }
-};
-
-/*export const GsuiteGetIdreply = async () => {
-  try {
-    var my_data =await GsuiteDataGetReply();
-    var ids = [];
-    // console.log("data in db ---------------- ", my_data);
-    for(let data in my_data){
-      ids.push(my_data[data["tid"]]);
+    try {
+      const uid = firebaseAuth.currentUser.uid;
+      const userRef = await db
+        .collection("users")
+        .doc(uid)
+        .collection("tasks")
+        .doc("gsuite")
+        .collection("reply")
+        .get();
+      //var new_one = userRef
+      var finalData = [];
+      userRef.forEach((data) => {
+        finalData.push(data.data());
+      });
+      //console.log("Final Data is ", finalData);
+      return finalData;
+    } catch (e) {
+      console.log("error is ", e);
+      return [];
     }
-    // my_data.forEach((data) => {
-    //   ids.push(data["tid"]);
-    // });
-    //console.log("ids are->", ids)
-    return ids;
-  } catch (e) {
-    console.log("Error is", e);
-    return [];
-  }
-};*/
+  };
 
+  export const GsuiteGetIdreply = async () => {
+    try {
+      var my_data = await GsuiteDataGetReply();
+      var ids = [];
+      (await my_data).forEach((data) => {
+        ids.push(data["thread_id"]);
+      });
+      console.log("ids are->", ids)
+      return ids;
+    } catch (e) {
+      console.log("Error is", e);
+      return [];
+    }
+  };
+  
+  
 export const GsuiteDataGetReplyFalse = async () => {
   try {
     const uid =

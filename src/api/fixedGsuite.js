@@ -138,45 +138,58 @@ export const get_data = async (query) => {
             if (db_ids.includes(comment_ID)) {
               //update the status in db
               try {
-                const uid =
-                  firebaseAuth.currentUser.uid === null
-                    ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                    : firebaseAuth.currentUser.uid;
-                const useref = await db
-                  .collection("users")
-                  .doc(uid)
-                  .collection("tasks")
-                  .doc("fixed gsuite")
-                  .collection("data")
-                  .doc(comment_ID)
-                  .get();
-                console.log(uid);
-                let my_data = useref.data();
-                my_data["status"] = schema["status"];
-                let db_data = await saveGsuiteData(comment_ID, my_data);
-                //update in Google tasks
-                console.log(my_data);
-                await update_task(my_data);
-              } catch (e) {
-                console.log("Error is", e);
-              }
-            } else {
-              let task_desc = response.result.content;
-              //insert in Google Tasks
-              let task_info = await insert_task(task_desc, url);
-              console.log(task_info);
-              //save in db
-              schema["thread_id"] = thread_ID;
-              schema["file_id"] = user_schema["file_id"];
-              schema["comment_id"] = comment_ID;
-              schema["sender"] = sender;
-              schema["receiver"] = receiver;
-              schema["url"] = url;
-              schema["task_desc"] = task_desc;
-              schema["task_id"] = task_info.task_id;
-              schema["task_status"] = task_info.task_status;
-              console.log(schema);
-              let db_data = await saveGsuiteData(comment_ID, schema);
+                  let response = await window.gapi.client.drive.comments.get({
+                    fileId: user_schema["file_id"],
+                    commentId: comment_ID,
+                  });
+                  schema["status"] = response.result.status;
+                  if(db_ids.includes(comment_ID))
+                  {
+                    //update the status in db
+                    try {
+                      const uid =
+                        firebaseAuth.currentUser.uid === null
+                          ? JSON.parse(window.sessionStorage.getItem("user")).uid
+                          : firebaseAuth.currentUser.uid;
+                      const useref = await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("tasks")
+                        .doc("fixed gsuite")
+                        .collection("data")
+                        .doc(comment_ID)
+                        .get();
+                      console.log(uid);
+                      let my_data = useref.data();
+                      my_data["status"] = schema["status"] ;
+                      let db_data = await saveGsuiteData(comment_ID, my_data);
+                      //update in Google tasks
+                      //await update_task(my_data);
+                    } catch (e) {
+                      console.log("Error is", e);
+                    }
+                  }
+                  else {
+                  let task_desc = response.result.content;
+                  //insert in Google Tasks
+                  //let task_info = await insert_task(task_desc,url);
+                  //save in db
+                  schema["thread_id"] = thread_ID;
+                  schema["file_id"] = user_schema["file_id"];
+                  schema["comment_id"] = comment_ID;
+                  schema["sender"] = sender;
+                  schema["receiver"] = receiver;
+                  schema["url"] = url;
+                  schema["task_desc"] = task_desc;
+                  //schema["task_id"] = task_info.task_id;
+                  //schema["task_status"] = task_info.task_status; 
+                  console.log(schema);
+                  let db_data = await saveGsuiteData(comment_ID, schema);
+                  }
+                } catch (err) {
+                  console.log("no comment ID", err);
+                  }   
+            });
             }
           } catch (err) {
             console.log("no comment ID", err);

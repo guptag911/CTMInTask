@@ -89,7 +89,7 @@ export const my_nlp = (body) => {
 };
 
 export const message_list = async () => {
-  let ID_list = await GsuiteDataGetReply();
+  let ID_list = await GsuiteGetIdreply();
   let IDs = [];
   let user_schema = {};
   let user_list = JSON.parse(window.localStorage.getItem("topEmails"));
@@ -103,9 +103,10 @@ export const message_list = async () => {
   let username = await get_username(email);
   let query = (await query_para(my_list)).toString();
   //Fetching message IDs from Firestore
-  for (let data in ID_list) {
-    IDs.push(ID_list[data]["thread_id"]);
-  }
+  (await ID_list).forEach(id => {
+      IDs.push(id);
+  });
+  console.log("IDs are", IDs);
   try {
     let response = await window.gapi.client.gmail.users.messages.list({
       userId: "me",
@@ -131,7 +132,7 @@ export const message_list = async () => {
         });
         let query = new RegExp(email);
         let pos = sender.match(query);
-        if (pos === null) {
+        if (pos == null) {
           // the last sender is not the user
           user_schema["replied"] = false;
           user_schema["sender"] = sender;
