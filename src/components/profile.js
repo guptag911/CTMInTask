@@ -81,7 +81,6 @@ const Profile = (props) => {
   const handleLogOut = async () => {
     await signout();
     window.sessionStorage.clear();
-    // window.localStorage.clear();
   };
 
   return (
@@ -108,7 +107,7 @@ const Profile = (props) => {
             />
           </Typography>
           <Typography gutterBottom>
-            <b>Username: {user ? user.displayName : "Happy Man"}</b>
+            <b>Username: {user ? user.displayNam : "Happy Man"}</b>
           </Typography>
           <Typography gutterBottom>
             <b>Email: {user ? user.email : "nil"}</b>
