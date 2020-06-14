@@ -67,7 +67,7 @@ export const query_para = async (user_list) => {
 };
 
 export const my_nlp = (body) => {
-  const word1 = /(important|asap|quick|urgent|quickly|due|immediately|emergency|vital|crucial|hurry up|intense|serious|critical|prior|priority|rushed|fast|hasty|dire)/i;
+  const word1 = /(important|asap|quick|urgent|quickly|due|immediately|emergency|vital|crucial|hurry up|intense|serious|critical|prior|priority|rushed|fast|hasty|dire|running late)/i;
   const exp = new RegExp(word1);
   let pos = body.match(exp);
   if (pos == null) return "Low";
