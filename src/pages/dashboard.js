@@ -8,7 +8,6 @@ import { delete_tasks, insert_tasks } from "../api/googleTasks";
 const Dashboard = () => {
   React.useEffect(() => {
     get_data("from: comments-noreply@docs.google.com");
-
     setTimeout(() => {
       delete_tasks();
       insert_tasks();

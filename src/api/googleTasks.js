@@ -1,8 +1,9 @@
 import { firebaseAuth, db } from "../config/config";
 import { get_tasklists } from "./newTasklist";
 
-export const get_tasks = async (tasklist_id) => {
+export const get_tasks = async () => {
   try {
+    let tasklist_id = await get_tasklists();
     let response = await window.gapi.client.tasks.tasks.list({
       tasklist: tasklist_id,
     });
@@ -17,8 +18,9 @@ export const get_tasks = async (tasklist_id) => {
   }
 };
 
-export const delete_tasks = async (tasklist_id) => {
+export const delete_tasks = async () => {
   try {
+    let tasklist_id = await get_tasklists();
     let tasks_ids = await get_tasks();
     tasks_ids.forEach(async (task_id) => {
       try {
@@ -35,7 +37,9 @@ export const delete_tasks = async (tasklist_id) => {
   }
 };
 
-export const insert_tasks = async (tasklist_id) => {
+export const insert_tasks = async () => {
+  let tasklist_id = await get_tasklists();
+  console.log(tasklist_id);
   let task_data = await open_tasks();
   try {
     task_data.forEach(async (task) => {
@@ -83,5 +87,3 @@ export const open_tasks = async () => {
     return [];
   }
 };
-
-//let tasklist_id = get_tasklists();
