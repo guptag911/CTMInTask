@@ -48,8 +48,10 @@ export default function CalendarCard(props) {
   let [data, getData] = useState(null);
 
   useEffect(() => {
-    CalendarDataSave();
-    dataGetCal();
+    setTimeout(() => {
+      CalendarDataSave();
+      dataGetCal();
+    }, 4000);
   }, []);
 
   const dataGetCal = async () => {
