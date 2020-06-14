@@ -1,9 +1,10 @@
 import { firebaseAuth, db } from "../config/config";
+import { get_tasklists } from "./newTasklist";
 
-export const get_tasks = async () => {
+export const get_tasks = async (tasklist_id) => {
   try {
     let response = await window.gapi.client.tasks.tasks.list({
-      tasklist: "@default",
+      tasklist: tasklist_id,
     });
     let tasks_list = response.result.items;
     let task_ids = [];
@@ -16,13 +17,13 @@ export const get_tasks = async () => {
   }
 };
 
-export const delete_tasks = async () => {
+export const delete_tasks = async (tasklist_id) => {
   try {
     let tasks_ids = await get_tasks();
     tasks_ids.forEach(async (task_id) => {
       try {
         let response = await window.gapi.client.tasks.tasks.delete({
-          tasklist: "@default",
+          tasklist: tasklist_id,
           task: task_id,
         });
       } catch (err) {
@@ -34,7 +35,7 @@ export const delete_tasks = async () => {
   }
 };
 
-export const insert_tasks = async () => {
+export const insert_tasks = async (tasklist_id) => {
   let task_data = await open_tasks();
   try {
     task_data.forEach(async (task) => {
@@ -44,7 +45,7 @@ export const insert_tasks = async () => {
       };
       try {
         let response = await window.gapi.client.tasks.tasks.insert({
-          tasklist: "@default",
+          tasklist: tasklist_id,
           resource: body,
         });
         console.log(response);
@@ -82,3 +83,5 @@ export const open_tasks = async () => {
     return [];
   }
 };
+
+//let tasklist_id = get_tasklists();
