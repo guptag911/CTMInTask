@@ -154,6 +154,20 @@ export default function SimpleCard(props) {
                   Go to the task
                 </a>
               </CardActions>
+              <CardActions style={{ float: "right" }}>
+                  <Typography
+                    className={classes.title}
+                    color="textSecondary"
+                    style={{
+                      textDecoration: "none",
+                      color: "#e84993",
+                      fontWeight: "bold",
+                    }}
+                    gutterBottom
+                  >
+                    Priority - {element.priority}
+                  </Typography>
+                </CardActions>
             </Card>
           ) : null;
         })
