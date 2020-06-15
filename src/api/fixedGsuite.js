@@ -1,6 +1,19 @@
 import { firebaseAuth, db } from "../config/config";
 import { getGsuiteID, saveGsuiteData } from "./fixedDb";
 
+export const get_profile = async () => {
+  try {
+    console.log(window.gapi.client);
+    var response = await window.gapi.client.gmail.users.getProfile({
+      userId: "me",
+    });
+    console.log(response);
+    return response.result.emailAddress;
+  } catch (err) {
+    console.log("Error!", err);
+  }
+};
+
 export const get_thread = async (thread_ID) => {
   try {
     let response = await window.gapi.client.gmail.users.threads.get({
@@ -152,7 +165,10 @@ export const get_data = async (query) => {
               }
             } else {
               let task_desc = response.result.content;
-              //save in db
+              let email = await get_profile();
+              let exp = new RegExp(email);
+              if(task_desc.match(exp) !== null)    //save in db
+              {
               schema["thread_id"] = thread_ID;
               schema["file_id"] = user_schema["file_id"];
               schema["comment_id"] = comment_ID;
@@ -161,6 +177,7 @@ export const get_data = async (query) => {
               schema["url"] = url;
               schema["task_desc"] = task_desc;
               let db_data = await saveGsuiteData(comment_ID, schema);
+              }
             }
           } catch (err) {
             console.log("no comment ID", err);
