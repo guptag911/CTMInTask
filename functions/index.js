@@ -8,6 +8,7 @@ const admin = require("firebase-admin");
 const cors = require("cors");
 const express = require("express");
 const OptionSelecter = require("./chatbot/optiondata");
+const { google } = require('googleapis');
 
 
 
@@ -137,9 +138,73 @@ exports.onUserDelete = functions.auth.user().onDelete((user) => {
   return doc.delete();
 });
 
-// ChatBot code
+// ChatBot code for asynchronous msgs i.e for notifications:--------------------------------------
+
+const ChatBotServiceAccount = require("./ctmintask-Bot-serviceKey.json");
+const ChatBotAsyncMsg = async (space_name, text) => {
+
+  console.log("in asyn funct ", space_name, text)
+
+  const Botauth = await new google.auth.GoogleAuth({
+    keyFile: "./ctmintask-Bot-serviceKey.json",
+    scopes: ['https://www.googleapis.com/auth/chat.bot'],
+  });
+
+
+  const Chat = await google.chat({
+    auth: Botauth,
+    version: "v1"
+  });
+
+  const ChatRes = await Chat.spaces.messages.create({
+    requestBody: {
+      text: text
+    },
+    parent: space_name
+  })
+
+  console.log("chat response is ", ChatRes);
+
+}
+
+
+
+// scheduler for the notifications in Google Hangout Chat
+
+
+exports.scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
+  console.log('This will be run every 3 minutes!');
+  const timeValue = 24 * 60 * 60 * 3;
+  try {
+    const space_name = await db.collection("users").orderBy("space_name").get();
+    console.log("hubspot data is ", space_name.docs);
+    space_name.docs.forEach(async (element) => {
+      //for hubspot data:-----
+      console.log("uid data is ", element.data().uid);
+      const hubSpotData = await db.collection('users').doc(element.data().uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+
+      let count = 0;
+      console.log("hubspot data is ", hubSpotData.docs);
+      hubSpotData.docs.forEach((ele) => {
+        if (ele.data().engagement.timestamp >= new Date().getTime() && (ele.data().engagement.timestamp >= new Date().getTime() + timeValue)) {
+          count += 1;
+        }
+      })
+      if (count) {
+        await ChatBotAsyncMsg(element.data().space_name, `You have total ${count} HubSpot tasks. deadline within 3 days`);
+      }
+    })
+
+  } catch (e) {
+    console.log("error is ", e);
+  }
+
+  return null;
+});
+
 
 // eslint-disable-next-line promise/catch-or-return
+
 
 const UIDData = async () => {
 
@@ -179,8 +244,20 @@ exports.helloHangoutsChat = functions.https.onRequest(async (req, res) => {
     const sender = req.body.message.sender.displayName;
     const image = req.body.message.sender.avatarUrl;
     const email = req.body.message.sender.email
+    if (req.body.space.type === "DM") {
+      try {
+        await db.collection("users").doc(arr[email]).update({
+          "space_name": req.body.space.name
+        });
+      }
+      catch (e) {
+        await db.collection("users").doc(arr[req.body.user.email]).update({
+          "space_name": req.body.space.name
+        });
+      }
+    }
 
-
+    // const Chatdata = await ChatBotAsyncMsg(req.body.space.name);
 
     const noanydata =
     {
