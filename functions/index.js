@@ -167,7 +167,7 @@ const ChatBotAsyncMsg = async (space_name, text) => {
 
 exports.scheduledFunction = functions.pubsub.schedule('every 3 hours').onRun(async (context) => {
   console.log('This will be running every 3 hours!');
-  const timeValue = 3 * 60 * 60;
+  const timeValue = 3* 60 * 60*1000;
   try {
     const space_name = await db.collection("users").orderBy("space_name").get();
     console.log("hubspot data is ", space_name.docs);
@@ -179,7 +179,7 @@ exports.scheduledFunction = functions.pubsub.schedule('every 3 hours').onRun(asy
       let Hubspotcount = 0;
       console.log("hubspot data is ", hubSpotData.docs);
       hubSpotData.docs.forEach((ele) => {
-        if (ele.data().engagement.timestamp >= new Date().getTime() && (ele.data().engagement.timestamp >= new Date().getTime() + timeValue)) {
+        if (ele.data().engagement.timestamp >= new Date().getTime() && (ele.data().engagement.timestamp <= new Date().getTime() + timeValue)) {
           Hubspotcount += 1;
         }
       })
@@ -196,7 +196,7 @@ exports.scheduledFunction = functions.pubsub.schedule('every 3 hours').onRun(asy
           dateData = dateList[1] + "-" +dateList[0] + "-" + dateList[2];
           dateData = new Date(dateData).getTime();
         }
-        if (dateData >= new Date().getTime() && (dateData >= new Date().getTime() + timeValue)) {
+        if (dateData >= new Date().getTime() && (dateData <= new Date().getTime() + timeValue)) {
           Jiracount += 1;
         }
       })
@@ -213,13 +213,13 @@ exports.scheduledFunction = functions.pubsub.schedule('every 3 hours').onRun(asy
           dateData = dateList[1] + "-" +dateList[0] + "-" + dateList[2];
           dateData = new Date(dateData).getTime();
         }
-        if (dateData >= new Date().getTime() && (dateData >= new Date().getTime() + timeValue)) {
+        if (dateData >= new Date().getTime() && (dateData <= new Date().getTime() + timeValue)) {
           Confcount += 1;
         }
       })
 
       if (Hubspotcount || Jiracount || Confcount) {
-        await ChatBotAsyncMsg(element.data().space_name, `You have total ${Hubspotcount} HubSpot tasks, ${Jiracount} Jira tasks and ${Confcount} Confluence tasks deadline within 3 days`);
+        await ChatBotAsyncMsg(element.data().space_name, `You have total ${Hubspotcount} HubSpot tasks, ${Jiracount} Jira tasks and ${Confcount} Confluence tasks deadline within next 3 hours`);
       }
     })
 
