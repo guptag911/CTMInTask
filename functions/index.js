@@ -172,9 +172,9 @@ const ChatBotAsyncMsg = async (space_name, text) => {
 // scheduler for the notifications in Google Hangout Chat
 
 
-exports.scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(async (context) => {
-  console.log('This will be run every 3 minutes!');
-  const timeValue = 24 * 60 * 60 * 3;
+exports.scheduledFunction = functions.pubsub.schedule('every 3 hours').onRun(async (context) => {
+  console.log('This will be running every 3 hours!');
+  const timeValue = 3 * 60 * 60;
   try {
     const space_name = await db.collection("users").orderBy("space_name").get();
     console.log("hubspot data is ", space_name.docs);
@@ -183,15 +183,50 @@ exports.scheduledFunction = functions.pubsub.schedule('every 24 hours').onRun(as
       console.log("uid data is ", element.data().uid);
       const hubSpotData = await db.collection('users').doc(element.data().uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
 
-      let count = 0;
+      let Hubspotcount = 0;
       console.log("hubspot data is ", hubSpotData.docs);
       hubSpotData.docs.forEach((ele) => {
         if (ele.data().engagement.timestamp >= new Date().getTime() && (ele.data().engagement.timestamp >= new Date().getTime() + timeValue)) {
-          count += 1;
+          Hubspotcount += 1;
         }
       })
-      if (count) {
-        await ChatBotAsyncMsg(element.data().space_name, `You have total ${count} HubSpot tasks. deadline within 3 days`);
+
+      const JiraData = await db.collection('users').doc(element.data().uid).collection('tasks').doc('atlassian').collection('jira').where("due_date", ">", "").get();
+
+      let Jiracount = 0;
+      console.log("hubspot data is ", JiraData.docs);
+      JiraData.docs.forEach((ele) => {
+
+        let dateData= ele.data().due_date;
+        if(dateData){
+          let dateList = ele.data().due_date.split("-");
+          dateData = dateList[1] + "-" +dateList[0] + "-" + dateList[2];
+          dateData = new Date(dateData).getTime();
+        }
+        if (dateData >= new Date().getTime() && (dateData >= new Date().getTime() + timeValue)) {
+          Jiracount += 1;
+        }
+      })
+
+
+      const ConfData = await db.collection('users').doc(element.data().uid).collection('tasks').doc('atlassian').collection('confluence').where("due_date", ">", "").get();
+
+      let Confcount = 0;
+      console.log("hubspot data is ", ConfData.docs);
+      ConfData.docs.forEach((ele) => {
+        let dateData= ele.data().due_date;
+        if(dateData){
+          let dateList = ele.data().due_date.split("-");
+          dateData = dateList[1] + "-" +dateList[0] + "-" + dateList[2];
+          dateData = new Date(dateData).getTime();
+        }
+        if (dateData >= new Date().getTime() && (dateData >= new Date().getTime() + timeValue)) {
+          Confcount += 1;
+        }
+      })
+
+      if (Hubspotcount || Jiracount || Confcount) {
+        await ChatBotAsyncMsg(element.data().space_name, `You have total ${Hubspotcount} HubSpot tasks, ${Jiracount} Jira tasks and ${Confcount} Confluence tasks deadline within 3 days`);
       }
     })
 
