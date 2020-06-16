@@ -21,10 +21,10 @@ var MY_SCHEMA = {
   updated: "latest modification date-time",
 };
 
-export const CalendarDataSave = async () => {
+export const CalendarDataSave = async (calendar_id) => {
   try {
     let calendarData = await window.gapi.client.calendar.events.list({
-      calendarId: "primary",
+      calendarId: calendar_id,
     });
 
     // console.log("calender data is ", calendarData.result.items);
@@ -114,3 +114,21 @@ export const CalendarDataGet = async () => {
     return [];
   }
 };
+
+
+export const get_calendars = async () => {
+  try
+  {
+    let response = await window.gapi.client.calendar.calendarList.list();
+    let calendar_list = response.result.items;
+    let calendar_id;
+    calendar_list.forEach( async (element) => {
+      calendar_id = element.id;
+      await CalendarDataSave(calendar_id);
+    });
+  }
+  catch(err)
+  {
+    console.log("Error in fetching calendar list! ",err);
+  }
+}
