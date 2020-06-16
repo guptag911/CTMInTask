@@ -21,13 +21,13 @@ var MY_SCHEMA = {
   updated: "latest modification date-time",
 };
 
-export const CalendarDataSave = async () => {
+export const CalendarDataSave = async (calendar_id="primary") => {
   try {
     let calendarData = await window.gapi.client.calendar.events.list({
-      calendarId: "primary",
+      calendarId: calendar_id,
     });
 
-    // console.log("calender data is ", calendarData.result.items);
+    console.log("calender data is in save ",calendar_id, calendarData.result.items);
 
     calendarData.result.items.forEach(async (element) => {
       if (
@@ -42,7 +42,7 @@ export const CalendarDataSave = async () => {
         } catch (e) {
           loc = null;
         }
-        // console.log("loc is ", loc);
+        console.log("loc is ", loc, element);
         let calenderData = {
           id: element.id,
           creator: element.creator.email,
@@ -76,13 +76,13 @@ export const CalendarDataSave = async () => {
             .set(calenderData);
           return { msg: "success" };
         } catch (e) {
-          // console.log("error in the cal is ", e);
+          console.log("error in the cal is ", e);
           return { msg: false };
         }
       }
     });
   } catch (e) {
-    console.log(e);
+    console.log("cal error is ",e);
   }
 };
 
@@ -114,3 +114,20 @@ export const CalendarDataGet = async () => {
     return [];
   }
 };
+
+
+export const get_calendars = async () => {
+  try
+  {
+    let response = await window.gapi.client.calendar.calendarList.list();
+    let calendar_list = response.result.items;
+    console.log("calendar list is ", calendar_list);
+    calendar_list.forEach( async (element) => {
+      await CalendarDataSave(element.id);
+    });
+  }
+  catch(err)
+  {
+    console.log("Error in fetching calendar list! ",err);
+  }
+}

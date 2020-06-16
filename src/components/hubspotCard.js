@@ -130,7 +130,7 @@ export default function SimpleCard(props) {
               <CardActions style={{ float: "left" }}>
                 <a
                   target="blank"
-                  href={data.url}
+                  href={element.url}
                   style={{
                     textDecoration: "none",
                     color: "#e84993",
