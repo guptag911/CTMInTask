@@ -33,41 +33,21 @@ export const HubSpotTasksGetAPIData = async () => {
     if (contactId[0] !== -1) {
       const HubToken = await hub.getHubToken();
       let hasmore = true;
-      let offset = false;
+      let offset = 0;
       let result;
       while (hasmore) {
-        if (!offset) {
-          const result = await axios.get(
-            proxyurl +
-            `https://api.hubapi.com/engagements/v1/engagements/associated/CONTACT/${contactId[0]}/paged`,
-            { headers: { Authorization: `Bearer ${HubToken}` } }
-          );
-          result.data.results["url"] = contactId[1];
+        const result = await axios.get(
+          proxyurl +
+          `https://api.hubapi.com/engagements/v1/engagements/associated/CONTACT/${contactId[0]}/paged?offset=${offset}`,
+          { headers: { Authorization: `Bearer ${HubToken}` } }
+        );
+        result.data.results["url"] = contactId[1];
 
-          // console.log("result data is ", result.data);
-          console.log(result.data);
-          const data = await HubSpotDataSave(result.data.results);
-          hasmore = result.data.hasMore;
-          offset = result.data.offset;
-
-        }
-        else {
-          const result = await axios.get(
-            proxyurl +
-            `https://api.hubapi.com/engagements/v1/engagements/associated/CONTACT/${contactId[0]}/paged&offset=${offset}`,
-            { headers: { Authorization: `Bearer ${HubToken}` } }
-          );
-
-          result.data.results["url"] = contactId[1];
-
-          // console.log("result data is ", result.data);
-          console.log(result.data);
-          hasmore = result.data.hasMore;
-          offset = result.data.offset;
-          const data = await HubSpotDataSave(result.data.results);
-
-        }
-
+        // console.log("result data is ", result.data);
+        console.log(result.data);
+        const data = await HubSpotDataSave(result.data.results);
+        hasmore = result.data.hasMore;
+        offset = result.data.offset;
       }
     }
   } catch (e) {
