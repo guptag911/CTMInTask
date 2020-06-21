@@ -4,7 +4,11 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import { CalendarDataGet, CalendarDataSave, get_calendars } from "../api/calendarAPI";
+import {
+  CalendarDataGet,
+  CalendarDataSave,
+  get_calendars,
+} from "../api/calendarAPI";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyleLoader = makeStyles((theme) => ({
