@@ -122,7 +122,6 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
     }
 
     function name(agent) {
-      console.log(agent);
       agent.add(`Hey here is your name🙂`);
     }
 
