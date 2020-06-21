@@ -162,21 +162,20 @@ export const message_list = async () => {
         let payload = mail_data.messages[0].payload;
         let body_data = payload.parts[0].body.data;
         // console.log(body_data, payload);
-        try{
-        let binaryData = Buffer.from(body_data, "base64");
-        let parsed = binaryData.toString("utf8");
-        let header = payload["headers"];
-        header.forEach((head) => {
-          if (head.name === "Subject") {
-            user_schema["subject"] = head["value"];
-          }
-        });
-        var my_priority = my_nlp(parsed);
-        user_schema["priority"] = my_priority;
-      }
-      catch(e){
-        user_schema["priority"] = "None";
-      }
+        try {
+          let binaryData = Buffer.from(body_data, "base64");
+          let parsed = binaryData.toString("utf8");
+          let header = payload["headers"];
+          header.forEach((head) => {
+            if (head.name === "Subject") {
+              user_schema["subject"] = head["value"];
+            }
+          });
+          var my_priority = my_nlp(parsed);
+          user_schema["priority"] = my_priority;
+        } catch (e) {
+          user_schema["priority"] = "None";
+        }
 
         //fetching the url
         let url =

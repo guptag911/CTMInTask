@@ -1,17 +1,10 @@
 /* eslint-disable no-unused-expressions */
-import {
-  firebaseAuth,
-  db,
-} from "../config/config";
+import { firebaseAuth, db } from "../config/config";
 import * as conf from "../helper/confAuth";
 import * as userConf from "../helper/confUserAuth";
 import axios from "axios";
-import {
-  save_confluenceData,
-  get_confluenceID,
-} from "./atlassian";
+import { save_confluenceData, get_confluenceID } from "./atlassian";
 import cheerio from "cheerio";
-
 
 const proxyurl = "https://cors-anywhere.herokuapp.com/";
 /*
@@ -44,7 +37,10 @@ async function content(content_id) {
 async function task(account_id, start, limit) {
   try {
     if (account_id) {
-      const apiPath = "rest/api/inlinetasks/search?assignee=" + account_id+`&limit=${limit}&start=${start}`;
+      const apiPath =
+        "rest/api/inlinetasks/search?assignee=" +
+        account_id +
+        `&limit=${limit}&start=${start}`;
       const reqUrl = await conf.constrRequestUrl(apiPath);
       const token = await conf.getToken();
       const result = await axios.get(reqUrl, {
@@ -54,13 +50,17 @@ async function task(account_id, start, limit) {
         },
       });
       // console.log("conf data is in confl", result.data);
-      return [result.data.results, result.data.start, result.data.limit, result.data.size];
+      return [
+        result.data.results,
+        result.data.start,
+        result.data.limit,
+        result.data.size,
+      ];
     }
   } catch (err) {
     console.log("Error!", err);
   }
 }
-
 
 async function user() {
   try {
@@ -97,76 +97,76 @@ async function get_data() {
   try {
     let account_ID = await user();
     console.log(account_ID);
-    let start=0;
+    let start = 0;
     let limit = 20;
     let size = 20;
-    while(limit==size){
-    let taskResult=await task(account_ID, start, limit);
-    start=start+taskResult[2];
-    limit = taskResult[2];
-    size = taskResult[3];
-    let tasklist = taskResult[0];
-    console.log(tasklist);
-    tasklist
-      ? tasklist.forEach(async (element) => {
-          let content_ID = element.contentId;
-          let task_ID = content_ID.toString() + element.id.toString();
-          let status = element.status;
-          //fetching task ids from firestore
-          let db_ids = await get_confluenceID();
-          if (db_ids.includes(task_ID)) {
-            //change the status accordingly
-            try {
-              const uid =
-                firebaseAuth.currentUser.uid === null
-                  ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                  : firebaseAuth.currentUser.uid;
+    while (limit == size) {
+      let taskResult = await task(account_ID, start, limit);
+      start = start + taskResult[2];
+      limit = taskResult[2];
+      size = taskResult[3];
+      let tasklist = taskResult[0];
+      console.log(tasklist);
+      tasklist
+        ? tasklist.forEach(async (element) => {
+            let content_ID = element.contentId;
+            let task_ID = content_ID.toString() + element.id.toString();
+            let status = element.status;
+            //fetching task ids from firestore
+            let db_ids = await get_confluenceID();
+            if (db_ids.includes(task_ID)) {
+              //change the status accordingly
+              try {
+                const uid =
+                  firebaseAuth.currentUser.uid === null
+                    ? JSON.parse(window.sessionStorage.getItem("user")).uid
+                    : firebaseAuth.currentUser.uid;
 
-              const useref = await db
-                .collection("users")
-                .doc(uid)
-                .collection("tasks")
-                .doc("atlassian")
-                .collection("confluence")
-                .doc(task_ID)
-                .get();
+                const useref = await db
+                  .collection("users")
+                  .doc(uid)
+                  .collection("tasks")
+                  .doc("atlassian")
+                  .collection("confluence")
+                  .doc(task_ID)
+                  .get();
 
-              let my_data = useref.data();
-              my_data["status"] = status;
+                let my_data = useref.data();
+                my_data["status"] = status;
 
-              let db_data = await save_confluenceData(task_ID,my_data);
-            } catch (err) {
-              console.log("error!", err);
+                let db_data = await save_confluenceData(task_ID, my_data);
+              } catch (err) {
+                console.log("error!", err);
+              }
+            } else {
+              let data = await content(content_ID);
+              //making user schema
+              user_schema["content_id"] = content_ID;
+              user_schema["task_id"] = task_ID;
+              user_schema["status"] = status;
+              user_schema["page_title"] = data.title;
+              user_schema["space_name"] = data.space.name;
+              user_schema["url"] =
+                "https://innovaccer.atlassian.net/wiki" + data._links.webui;
+              user_schema["due_date"] = null;
+              if (element.dueDate)
+                user_schema["due_date"] = await get_date(element.dueDate);
+              //fetching the task description
+              let body = element.body;
+              const $ = cheerio.load(body);
+              let task_name = $("span[class=placeholder-inline-tasks]").text();
+              if (user_schema["due_date"] !== null)
+                task_name += user_schema["due_date"];
+              user_schema["task_name"] = task_name;
+              console.log(user_schema);
+              //saving the data
+              let db_data = await save_confluenceData(
+                user_schema["task_id"],
+                user_schema
+              );
             }
-          } else {
-            let data = await content(content_ID);
-            //making user schema
-            user_schema["content_id"] = content_ID;
-            user_schema["task_id"] = task_ID;
-            user_schema["status"] = status;
-            user_schema["page_title"] = data.title;
-            user_schema["space_name"] = data.space.name;
-            user_schema["url"] =
-              "https://innovaccer.atlassian.net/wiki" + data._links.webui;
-            user_schema["due_date"] = null;
-            if (element.dueDate)
-              user_schema["due_date"] = await get_date(element.dueDate);
-            //fetching the task description
-            let body = element.body;
-            const $ = cheerio.load(body);
-            let task_name = $("span[class=placeholder-inline-tasks]").text();
-            if (user_schema["due_date"] !== null)
-              task_name += user_schema["due_date"];
-            user_schema["task_name"] = task_name;
-            console.log(user_schema);
-            //saving the data
-            let db_data = await save_confluenceData(
-              user_schema["task_id"],
-              user_schema
-            );
-          }
-        })
-      : null;
+          })
+        : null;
     }
   } catch (err) {
     console.log("Error!", err);
