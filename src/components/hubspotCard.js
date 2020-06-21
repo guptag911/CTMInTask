@@ -52,7 +52,6 @@ export default function SimpleCard(props) {
     setLoader(true);
     (async function anyNameFunction() {
       try {
-        const temp = await HubSpotTasksGetAPIData();
         const data = await HubSpotDataGet();
         console.log("in data ", data);
         getData(data);

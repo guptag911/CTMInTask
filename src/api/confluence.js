@@ -12,6 +12,8 @@ import {
 } from "./atlassian";
 import cheerio from "cheerio";
 
+
+const proxyurl = "https://cors-anywhere.herokuapp.com/";
 /*
 user_schema = {
   content_id:
@@ -39,10 +41,10 @@ async function content(content_id) {
   return result.data;
 }
 
-async function task(account_id) {
+async function task(account_id, start, limit) {
   try {
     if (account_id) {
-      const apiPath = "rest/api/inlinetasks/search?assignee=" + account_id;
+      const apiPath = "rest/api/inlinetasks/search?assignee=" + account_id+`&limit=${limit}&start=${start}`;
       const reqUrl = await conf.constrRequestUrl(apiPath);
       const token = await conf.getToken();
       const result = await axios.get(reqUrl, {
@@ -51,7 +53,8 @@ async function task(account_id) {
           Accept: "application/json",
         },
       });
-      return result.data.results;
+      // console.log("conf data is in confl", result.data);
+      return [result.data.results, result.data.start, result.data.limit, result.data.size];
     }
   } catch (err) {
     console.log("Error!", err);
@@ -94,7 +97,15 @@ async function get_data() {
   try {
     let account_ID = await user();
     console.log(account_ID);
-    let tasklist = await task(account_ID);
+    let start=0;
+    let limit = 20;
+    let size = 20;
+    while(limit==size){
+    let taskResult=await task(account_ID, start, limit);
+    start=start+taskResult[2];
+    limit = taskResult[2];
+    size = taskResult[3];
+    let tasklist = taskResult[0];
     console.log(tasklist);
     tasklist
       ? tasklist.forEach(async (element) => {
@@ -156,6 +167,7 @@ async function get_data() {
           }
         })
       : null;
+    }
   } catch (err) {
     console.log("Error!", err);
   }

@@ -4,6 +4,7 @@ import Container from "@material-ui/core/Container";
 import TabView from "../components/tabView";
 import { get_data } from "../api/fixedGsuite";
 import { delete_tasks, insert_tasks } from "../api/googleTasks";
+import { HubSpotTasksGetAPIData } from "../api/hubSpot";
 
 const Dashboard = () => {
   React.useEffect(() => {
@@ -11,6 +12,7 @@ const Dashboard = () => {
     setTimeout(() => {
       delete_tasks();
       insert_tasks();
+      HubSpotTasksGetAPIData();
     }, 5000);
   }, []);
 

@@ -18,9 +18,9 @@ user_schema = {
 }
 */
 
-async function issues(account_ID) {
+async function issues(account_ID, startAt, maxResults) {
   try {
-    const apiPath = "rest/api/3/search?jql=assignee=" + account_ID;
+    const apiPath = "rest/api/3/search?jql=assignee=" + account_ID+`&startAt=${startAt}&maxResults=${maxResults}`;
     const reqUrl = await jira.constrRequestUrl(apiPath);
     const token = await jira.getJiraToken();
     const result = await axios.get(reqUrl, {
@@ -29,8 +29,8 @@ async function issues(account_ID) {
         Accept: "application/json",
       },
     });
-    //console.log(result.data);
-    return result.data.issues;
+    console.log("issue data in jira is ", result.data);
+    return [result.data.issues, result.data.startAt, result.data.maxResults, result.data.total];
   } catch (err) {
     console.log("Error is:", err);
   }
@@ -46,7 +46,7 @@ async function user() {
         Accept: "application/json",
       },
     });
-    console.log(result.data);
+    // console.log("user data is ",result.data);
     return result.data.account_id;
   } catch (err) {
     console.log("Error!", err);
@@ -57,11 +57,19 @@ async function issues_data() {
   let user_schema = {};
   try {
     let account_ID = await user();
-    console.log(account_ID);
-    let issues_list = await issues(account_ID);
-    console.log(issues_list);
-    issues_list
-      ? issues_list.forEach(async (element) => {
+    console.log("account id is ", account_ID);
+    let startAt = 0;
+    let maxResults = 50;
+    let total = 50;
+    while (total >= maxResults+startAt) {
+      let issueResult = await issues(account_ID, startAt, maxResults);
+      startAt += issueResult[2]
+      maxResults = issueResult[2];
+      total = issueResult[3];
+      let issues_list = issueResult[0]
+      console.log(issues_list);
+      issues_list
+        ? issues_list.forEach(async (element) => {
           let issue_ID = element.id;
           let fields_list = element.fields;
           let status = fields_list.resolution;
@@ -116,7 +124,8 @@ async function issues_data() {
             );
           }
         })
-      : null;
+        : null;
+    }
   } catch (err) {
     console.log("Error is:", err);
   }

@@ -111,8 +111,7 @@ export default function SimpleCard(props) {
     <div>
       {data && !Loader ? (
         data.map((element) => {
-          return topEmails[element.sender] ? (
-            <Card key={element.thread_id} className={classes.root}>
+          return <Card key={element.thread_id} className={classes.root}>
               <CardContent>
                 <Typography
                   className={classes.title}
@@ -169,7 +168,6 @@ export default function SimpleCard(props) {
                   </Typography>
                 </CardActions>
             </Card>
-          ) : null;
         })
       ) : (
         <div className={classesLoader.root}>

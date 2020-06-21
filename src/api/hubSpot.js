@@ -10,7 +10,7 @@ export const GetContactId = async () => {
     // console.log("token is ", HubToken);
     const result = await axios.get(
       proxyurl +
-        `https://api.hubapi.com/contacts/v1/search/query?q=${firebaseAuth.currentUser.email}`,
+      `https://api.hubapi.com/contacts/v1/search/query?q=${firebaseAuth.currentUser.email}`,
       { headers: { Authorization: `Bearer ${HubToken}` } }
     );
 
@@ -32,22 +32,26 @@ export const HubSpotTasksGetAPIData = async () => {
     // console.log("contact id is ", contactId);
     if (contactId[0] !== -1) {
       const HubToken = await hub.getHubToken();
-      const result = await axios.get(
-        proxyurl +
-          `https://api.hubapi.com/engagements/v1/engagements/associated/CONTACT/${contactId[0]}/paged`,
-        { headers: { Authorization: `Bearer ${HubToken}` } }
-      );
-      result.data.results["url"] = contactId[1];
+      let hasmore = true;
+      let offset = 0;
+      let result;
+      while (hasmore) {
+        const result = await axios.get(
+          proxyurl +
+          `https://api.hubapi.com/engagements/v1/engagements/associated/CONTACT/${contactId[0]}/paged?offset=${offset}`,
+          { headers: { Authorization: `Bearer ${HubToken}` } }
+        );
+        result.data.results["url"] = contactId[1];
 
-      // console.log("result data is ", result.data);
-      console.log(result.data.results);
-      const data = await HubSpotDataSave(result.data.results);
-
-      return { msg: "success" };
+        // console.log("result data is ", result.data);
+        console.log(result.data);
+        const data = await HubSpotDataSave(result.data.results);
+        hasmore = result.data.hasMore;
+        offset = result.data.offset;
+      }
     }
   } catch (e) {
     console.log("error in Hubspot data getting saving api from hubspot.com");
-    return { msg: "fail" };
   }
 };
 
