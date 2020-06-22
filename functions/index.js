@@ -111,6 +111,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
     console.log(
       "Dialogflow Request headers: " + JSON.stringify(request.headers)
     );
+    // request.body.originalDetectIntentRequest.payload.data.event.user.displayName
     console.log("Dialogflow Request body: " + JSON.stringify(request.body));
     function welcome(agent) {
       agent.add(`Welcome to my agent!`);
@@ -122,8 +123,10 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
     }
 
     function name(agent) {
-      agent.add(`Hey here is your name🙂`);
+      agent.add(`My name is CTMInTask Bot`);
     }
+
+    // console.log("agent is ", agent);
 
     // Run the proper function handler based on the matched Dialogflow intent name
     let intentMap = new Map();
