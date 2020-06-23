@@ -11,20 +11,7 @@ const cors = require("cors");
 const express = require("express");
 const OptionSelecter = require("./chatbot/optiondata");
 const { google } = require("googleapis");
-// const {
-//   dialogflow,
-//   BasicCard,
-//   BrowseCarousel,
-//   BrowseCarouselItem,
-//   Button,
-//   Carousel,
-//   Image,
-//   LinkOutSuggestion,
-//   List,
-//   MediaObject,
-//   Suggestions,
-//   SimpleResponse,
-//  } = require('actions-on-google');
+
 
 const app = express();
 
@@ -118,34 +105,24 @@ exports.onUserDelete = functions.auth.user().onDelete((user) => {
   return doc.delete();
 });
 
-
 const UIDData = async () => {
-
-  let arr = {}
+  let arr = {};
   try {
     let data = await db.collection("users").get();
     data.docs.forEach((ele) => {
       arr[ele.data().email] = ele.data().uid;
     });
     return arr;
-  }
-  catch (e) {
+  } catch (e) {
     return arr;
   }
-}
-
-
+};
 
 // ChatBot code for asynchronous msgs i.e for notifications:--------------------------------------
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
   async (request, response) => {
     const agent = new fm.WebhookClient({ request, response });
-    // console.log(
-    //   "Dialogflow Request headers: " + JSON.stringify(request.headers)
-    // );
-    // request.body.originalDetectIntentRequest.payload.data.event.user.displayName
-    // console.log("Dialogflow Request body: " + JSON.stringify(request.body));
 
     const Email_UID = await UIDData();
 
@@ -163,92 +140,148 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
     }
 
     const hubspotPendingTasks = async (agent) => {
-      const data = await HubspotGetPendingTasks(Email_UID[request.body.originalDetectIntentRequest.payload.data.event.user.email]);
+      const data = await HubspotGetPendingTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
       // console.log(JSON.stringify(data));
       if (data.length) {
-        data.forEach((element)=>{
+        data.forEach((element) => {
           agent.add(new Card(element));
-        })
-      }
-      else {
+        });
+      } else {
         agent.add("You don't have any Hubspot pending tasks");
       }
-    }
-
-
+    };
 
     const hubspotAllTasks = async (agent) => {
-      const data = await HubspotGetAllTasks(Email_UID[request.body.originalDetectIntentRequest.payload.data.event.user.email]);
+      const data = await HubspotGetAllTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
       // console.log(JSON.stringify(data));
       if (data.length) {
-        data.forEach((element)=>{
+        data.forEach((element) => {
           agent.add(new Card(element));
-        })
-      }
-      else {
+        });
+      } else {
         agent.add("You don't have any Hubspot tasks");
       }
-    }
-
+    };
 
     const hubspotCompletedTasks = async (agent) => {
-      const data = await HubspotGetCompletedTasks(Email_UID[request.body.originalDetectIntentRequest.payload.data.event.user.email]);
+      const data = await HubspotGetCompletedTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
       // console.log(JSON.stringify(data));
       if (data.length) {
-        data.forEach((element)=>{
+        data.forEach((element) => {
           agent.add(new Card(element));
-        })
-      }
-      else {
+        });
+      } else {
         agent.add("You don't have any Hubspot completed tasks");
       }
-    }
+    };
 
     const confluenceAllTasks = async (agent) => {
-      const data = await ConfluenceGetAllTasks(Email_UID[request.body.originalDetectIntentRequest.payload.data.event.user.email]);
+      const data = await ConfluenceGetAllTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
       // console.log(JSON.stringify(data));
       if (data.length) {
-        data.forEach((element)=>{
+        data.forEach((element) => {
           agent.add(new Card(element));
-        })
-      }
-      else {
+        });
+      } else {
         agent.add("You don't have any Confluence tasks");
       }
-    }
+    };
 
     const confluenceCompletedTasks = async (agent) => {
-      const data = await ConfluenceGetCompletdTasks(Email_UID[request.body.originalDetectIntentRequest.payload.data.event.user.email]);
+      const data = await ConfluenceGetCompletdTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
       // console.log(JSON.stringify(data));
       if (data.length) {
-        data.forEach((element)=>{
+        data.forEach((element) => {
           agent.add(new Card(element));
-        })
-      }
-      else {
+        });
+      } else {
         agent.add("You don't have any Confluence completed tasks");
       }
-    }
-
+    };
 
     const confluencePendingTasks = async (agent) => {
-      const data = await ConfluenceGetPendingTasks(Email_UID[request.body.originalDetectIntentRequest.payload.data.event.user.email]);
+      const data = await ConfluenceGetPendingTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
       // console.log(JSON.stringify(data));
       if (data.length) {
-        data.forEach((element)=>{
+        data.forEach((element) => {
           agent.add(new Card(element));
-        })
-      }
-      else {
+        });
+      } else {
         agent.add("You don't have any Confluence pending tasks");
       }
-    }
+    };
 
+    const jiraAllTasks = async (agent) => {
+      const data = await JiraGetAllTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
+      // console.log(JSON.stringify(data));
+      if (data.length) {
+        data.forEach((element) => {
+          agent.add(new Card(element));
+        });
+      } else {
+        agent.add("You don't have any Confluence tasks");
+      }
+    };
 
+    const jiraCompletedTasks = async (agent) => {
+      const data = await JiraGetCompletdTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
+      // console.log(JSON.stringify(data));
+      if (data.length) {
+        data.forEach((element) => {
+          agent.add(new Card(element));
+        });
+      } else {
+        agent.add("You don't have any Confluence completed tasks");
+      }
+    };
 
-
-
-
+    const jiraPendingTasks = async (agent) => {
+      const data = await JiraGetPendingTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
+      // console.log(JSON.stringify(data));
+      if (data.length) {
+        data.forEach((element) => {
+          agent.add(new Card(element));
+        });
+      } else {
+        agent.add("You don't have any Confluence pending tasks");
+      }
+    };
     // console.log("agent is ", agent);
 
     // Run the proper function handler based on the matched Dialogflow intent name
@@ -262,28 +295,33 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
     intentMap.set("Confluence-pending-tasks", confluencePendingTasks);
     intentMap.set("Confluence-all-tasks", confluenceAllTasks);
     intentMap.set("Confluence-completed-tasks", confluenceCompletedTasks);
+    intentMap.set("Jira-pending-tasks", jiraPendingTasks);
+    intentMap.set("Jira-all-tasks", jiraAllTasks);
+    intentMap.set("Jira-completed-tasks", jiraCompletedTasks);
     // intentMap.set('your intent name here', googleAssistantHandler);
     agent.handleRequest(intentMap);
   }
 );
 
-
-
-
-
 const HubspotGetPendingTasks = async (uid) => {
   let Taskdata = [];
   try {
-    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("hubspot")
+      .collection("data")
+      .where("engagement.type", "==", "TASK")
+      .get();
     data.docs.forEach((element) => {
       if (element.data().metadata.status !== "COMPLETED") {
-        let widgets =
-        {
-            "title": element.data().metadata.subject,
-            "text": element.data().engagement.bodyPreview,
-            "buttonText":"VISIT TASK",
-            "buttonUrl":element.data().url
-        }
+        let widgets = {
+          title: element.data().metadata.subject,
+          text: element.data().engagement.bodyPreview,
+          buttonText: "VISIT TASK",
+          buttonUrl: element.data().url,
+        };
         Taskdata.push(widgets);
       }
     });
@@ -292,22 +330,26 @@ const HubspotGetPendingTasks = async (uid) => {
     console.log("error is ", e);
     return Taskdata;
   }
-}
-
-
+};
 
 const HubspotGetAllTasks = async (uid) => {
   let Taskdata = [];
   try {
-    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("hubspot")
+      .collection("data")
+      .where("engagement.type", "==", "TASK")
+      .get();
     data.docs.forEach((element) => {
-      let widgets =
-        {
-            "title": element.data().metadata.subject,
-            "text": element.data().engagement.bodyPreview,
-            "buttonText":"VISIT TASK",
-            "buttonUrl":element.data().url
-        }
+      let widgets = {
+        title: element.data().metadata.subject,
+        text: element.data().engagement.bodyPreview,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
       Taskdata.push(widgets);
     });
     return Taskdata;
@@ -315,24 +357,27 @@ const HubspotGetAllTasks = async (uid) => {
     console.log("error is ", e);
     return Taskdata;
   }
-
-}
-
-
+};
 
 const HubspotGetCompletedTasks = async (uid) => {
   let Taskdata = [];
   try {
-    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("hubspot")
+      .collection("data")
+      .where("engagement.type", "==", "TASK")
+      .get();
     data.docs.forEach((element) => {
       if (element.data().metadata.status === "COMPLETED") {
-        let widgets =
-        {
-            "title": element.data().metadata.subject,
-            "text": element.data().engagement.bodyPreview,
-            "buttonText":"VISIT TASK",
-            "buttonUrl":element.data().url
-        }
+        let widgets = {
+          title: element.data().metadata.subject,
+          text: element.data().engagement.bodyPreview,
+          buttonText: "VISIT TASK",
+          buttonUrl: element.data().url,
+        };
         Taskdata.push(widgets);
       }
     });
@@ -341,78 +386,164 @@ const HubspotGetCompletedTasks = async (uid) => {
     console.log("error is ", e);
     return Taskdata;
   }
-}
-
-
+};
 
 const ConfluenceGetAllTasks = async (uid) => {
   let Taskdata = [];
   try {
-    const data = await db.collection('users').doc(uid).collection('tasks').doc('atlassian').collection('confluence').get();
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("confluence")
+      .get();
     data.docs.forEach((element) => {
-      let widgets =
-        {
-            "title": element.data().space_name,
-            "text": element.data().task_name,
-            "buttonText":"VISIT TASK",
-            "buttonUrl":element.data().url
-        }
+      let widgets = {
+        title: element.data().space_name,
+        text: element.data().task_name,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
       Taskdata.push(widgets);
     });
     return Taskdata;
-
-
   } catch (e) {
     console.log("error is ", e);
     return Taskdata;
   }
-}
-
+};
 
 const ConfluenceGetCompletdTasks = async (uid) => {
   let Taskdata = [];
   try {
-    const data = await db.collection('users').doc(uid).collection('tasks').doc('atlassian').collection('confluence').where("status", "==", "complete").get();
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("confluence")
+      .where("status", "==", "complete")
+      .get();
     data.docs.forEach((element) => {
-      let widgets =
-        {
-            "title": element.data().space_name,
-            "text": element.data().task_name,
-            "buttonText":"VISIT TASK",
-            "buttonUrl":element.data().url
-        }
+      let widgets = {
+        title: element.data().space_name,
+        text: element.data().task_name,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
       Taskdata.push(widgets);
     });
     return Taskdata;
-
-
   } catch (e) {
     console.log("error is ", e);
     return Taskdata;
   }
-}
-
+};
 
 const ConfluenceGetPendingTasks = async (uid) => {
-
   let Taskdata = [];
-  
+
   try {
-    const data = await db.collection('users').doc(uid).collection('tasks').doc('atlassian').collection('confluence').where("status", "==", "incomplete").get();
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("confluence")
+      .where("status", "==", "incomplete")
+      .get();
     data.docs.forEach((element) => {
-      let widgets =
-        {
-            "title": element.data().space_name,
-            "text": element.data().task_name,
-            "buttonText":"VISIT TASK",
-            "buttonUrl":element.data().url
-        }
+      let widgets = {
+        title: element.data().space_name,
+        text: element.data().task_name,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
       Taskdata.push(widgets);
     });
     return Taskdata;
-
   } catch (e) {
     return Taskdata;
   }
+};
 
-}
+const JiraGetAllTasks = async (uid) => {
+  let Taskdata = [];
+  try {
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("jira")
+      .get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        title: element.data().project_name,
+        text: element.data().issue_name,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+};
+
+const JiraGetCompletdTasks = async (uid) => {
+  let Taskdata = [];
+  try {
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("jira")
+      .where("status", "==", "complete")
+      .get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        title: element.data().project_name,
+        text: element.data().issue_name,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+};
+
+const JiraGetPendingTasks = async (uid) => {
+  let Taskdata = [];
+
+  try {
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("atlassian")
+      .collection("jira")
+      .where("status", "==", "incomplete")
+      .get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        title: element.data().project_name,
+        text: element.data().issue_name,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    return Taskdata;
+  }
+};
