@@ -2,6 +2,7 @@
 const request = require("request-promise");
 const NodeCache = require("node-cache");
 const fm = require("dialogflow-fulfillment");
+const { Card } = require("dialogflow-fulfillment");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const functions = require("firebase-functions");
@@ -10,6 +11,20 @@ const cors = require("cors");
 const express = require("express");
 const OptionSelecter = require("./chatbot/optiondata");
 const { google } = require("googleapis");
+// const {
+//   dialogflow,
+//   BasicCard,
+//   BrowseCarousel,
+//   BrowseCarouselItem,
+//   Button,
+//   Carousel,
+//   Image,
+//   LinkOutSuggestion,
+//   List,
+//   MediaObject,
+//   Suggestions,
+//   SimpleResponse,
+//  } = require('actions-on-google');
 
 const app = express();
 
@@ -103,16 +118,37 @@ exports.onUserDelete = functions.auth.user().onDelete((user) => {
   return doc.delete();
 });
 
+
+const UIDData = async () => {
+
+  let arr = {}
+  try {
+    let data = await db.collection("users").get();
+    data.docs.forEach((ele) => {
+      arr[ele.data().email] = ele.data().uid;
+    });
+    return arr;
+  }
+  catch (e) {
+    return arr;
+  }
+}
+
+
+
 // ChatBot code for asynchronous msgs i.e for notifications:--------------------------------------
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
-  (request, response) => {
+  async (request, response) => {
     const agent = new fm.WebhookClient({ request, response });
-    console.log(
-      "Dialogflow Request headers: " + JSON.stringify(request.headers)
-    );
+    // console.log(
+    //   "Dialogflow Request headers: " + JSON.stringify(request.headers)
+    // );
     // request.body.originalDetectIntentRequest.payload.data.event.user.displayName
-    console.log("Dialogflow Request body: " + JSON.stringify(request.body));
+    // console.log("Dialogflow Request body: " + JSON.stringify(request.body));
+
+    const Email_UID = await UIDData();
+
     function welcome(agent) {
       agent.add(`Welcome to my agent!`);
     }
@@ -126,6 +162,50 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
       agent.add(`My name is CTMInTask Bot`);
     }
 
+    const hubspotPendingTasks = async (agent) => {
+      const data = await HubspotGetPendingTasks(Email_UID[request.body.originalDetectIntentRequest.payload.data.event.user.email]);
+      // console.log(JSON.stringify(data));
+      if (data.length) {
+        data.forEach((element)=>{
+          agent.add(new Card(element));
+        })
+      }
+      else {
+        agent.add("You don't have any Hubspot pending tasks");
+      }
+    }
+
+
+
+    const hubspotAllTasks = async (agent) => {
+      const data = await HubspotGetAllTasks(Email_UID[request.body.originalDetectIntentRequest.payload.data.event.user.email]);
+      // console.log(JSON.stringify(data));
+      if (data.length) {
+        data.forEach((element)=>{
+          agent.add(new Card(element));
+        })
+      }
+      else {
+        agent.add("You don't have any Hubspot tasks");
+      }
+    }
+
+
+    const hubspotCompletedTasks = async (agent) => {
+      const data = await HubspotGetCompletedTasks(Email_UID[request.body.originalDetectIntentRequest.payload.data.event.user.email]);
+      // console.log(JSON.stringify(data));
+      if (data.length) {
+        data.forEach((element)=>{
+          agent.add(new Card(element));
+        })
+      }
+      else {
+        agent.add("You don't have any Hubspot completed tasks");
+      }
+    }
+
+
+
     // console.log("agent is ", agent);
 
     // Run the proper function handler based on the matched Dialogflow intent name
@@ -133,7 +213,87 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
     intentMap.set("Default Welcome Intent", welcome);
     intentMap.set("Default Fallback Intent", fallback);
     intentMap.set("get-agent-name", name);
+    intentMap.set("Hubspot-pending-tasks", hubspotPendingTasks);
+    intentMap.set("Hubspot-all-tasks", hubspotAllTasks);
+    intentMap.set("Hubspot-completed-tasks", hubspotCompletedTasks);
     // intentMap.set('your intent name here', googleAssistantHandler);
     agent.handleRequest(intentMap);
   }
 );
+
+
+
+
+
+const HubspotGetPendingTasks = async (uid) => {
+  let Taskdata = [];
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+    data.docs.forEach((element) => {
+      if (element.data().metadata.status !== "COMPLETED") {
+        let widgets =
+        {
+            "title": element.data().metadata.subject,
+            "text": element.data().engagement.bodyPreview,
+            "buttonText":"VISIT TASK",
+            "buttonUrl":element.data().url
+        }
+        Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+}
+
+
+
+const HubspotGetAllTasks = async (uid) => {
+  let Taskdata = [];
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+    data.docs.forEach((element) => {
+      let widgets =
+        {
+            "title": element.data().metadata.subject,
+            "text": element.data().engagement.bodyPreview,
+            "buttonText":"VISIT TASK",
+            "buttonUrl":element.data().url
+        }
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+
+}
+
+
+
+const HubspotGetCompletedTasks = async (uid) => {
+  let Taskdata = [];
+  try {
+    const data = await db.collection('users').doc(uid).collection('tasks').doc('hubspot').collection('data').where("engagement.type", "==", "TASK").get();
+    data.docs.forEach((element) => {
+      if (element.data().metadata.status === "COMPLETED") {
+        let widgets =
+        {
+            "title": element.data().metadata.subject,
+            "text": element.data().engagement.bodyPreview,
+            "buttonText":"VISIT TASK",
+            "buttonUrl":element.data().url
+        }
+        Taskdata.push(widgets);
+      }
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+}
+
