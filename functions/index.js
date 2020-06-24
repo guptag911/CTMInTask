@@ -247,7 +247,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
           agent.add(new Card(element));
         });
       } else {
-        agent.add("You don't have any Confluence tasks");
+        agent.add("You don't have any Jira tasks");
       }
     };
 
@@ -263,7 +263,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
           agent.add(new Card(element));
         });
       } else {
-        agent.add("You don't have any Confluence completed tasks");
+        agent.add("You don't have any Jira completed tasks");
       }
     };
 
@@ -279,7 +279,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
           agent.add(new Card(element));
         });
       } else {
-        agent.add("You don't have any Confluence pending tasks");
+        agent.add("You don't have any Jira pending tasks");
       }
     };
     // console.log("agent is ", agent);
