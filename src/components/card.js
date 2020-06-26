@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -14,18 +11,22 @@ import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
-import Button from "@material-ui/core/Button";
-import Popover from "@material-ui/core/Popover";
+import Tooltip from "@material-ui/core/Tooltip";
+import Fab from "@material-ui/core/Fab";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
     margin: 200,
+    verticalAlign: "middle",
   },
 }));
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+  },
+  fab: {
+    margin: theme.spacing(2),
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     overflow: "hidden",
-    flexBasis: "80%"
+    flexBasis: "70%",
   },
   descpHeading: {
     fontSize: theme.typography.pxToRem(15),
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     overflow: "hidden",
+    marginRight: "2%",
   },
 }));
 
@@ -81,47 +83,17 @@ export default function SimpleCard(props) {
       });
   }, []);
 
-  // const handleChange = async (comment_id, element) => {
-  //   setLoader(true);
-
-  //   if (props.product === "gsuites") {
-  //     try {
-  //       element.status = "resolved";
-  //       await saveGsuiteData(comment_id, element);
-  //       const resp = await getGsuiteData();
-  //       let ndata = [];
-  //       if (props.data === "gdocs") {
-  //         resp.forEach((ele) => {
-  //           if (ele.sender.includes("Google Docs")) {
-  //             ndata.push(ele);
-  //           }
-  //         });
-  //       } else if (props.data === "gslides") {
-  //         resp.forEach((ele) => {
-  //           if (ele.sender.includes("Google Slides")) {
-  //             ndata.push(ele);
-  //           }
-  //         });
-  //       } else if (props.data === "gsheets") {
-  //         resp.forEach((ele) => {
-  //           if (ele.sender.includes("Google Sheets")) {
-  //             ndata.push(ele);
-  //           }
-  //         });
-  //       }
-  //       getData(ndata);
-  //       setLoader(false);
-  //     } catch (e) {
-  //       console.log("error ", e);
-  //     }
-  //   }
-  // };
-
-  const MouseOverHandler = (e) => {
-    e.target.style.background = "rgba(222,222,222,0.8)";
-  };
-  const MouseLeaveHandler = (e) => {
-    e.target.style.background = "white";
+  const handleChangeCheck = async (comment_id, element) => {
+    setLoader(true);
+    try {
+      element.status = "resolved";
+      await saveGsuiteData(comment_id, element);
+      const resp = await getGsuiteData();
+      getData(resp);
+      setLoader(false);
+    } catch (e) {
+      console.log("error ", e);
+    }
   };
 
   return (
@@ -131,11 +103,8 @@ export default function SimpleCard(props) {
           return element.status === "open" ? (
             // <Button>
             <ExpansionPanel
-              onMouseOut={MouseLeaveHandler}
-              onMouseOver={MouseOverHandler}
               key={element.comment_id}
               expanded={expanded === "panel1"}
-              onChange={handleChange("panel1")}
             >
               <ExpansionPanelSummary
                 // expandIcon={<ExpandMoreIcon />}
@@ -163,54 +132,22 @@ export default function SimpleCard(props) {
                     <LaunchSharpIcon></LaunchSharpIcon>
                   </a>
                 </Typography>
+                <Tooltip title="Mark as Done" aria-label="Mark Done">
+                  {/* <Fab color="primary" className={classes.fab}> */}
+                  <Checkbox
+                    checked={element.status === "resolved"}
+                    color="primary"
+                    onChange={(e) => {
+                      setChecked(e.target.checked);
+                      handleChangeCheck(element.comment_id, element);
+                    }}
+                    inputProps={{ "aria-label": "primary checkbox" }}
+                  />
+                  {/* </Fab> */}
+                </Tooltip>
               </ExpansionPanelSummary>
             </ExpansionPanel>
-          ) : // </Button>
-
-          // <Card key={element.comment_id} className={classes.root}>
-          //   <CardContent>
-          //     <Typography
-          //       className={classes.title}
-          //       color="textSecondary"
-          //       gutterBottom
-          //     >
-          //       Assigned by -- {element.sender.split("<")[0]}
-          //     </Typography>
-          //     <Typography variant="h7" component="h7">
-          //       {element.task_desc}
-          //     </Typography>
-
-          //     <br />
-          //     <FormControlLabel
-          //       control={
-          //         <Checkbox
-          //           checked={element.status === "resolved"}
-          //           color="primary"
-          //           onChange={(e) => {
-          //             setChecked(e.target.checked);
-          //             handleChange(element.comment_id, element);
-          //           }}
-          //         />
-          //       }
-          //       label="Mark as Done"
-          //     />
-          //   </CardContent>
-          //   <CardActions>
-          //     <a
-          //       target="blank"
-          //       href={element.url}
-          //       style={{
-          //         textDecoration: "none",
-          //         color: "#e84993",
-          //         fontWeight: "bold",
-          //       }}
-          //       size="small"
-          //     >
-          //       Go to the task
-          //     </a>
-          //   </CardActions>
-          // </Card>
-          null;
+          ) : null;
         })
       ) : (
         <div className={classesLoader.root}>
