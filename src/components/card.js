@@ -9,13 +9,13 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 // import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getGsuiteData, saveGsuiteData } from "../api/fixedDb";
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import LaunchSharpIcon from '@material-ui/icons/LaunchSharp';
-import Button from '@material-ui/core/Button';
-import Popover from '@material-ui/core/Popover';
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
+import Button from "@material-ui/core/Button";
+import Popover from "@material-ui/core/Popover";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -25,22 +25,23 @@ const useStyleLoader = makeStyles((theme) => ({
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: "100%",
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
-    flexBasis: '10%',
+    flexBasis: "20%",
     flexShrink: 0,
     width: "200px",
-    marginRight: "2%"
+    marginRight: "2%",
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
     marginRight: "2%",
-    width: "400px",
+    width: "auto",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     overflow: "hidden",
+    flexBasis: "80%"
   },
   descpHeading: {
     fontSize: theme.typography.pxToRem(15),
@@ -49,9 +50,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: "nowrap",
     overflow: "hidden",
   },
-
 }));
-
 
 export default function SimpleCard(props) {
   const [checked, setChecked] = React.useState(true);
@@ -119,11 +118,11 @@ export default function SimpleCard(props) {
   // };
 
   const MouseOverHandler = (e) => {
-    e.target.style.background = 'rgba(222,222,222,0.8)';
-  }
+    e.target.style.background = "rgba(222,222,222,0.8)";
+  };
   const MouseLeaveHandler = (e) => {
-    e.target.style.background = 'white';
-  }
+    e.target.style.background = "white";
+  };
 
   return (
     <React.Fragment>
@@ -131,80 +130,93 @@ export default function SimpleCard(props) {
         data.map((element) => {
           return element.status === "open" ? (
             // <Button>
-            <ExpansionPanel onMouseOut={MouseLeaveHandler}onMouseOver={MouseOverHandler} key={element.comment_id} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+            <ExpansionPanel
+              onMouseOut={MouseLeaveHandler}
+              onMouseOver={MouseOverHandler}
+              key={element.comment_id}
+              expanded={expanded === "panel1"}
+              onChange={handleChange("panel1")}
+            >
               <ExpansionPanelSummary
                 // expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1bh-content"
                 id="panel1bh-header"
               >
-                <Typography className={classes.heading}>{element.sender.split("<")[0]}</Typography>
-                <Typography className={classes.secondaryHeading}>{element.task_desc}</Typography>
-                <Typography className={classes.descpHeading}> <a
-                  target="blank"
-                  href={element.url}
-                  style={{
-                    textDecoration: "none",
-                    color: "#e84993",
-                    fontWeight: "bold",
-                  }}
-                  size="small"
-                >
-                  <LaunchSharpIcon></LaunchSharpIcon>
-                </a></Typography>
+                <Typography className={classes.heading}>
+                  {element.sender.split("<")[0]}
+                </Typography>
+                <Typography className={classes.secondaryHeading}>
+                  {element.task_desc}
+                </Typography>
+                <Typography className={classes.descpHeading}>
+                  {" "}
+                  <a
+                    target="blank"
+                    href={element.url}
+                    style={{
+                      textDecoration: "none",
+                      color: "#e84993",
+                      fontWeight: "bold",
+                    }}
+                    size="small"
+                  >
+                    <LaunchSharpIcon></LaunchSharpIcon>
+                  </a>
+                </Typography>
               </ExpansionPanelSummary>
             </ExpansionPanel>
-            // </Button>
+          ) : // </Button>
 
-            // <Card key={element.comment_id} className={classes.root}>
-            //   <CardContent>
-            //     <Typography
-            //       className={classes.title}
-            //       color="textSecondary"
-            //       gutterBottom
-            //     >
-            //       Assigned by -- {element.sender.split("<")[0]}
-            //     </Typography>
-            //     <Typography variant="h7" component="h7">
-            //       {element.task_desc}
-            //     </Typography>
+          // <Card key={element.comment_id} className={classes.root}>
+          //   <CardContent>
+          //     <Typography
+          //       className={classes.title}
+          //       color="textSecondary"
+          //       gutterBottom
+          //     >
+          //       Assigned by -- {element.sender.split("<")[0]}
+          //     </Typography>
+          //     <Typography variant="h7" component="h7">
+          //       {element.task_desc}
+          //     </Typography>
 
-            //     <br />
-            //     <FormControlLabel
-            //       control={
-            //         <Checkbox
-            //           checked={element.status === "resolved"}
-            //           color="primary"
-            //           onChange={(e) => {
-            //             setChecked(e.target.checked);
-            //             handleChange(element.comment_id, element);
-            //           }}
-            //         />
-            //       }
-            //       label="Mark as Done"
-            //     />
-            //   </CardContent>
-            //   <CardActions>
-            //     <a
-            //       target="blank"
-            //       href={element.url}
-            //       style={{
-            //         textDecoration: "none",
-            //         color: "#e84993",
-            //         fontWeight: "bold",
-            //       }}
-            //       size="small"
-            //     >
-            //       Go to the task
-            //     </a>
-            //   </CardActions>
-            // </Card>
-          ) : null;
+          //     <br />
+          //     <FormControlLabel
+          //       control={
+          //         <Checkbox
+          //           checked={element.status === "resolved"}
+          //           color="primary"
+          //           onChange={(e) => {
+          //             setChecked(e.target.checked);
+          //             handleChange(element.comment_id, element);
+          //           }}
+          //         />
+          //       }
+          //       label="Mark as Done"
+          //     />
+          //   </CardContent>
+          //   <CardActions>
+          //     <a
+          //       target="blank"
+          //       href={element.url}
+          //       style={{
+          //         textDecoration: "none",
+          //         color: "#e84993",
+          //         fontWeight: "bold",
+          //       }}
+          //       size="small"
+          //     >
+          //       Go to the task
+          //     </a>
+          //   </CardActions>
+          // </Card>
+          null;
         })
       ) : (
-          <div className={classesLoader.root}>
-            <CircularProgress />
-          </div>
-        )}
+        <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>
+      )}
     </React.Fragment>
   );
 }
