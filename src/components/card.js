@@ -14,6 +14,8 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LaunchSharpIcon from '@material-ui/icons/LaunchSharp';
+import Button from '@material-ui/core/Button';
+import Popover from '@material-ui/core/Popover';
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -116,15 +118,22 @@ export default function SimpleCard(props) {
   //   }
   // };
 
+  const MouseOverHandler = (e) => {
+    e.target.style.background = 'rgba(222,222,222,0.8)';
+  }
+  const MouseLeaveHandler = (e) => {
+    e.target.style.background = 'white';
+  }
+
   return (
     <React.Fragment>
       {data && !Loader ? (
         data.map((element) => {
           return element.status === "open" ? (
-
-            <ExpansionPanel key={element.comment_id} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+            // <Button>
+            <ExpansionPanel onMouseOut={MouseLeaveHandler}onMouseOver={MouseOverHandler} key={element.comment_id} expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
               <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
+                // expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1bh-content"
                 id="panel1bh-header"
               >
@@ -143,13 +152,8 @@ export default function SimpleCard(props) {
                   <LaunchSharpIcon></LaunchSharpIcon>
                 </a></Typography>
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Typography>
-                  Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat. Aliquam eget
-                  maximus est, id dignissim quam.
-          </Typography>
-              </ExpansionPanelDetails>
             </ExpansionPanel>
+            // </Button>
 
             // <Card key={element.comment_id} className={classes.root}>
             //   <CardContent>

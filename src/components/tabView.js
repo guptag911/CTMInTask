@@ -250,56 +250,39 @@ export default function ScrollableTabsButtonAuto() {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
-          <Tab label="Google Docs" {...a11yProps(0)} className={classes.bold} />
+          <Tab label="Gsuite" {...a11yProps(0)} className={classes.bold} />
           <Tab
-            label="Google Sheets"
+            label="Calendar Events"
             {...a11yProps(1)}
             className={classes.bold}
           />
           <Tab
-            label="Google Slides"
+            label="Reply to Mails"
             {...a11yProps(2)}
             className={classes.bold}
           />
-
-          <Tab
-            label="Calendar Events"
-            {...a11yProps(3)}
-            className={classes.bold}
-          />
-          <Tab
-            label="Reply to Mails"
-            {...a11yProps(4)}
-            className={classes.bold}
-          />
-          <Tab label="HubSpot" {...a11yProps(5)} className={classes.bold} />
-          <Tab label="Jira" {...a11yProps(6)} className={classes.bold} />
+          <Tab label="HubSpot" {...a11yProps(3)} className={classes.bold} />
+          <Tab label="Jira" {...a11yProps(4)} className={classes.bold} />
           <Tab
             label="Confluence"
-            {...a11yProps(7)}
+            {...a11yProps(5)}
             className={classes.bold}
             onClick={handleState}
           />
-          <Tab label="Test Gmail" {...a11yProps(8)} className={classes.bold} />
+          <Tab label="Test Gmail" {...a11yProps(6)} className={classes.bold} />
           
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <CardView product="gsuites" data="gdocs"></CardView>
+        <CardView></CardView>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CardView product="gsuites" data="gsheets"></CardView>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <CardView product="gsuites" data="gslides"></CardView>
-      </TabPanel>
-      <TabPanel value={value} index={3}>
         <CalenderCard></CalenderCard>
       </TabPanel>
-      <TabPanel value={value} index={4}>
+      <TabPanel value={value} index={2}>
         <ReactAutosuggestExample />
       </TabPanel>
-      <TabPanel value={value} index={5}>
+      <TabPanel value={value} index={3}>
         {firebaseAuth.currentUser && !hubState ? (
           <Button
             variant="contained"
@@ -313,7 +296,7 @@ export default function ScrollableTabsButtonAuto() {
           <HubSpotCard></HubSpotCard>
         )}
       </TabPanel>
-      <TabPanel value={value} index={6}>
+      <TabPanel value={value} index={4}>
         {firebaseAuth.currentUser && !jiraState ? (
           <Button
             variant="contained"
@@ -327,7 +310,7 @@ export default function ScrollableTabsButtonAuto() {
           <JiraCard></JiraCard>
         )}
       </TabPanel>
-      <TabPanel value={value} index={7}>
+      <TabPanel value={value} index={5}>
         {firebaseAuth.currentUser && !authState ? (
           <Button
             variant="contained"
@@ -341,7 +324,7 @@ export default function ScrollableTabsButtonAuto() {
           <ConfluenceCard></ConfluenceCard>
         )}
       </TabPanel>
-      <TabPanel value={value} index={8}>
+      <TabPanel value={value} index={6}>
         <GmailView></GmailView>
       </TabPanel>
     </div>
