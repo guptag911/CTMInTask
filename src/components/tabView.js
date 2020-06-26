@@ -18,6 +18,7 @@ import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 import ConfluenceCard from "./confluenceCard";
 import HubSpotCard from "./hubspotCard";
 import JiraCard from "./jiraCard";
+import GmailView from "./GmailView";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -279,6 +280,8 @@ export default function ScrollableTabsButtonAuto() {
             className={classes.bold}
             onClick={handleState}
           />
+          <Tab label="Test Gmail" {...a11yProps(8)} className={classes.bold} />
+          
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -337,6 +340,9 @@ export default function ScrollableTabsButtonAuto() {
         ) : (
           <ConfluenceCard></ConfluenceCard>
         )}
+      </TabPanel>
+      <TabPanel value={value} index={8}>
+        <GmailView></GmailView>
       </TabPanel>
     </div>
   );
