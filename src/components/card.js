@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/anchor-has-content */
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -13,6 +15,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
 import Tooltip from "@material-ui/core/Tooltip";
 import Fab from "@material-ui/core/Fab";
+import { Dialog } from "@material-ui/core";
+import ResponsiveDialog from "./dialog";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -60,6 +64,9 @@ export default function SimpleCard(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
+  // dialog || iframe
+  const [open, setOpen] = React.useState(false);
+
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -70,6 +77,15 @@ export default function SimpleCard(props) {
   // console.log("props is ", props);
 
   let [data, getData] = useState(null);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
     getGsuiteData()
       .then((data) => {
@@ -121,17 +137,22 @@ export default function SimpleCard(props) {
                   {" "}
                   <a
                     target="blank"
-                    href={element.url}
                     style={{
                       textDecoration: "none",
                       color: "#e84993",
                       fontWeight: "bold",
                     }}
                     size="small"
+                    onClick={handleClickOpen}
                   >
                     <LaunchSharpIcon></LaunchSharpIcon>
                   </a>
                 </Typography>
+                <ResponsiveDialog
+                  open={open}
+                  handleClose={handleClose}
+                  url={element.url}
+                />
                 <Tooltip title="Mark as Done" aria-label="Mark Done">
                   {/* <Fab color="primary" className={classes.fab}> */}
                   <Checkbox
