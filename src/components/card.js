@@ -66,6 +66,7 @@ export default function SimpleCard(props) {
 
   // dialog || iframe
   const [open, setOpen] = React.useState(false);
+  const [URL, setURL] = React.useState(null);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -78,8 +79,10 @@ export default function SimpleCard(props) {
 
   let [data, getData] = useState(null);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (url) => {
     setOpen(true);
+    setURL(url);
+
   };
 
   const handleClose = () => {
@@ -138,12 +141,13 @@ export default function SimpleCard(props) {
                   <a
                     target="blank"
                     style={{
+                      
                       textDecoration: "none",
                       color: "#e84993",
                       fontWeight: "bold",
                     }}
                     size="small"
-                    onClick={handleClickOpen}
+                    onClick={()=>handleClickOpen(element.url)}
                   >
                     <LaunchSharpIcon></LaunchSharpIcon>
                   </a>
@@ -151,7 +155,8 @@ export default function SimpleCard(props) {
                 <ResponsiveDialog
                   open={open}
                   handleClose={handleClose}
-                  url={element.url}
+                  url={URL}
+                  element ={element}
                 />
                 <Tooltip title="Mark as Done" aria-label="Mark Done">
                   {/* <Fab color="primary" className={classes.fab}> */}

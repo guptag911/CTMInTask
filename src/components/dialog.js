@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -19,10 +19,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ResponsiveDialog({ open, handleClose, url }) {
+export default function ResponsiveDialog({ open, handleClose, url, element }) {
   //   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   // console.log("Handleclose is ",handleClose);
   const classes = useStyles();
+  useEffect(()=>{
+    console.log("url is in iframe ", url, element);
+  },[])
 
   return (
     <div>
@@ -39,7 +42,7 @@ export default function ResponsiveDialog({ open, handleClose, url }) {
               title="iframe"
               width="100%"
               height="100%"
-              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-scripts allow-top-navigation"
+              sandbox="allow-presentation allow-same-origin allow-scripts allow-forms allow-popups allow-scripts allow-top-navigation"
             ></iframe>
           ) : null}
         </DialogContent>
