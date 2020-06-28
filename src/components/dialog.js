@@ -21,6 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function ResponsiveDialog({ open, handleClose, url }) {
   //   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  // console.log("Handleclose is ",handleClose);
   const classes = useStyles();
 
   return (
