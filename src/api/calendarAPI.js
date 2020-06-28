@@ -27,11 +27,11 @@ export const CalendarDataSave = async (calendar_id) => {
       calendarId: calendar_id,
     });
 
-    console.log(
-      "calender data is in save ",
-      calendar_id,
-      calendarData.result.items
-    );
+    // console.log(
+    //   "calender data is in save ",
+    //   calendar_id,
+    //   calendarData.result.items
+    // );
 
     calendarData.result.items.forEach(async (element) => {
       if (
@@ -46,7 +46,7 @@ export const CalendarDataSave = async (calendar_id) => {
         } catch (e) {
           loc = null;
         }
-        console.log("loc is ", loc, element);
+        // console.log("loc is ", loc, element);
         let calenderData = {
           id: element.id,
           creator: element.creator.email,
@@ -111,7 +111,7 @@ export const CalendarDataGet = async () => {
         finalData.push(data.data());
       }
     });
-    console.log("Data is ", finalData);
+    // console.log("Data is ", finalData);
     return finalData;
   } catch (e) {
     console.log("error is ", e);
@@ -123,7 +123,7 @@ export const get_calendars = async () => {
   try {
     let response = await window.gapi.client.calendar.calendarList.list();
     let calendar_list = response.result.items;
-    console.log("calendar list is ", calendar_list);
+    // console.log("calendar list is ", calendar_list);
     calendar_list.forEach(async (element) => {
       await CalendarDataSave(element.id);
     });

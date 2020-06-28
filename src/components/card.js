@@ -92,7 +92,7 @@ export default function SimpleCard(props) {
   useEffect(() => {
     getGsuiteData()
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         getData(data);
         setLoader(false);
       })

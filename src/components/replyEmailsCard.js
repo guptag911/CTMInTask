@@ -73,7 +73,7 @@ export default function SimpleCard(props) {
     //console.log(msgData);
     GsuiteDataGetReplyFalse()
       .then((data) => {
-        console.log("data is ", data);
+        // console.log("data is ", data);
         getData(data);
         setLoader(false);
       })

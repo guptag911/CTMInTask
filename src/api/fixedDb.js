@@ -17,10 +17,10 @@ export const getGsuiteData = async () => {
     userRef.forEach((data) => {
       finalData.push(data.data());
     });
-    console.log("Data is:", finalData);
+    // console.log("Data is:", finalData);
     return finalData;
   } catch (err) {
-    console.log(JSON.parse(window.sessionStorage.getItem("user")).uid);
+    // console.log(JSON.parse(window.sessionStorage.getItem("user")).uid);
     console.log("Error is:", err);
     return [];
   }

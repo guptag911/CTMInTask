@@ -82,11 +82,11 @@ export default function SimpleCard(props) {
   };
 
   useEffect(() => {
-    console.log("in effect");
+    // console.log("in effect");
     setLoader(true);
     getJiraDataStatusIncomplete()
       .then((data) => {
-        console.log("data is ", data);
+        // console.log("data is ", data);
         getData(data);
         setLoader(false);
       })

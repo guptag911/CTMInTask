@@ -3,11 +3,11 @@ import { getGsuiteID, saveGsuiteData } from "./fixedDb";
 
 export const get_profile = async () => {
   try {
-    console.log(window.gapi.client);
+    // console.log(window.gapi.client);
     var response = await window.gapi.client.gmail.users.getProfile({
       userId: "me",
     });
-    console.log(response);
+    // console.log(response);
     return response.result.emailAddress;
   } catch (err) {
     console.log("Error!", err);
@@ -156,7 +156,7 @@ export const get_data = async (query) => {
                   .collection("data")
                   .doc(comment_ID)
                   .get();
-                console.log(uid);
+                // console.log(uid);
                 let my_data = useref.data();
                 my_data["status"] = schema["status"];
                 let db_data = await saveGsuiteData(comment_ID, my_data);

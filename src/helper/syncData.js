@@ -14,11 +14,11 @@ export async function sync() {
   let uid = firebaseAuth.currentUser.uid;
   const res = await db.collection("users/" + uid + "/tasks/gsuite/data").get();
   res.docs.forEach((ele) => {
-    console.log(ele.data());
+    // console.log(ele.data());
     usersData.push(ele.data());
   });
   const uniqueData = getUniqueData(usersData, "mid");
-  console.log(uniqueData);
+  // console.log(uniqueData);
   return uniqueData;
 }
 
