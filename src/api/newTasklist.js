@@ -22,7 +22,7 @@ export const get_tasklists = async () => {
       }
     });
     if (tasklist_id == null) tasklist_id = await create_tasklist();
-    console.log(tasklist_id);
+    // console.log(tasklist_id);
     return tasklist_id;
   } catch (err) {
     console.log("Error in creating tasklist! ", err);

@@ -15,12 +15,12 @@ import { GsuiteDataSaveReply, GsuiteGetIdreply } from "./gsuiteApi";
 
 export const get_profile = async () => {
   try {
-    console.log(window.gapi.client);
+    // console.log(window.gapi.client);
     var response = await window.gapi.client.gmail.users.getProfile({
       userId: "me",
     });
 
-    console.log(response);
+    // console.log(response);
     return response.result.emailAddress;
   } catch (err) {
     console.log("Error!", err);
@@ -36,7 +36,7 @@ export const get_username = async (email) => {
     first_name = first_name.charAt(0).toUpperCase() + first_name.slice(1);
     last_name = last_name.charAt(0).toUpperCase() + last_name.slice(1);
     let name = first_name + " " + last_name;
-    console.log(name);
+    // console.log(name);
     return name;
   } catch (err) {
     console.log("Error!", err);
@@ -81,12 +81,12 @@ export const message_list = async () => {
   let IDs = [];
   let user_schema = {};
   let user_list = JSON.parse(window.localStorage.getItem("topEmails"));
-  console.log("User list is: ", user_list);
+  // console.log("User list is: ", user_list);
   let my_list = [];
   for (let mail in user_list) {
     my_list.push(user_list[mail]);
   }
-  console.log("My list is: ", my_list);
+  // console.log("My list is: ", my_list);
   let email = await get_profile();
   let username = await get_username(email);
   let query = (await query_para(my_list)).toString();
@@ -94,7 +94,7 @@ export const message_list = async () => {
   (await ID_list).forEach((id) => {
     IDs.push(id);
   });
-  console.log("IDs are", IDs);
+  // console.log("IDs are", IDs);
   try {
     let response = await window.gapi.client.gmail.users.messages.list({
       userId: "me",
@@ -148,7 +148,7 @@ export const message_list = async () => {
             .collection("reply")
             .doc(thread_ID)
             .get();
-          console.log(uid);
+          // console.log(uid);
           let my_data = useref.data();
           my_data["replied"] = my_data["replied"] || user_schema["replied"];
           let Gdata = await GsuiteDataSaveReply(thread_ID, my_data);

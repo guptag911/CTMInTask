@@ -25,7 +25,7 @@ export async function getJiraToken() {
   } else {
     const params = new URLSearchParams(window.location.search);
     const authCode = params.get("code");
-    console.log(authCode);
+    // console.log(authCode);
     const result = await axios.post(
       "https://auth.atlassian.com/oauth/token",
       {

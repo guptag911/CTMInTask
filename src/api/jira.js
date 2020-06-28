@@ -29,7 +29,7 @@ async function issues(account_ID, startAt, maxResults) {
         Accept: "application/json",
       },
     });
-    console.log("issue data in jira is ", result.data);
+    // console.log("issue data in jira is ", result.data);
     return [result.data.issues, result.data.startAt, result.data.maxResults, result.data.total];
   } catch (err) {
     console.log("Error is:", err);
@@ -57,7 +57,7 @@ async function issues_data() {
   let user_schema = {};
   try {
     let account_ID = await user();
-    console.log("account id is ", account_ID);
+    // console.log("account id is ", account_ID);
     let startAt = 0;
     let maxResults = 50;
     let total = 50;
@@ -67,7 +67,7 @@ async function issues_data() {
       maxResults = issueResult[2];
       total = issueResult[3];
       let issues_list = issueResult[0]
-      console.log(issues_list);
+      // console.log(issues_list);
       issues_list
         ? issues_list.forEach(async (element) => {
           let issue_ID = element.id;
@@ -86,7 +86,7 @@ async function issues_data() {
                 firebaseAuth.currentUser.uid === null
                   ? JSON.parse(window.sessionStorage.getItem("user")).uid
                   : firebaseAuth.currentUser.uid;
-              console.log(uid);
+              // console.log(uid);
               const useref = await db
                 .collection("users")
                 .doc(uid)
@@ -116,7 +116,7 @@ async function issues_data() {
             user_schema["priority"] = fields_list.priority.name;
             user_schema["issue_type"] = fields_list.issuetype.name;
 
-            console.log(user_schema);
+            // console.log(user_schema);
             //saving the data
             let db_data = await save_JiraData(
               user_schema["issue_id"],

@@ -44,7 +44,7 @@ export const HubSpotTasksGetAPIData = async () => {
         result.data.results["url"] = contactId[1];
 
         // console.log("result data is ", result.data);
-        console.log(result.data);
+        // console.log(result.data);
         const data = await HubSpotDataSave(result.data.results);
         hasmore = result.data.hasMore;
         offset = result.data.offset;
@@ -62,7 +62,7 @@ export const HubSpotDataSave = async (userdata) => {
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
     const url = userdata.url;
-    console.log(url, uid);
+    // console.log(url, uid);
     for (let data = 0; data < userdata.length; data++) {
       const userRef = await db
         .collection("users")
@@ -82,7 +82,7 @@ export const HubSpotDataSave = async (userdata) => {
     }
     return { msg: "success" };
   } catch (e) {
-    console.log(window.sessionStorage.getItem("user"));
+    // console.log(window.sessionStorage.getItem("user"));
     console.log("error is -----", e);
     return { msg: "fail" };
   }
@@ -107,7 +107,7 @@ export const HubSpotDataGet = async () => {
     });
     return finalData;
   } catch (e) {
-    console.log(window.sessionStorage.getItem("user"));
+    // console.log(window.sessionStorage.getItem("user"));
     console.log("error is ", e);
     return [];
   }

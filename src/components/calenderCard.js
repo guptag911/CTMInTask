@@ -60,7 +60,7 @@ export default function CalendarCard(props) {
 
   const dataGetCal = async () => {
     const resp = await CalendarDataGet();
-    console.log(resp);
+    // console.log(resp);
     getData(resp);
     setLoader(false);
   };

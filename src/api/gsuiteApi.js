@@ -3,7 +3,7 @@ import { firebaseAuth, db } from "../config/config";
 
 export const GsuiteDataSaveReply = async (tid, userdata) => {
   try {
-    console.log("in db --------------------------", userdata);
+    // console.log("in db --------------------------", userdata);
     const subjectList = userdata.subject.toLowerCase().split(" ");
     let subjectDict = {};
     for (let subject in subjectList) {
@@ -53,7 +53,7 @@ export const GsuiteDataSaveReply = async (tid, userdata) => {
         // console.log("userRef is ", userRef);
         return { msg: "success" };
       } catch (e) {
-        console.log(window.sessionStorage.getItem("user"));
+        // console.log(window.sessionStorage.getItem("user"));
         console.log("error is ", e);
         return { msg: "fail" };
       }
@@ -94,7 +94,7 @@ export const GsuiteGetIdreply = async () => {
     (await my_data).forEach((data) => {
       ids.push(data["thread_id"]);
     });
-    console.log("ids are->", ids)
+    // console.log("ids are->", ids)
     return ids;
   } catch (e) {
     console.log("Error is", e);
@@ -136,7 +136,7 @@ export const GmailReplyUpdateData = async (tid, userdata) => {
       firebaseAuth.currentUser.uid === null
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
-    console.log("data ----- ", userdata);
+    // console.log("data ----- ", userdata);
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -148,7 +148,7 @@ export const GmailReplyUpdateData = async (tid, userdata) => {
     // console.log("userRef is ", userRef);
     return { msg: "success" };
   } catch (e) {
-    console.log(window.sessionStorage.getItem("user"));
+    // console.log(window.sessionStorage.getItem("user"));
     console.log("error is ", e);
     return { msg: "fail" };
   }

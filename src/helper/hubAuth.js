@@ -27,7 +27,7 @@ export async function getHubToken() {
   } else {
     const params = new URLSearchParams(window.location.search);
     const authCode = params.get("code");
-    console.log(authCode);
+    // console.log(authCode);
     const result = await axios.post(
       proxyurl + "https://api.hubapi.com/oauth/v1/token",
       qs.stringify({

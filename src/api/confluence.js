@@ -96,7 +96,7 @@ async function get_data() {
   let user_schema = {};
   try {
     let account_ID = await user();
-    console.log(account_ID);
+    // console.log(account_ID);
     let start = 0;
     let limit = 20;
     let size = 20;
@@ -106,7 +106,7 @@ async function get_data() {
       limit = taskResult[2];
       size = taskResult[3];
       let tasklist = taskResult[0];
-      console.log(tasklist);
+      // console.log(tasklist);
       tasklist
         ? tasklist.forEach(async (element) => {
             let content_ID = element.contentId;
@@ -158,7 +158,7 @@ async function get_data() {
               if (user_schema["due_date"] !== null)
                 task_name += user_schema["due_date"];
               user_schema["task_name"] = task_name;
-              console.log(user_schema);
+              // console.log(user_schema);
               //saving the data
               let db_data = await save_confluenceData(
                 user_schema["task_id"],

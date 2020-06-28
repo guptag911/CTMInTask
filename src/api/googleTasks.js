@@ -39,7 +39,7 @@ export const delete_tasks = async () => {
 
 export const insert_tasks = async () => {
   let tasklist_id = await get_tasklists();
-  console.log(tasklist_id);
+  // console.log(tasklist_id);
   let task_data = await open_tasks();
   try {
     task_data.forEach(async (task) => {
@@ -52,7 +52,7 @@ export const insert_tasks = async () => {
           tasklist: tasklist_id,
           resource: body,
         });
-        console.log(response);
+        // console.log(response);
       } catch (err) {
         console.log("Error in inserting tasks! ", err);
       }

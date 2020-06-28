@@ -145,7 +145,7 @@ export default function ScrollableTabsButtonAuto() {
     localStorage.setItem("state", JSON.stringify(state));
 
     const res = await hubAuth();
-    console.log(res);
+    // console.log(res);
     window.location.href = res;
   };
 

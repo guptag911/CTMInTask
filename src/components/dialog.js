@@ -23,9 +23,9 @@ export default function ResponsiveDialog({ open, handleClose, url, element }) {
   //   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   // console.log("Handleclose is ",handleClose);
   const classes = useStyles();
-  useEffect(()=>{
-    console.log("url is in iframe ", url, element);
-  },[])
+  // useEffect(()=>{
+  //   console.log("url is in iframe ", url, element);
+  // },[])
 
   return (
     <div>
