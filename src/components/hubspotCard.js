@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -14,6 +15,7 @@ import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
 
 import { HubSpotTasksGetAPIData, HubSpotDataGet } from "../api/hubSpot";
+import ResponsiveDialog from "./dialog";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -77,6 +79,10 @@ export default function SimpleCard(props) {
 
   const [expanded, setExpanded] = React.useState(false);
 
+  // dialog || iframe
+  const [open, setOpen] = React.useState(false);
+  const [URL, setURL] = React.useState(null);
+
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -101,6 +107,15 @@ export default function SimpleCard(props) {
   };
   const MouseLeaveHandler = (e) => {
     e.target.style.background = "white";
+  };
+
+  const handleClickOpen = (url) => {
+    setOpen(true);
+    setURL(url);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -171,17 +186,23 @@ export default function SimpleCard(props) {
                   {" "}
                   <a
                     target="blank"
-                    href={element.url}
                     style={{
                       textDecoration: "none",
                       color: "#e84993",
                       fontWeight: "bold",
                     }}
                     size="small"
+                    onClick={() => handleClickOpen(element.url)}
                   >
                     <LaunchSharpIcon></LaunchSharpIcon>
                   </a>
                 </Typography>
+                <ResponsiveDialog
+                  open={open}
+                  handleClose={handleClose}
+                  url={URL}
+                  element={element}
+                />
                 {element.engagement.type === "TASK" ? (
                   <Typography
                     className={classes.heading}
