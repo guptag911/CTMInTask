@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
 import { red } from '@material-ui/core/colors';
+import Chart from "./analyticsChart";
 
 const useStyles = makeStyles({
     fullList: {
@@ -17,8 +18,8 @@ export default function TemporaryDrawer() {
     const classes = useStyles();
 
     return (
-        <div className={classes.fullList} style={{"backgroundColor":"red"}}>
-            <p>Hello world</p>
+        <div className={classes.fullList}>
+            <Chart></Chart>
         </div>
     );
 

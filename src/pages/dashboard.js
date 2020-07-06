@@ -52,15 +52,16 @@ const Dashboard = () => {
     <div className={classes.root}>
       <NavigationBar />
       {analyticsClicked ? <Grid container spacing={2} maxWidth="lg" style={{ marginTop: "100px" }}>
-        <Grid item xs={9}>
+        <Grid item xs={8}>
           <Container> <TabView></TabView></Container>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={4}>
+        <Button onClick={onClickHandlerClose}><ClearIcon></ClearIcon></Button>
           <Drawer></Drawer>
         </Grid>
-        <Grid item xs={1}>
-        <Button onClick={onClickHandlerClose}><ClearIcon></ClearIcon></Button>
-        </Grid>
+        {/* <Grid item xs={1}> */}
+        {/* <Button onClick={onClickHandlerClose}><ClearIcon></ClearIcon></Button> */}
+        {/* </Grid> */}
       </Grid> : <Grid container spacing={2} maxWidth="lg" style={{ marginTop: "100px" }}>
           <Grid item xs={11}>
             <Container> <TabView></TabView></Container>
