@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -8,14 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-
-// new Ui
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
-
 import { HubSpotTasksGetAPIData, HubSpotDataGet } from "../api/hubSpot";
-import ResponsiveDialog from "./dialog";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -49,26 +41,6 @@ const useStyles = makeStyles((theme) => ({
   checked: {
     background: "#e84993",
   },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: "10%",
-    flexShrink: 0,
-    marginRight: "2%",
-  },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    marginRight: "2%",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-  },
-  descpHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-  },
 }));
 
 export default function SimpleCard(props) {
@@ -76,25 +48,16 @@ export default function SimpleCard(props) {
   const [data, getData] = useState(null);
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
-
-  const [expanded, setExpanded] = React.useState(false);
-
-  // dialog || iframe
-  const [open, setOpen] = React.useState(false);
-  const [URL, setURL] = React.useState(null);
-
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
   useEffect(() => {
     setLoader(true);
     (async function anyNameFunction() {
       try {
         const data = await HubSpotDataGet();
-        // console.log("in data ", data);
+        console.log("in data ", data);
         getData(data);
         setLoader(false);
-      } catch (e) {
+      }
+      catch (e) {
         console.log("Error is ", e);
         getData([]);
         setLoader(false);
@@ -102,110 +65,85 @@ export default function SimpleCard(props) {
     })();
   }, []);
 
-  const MouseOverHandler = (e) => {
-    e.target.style.background = "rgba(222,222,222,0.8)";
-  };
-  const MouseLeaveHandler = (e) => {
-    e.target.style.background = "white";
-  };
-
-  const handleClickOpen = (url) => {
-    setOpen(true);
-    setURL(url);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <React.Fragment>
       {data && !Loader ? (
         data.map((element) => {
           return (
-            <ExpansionPanel
-              onMouseOut={MouseLeaveHandler}
-              onMouseOver={MouseOverHandler}
-              key={element.engagement.id}
-              expanded={expanded === "panel1"}
-              onChange={handleChange("panel1")}
-            >
-              <ExpansionPanelSummary
-                // expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1bh-content"
-                id="panel1bh-header"
-              >
+            <Card key={element.engagement.id} className={classes.root}>
+              <CardContent>
                 <Typography
-                  className={classes.heading}
+                  className={classes.title}
                   color="textSecondary"
                   style={{ textAlign: "center" }}
                   gutterBottom
                 >
                   <b style={{ color: "red" }}> {element.engagement.type}</b>
                 </Typography>
+                <br />
                 {element.engagement.type === "TASK" ? (
-                  <Typography
-                    className={classes.heading}
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    {element.metadata.subject}
-                  </Typography>
-                ) : (
-                  <Typography
-                    className={classes.heading}
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    No Title for the Note
-                  </Typography>
-                )}
+                  <React.Fragment>
+                    <Typography
+                      className={classes.title}
+                      color="textSecondary"
+                      gutterBottom
+                    >
+                      Title -- {element.metadata.subject}
+                    </Typography>
+                    <br />
+                  </React.Fragment>
+                ) : null}
                 <Typography
-                  className={classes.secondaryHeading}
+                  className={classes.title}
                   color="textSecondary"
                   gutterBottom
                 >
-                  By -- {element.engagement.sourceId}
+                  Assigned by -- {element.engagement.sourceId}
                 </Typography>
-                <Typography
-                  variant="h8"
-                  component="h8"
-                  className={classes.heading}
-                >
+
+                <br />
+                <hr></hr>
+                <Typography variant="h8" component="h8">
                   {element.engagement.bodyPreview}
                 </Typography>
-                {/* <Typography
-                  variant="h7"
-                  component="h7"
-                  className={classes.heading}
-                >
+                <hr></hr>
+                <br></br>
+                <Typography variant="h7" component="h7">
                   {element.task_name}
-                </Typography> */}
-
-                <Typography className={classes.heading}>
-                  {" "}
-                  <a
-                    target="blank"
-                    style={{
-                      textDecoration: "none",
-                      color: "#e84993",
-                      fontWeight: "bold",
-                    }}
-                    size="small"
-                    onClick={() => handleClickOpen(element.url)}
-                  >
-                    <LaunchSharpIcon></LaunchSharpIcon>
-                  </a>
                 </Typography>
-                <ResponsiveDialog
-                  open={open}
-                  handleClose={handleClose}
-                  url={URL}
-                  element={element}
+                <br></br>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={element.metadata.status === "COMPLETED"}
+                      color="primary"
+                    />
+                  }
+                  label={
+                    element.metadata.status === "COMPLETED"
+                      ? "COMPLETED"
+                      : "UNCOMPLETED"
+                  }
                 />
-                {element.engagement.type === "TASK" ? (
+              </CardContent>
+              <CardActions style={{ float: "left" }}>
+                <a
+                  target="blank"
+                  href={element.url}
+                  style={{
+                    textDecoration: "none",
+                    color: "#e84993",
+                    fontWeight: "bold",
+                  }}
+                  size="small"
+                >
+                  Go to the task
+                </a>
+              </CardActions>
+              {element.engagement.type === "TASK" ? (
+                <CardActions style={{ float: "right" }}>
                   <Typography
-                    className={classes.heading}
+                    className={classes.title}
                     color="textSecondary"
                     style={{
                       textDecoration: "none",
@@ -216,124 +154,21 @@ export default function SimpleCard(props) {
                   >
                     Priority - {element.metadata.priority}
                   </Typography>
-                ) : (
-                  <Typography
-                    className={classes.heading}
-                    color="textSecondary"
-                    style={{
-                      textDecoration: "none",
-                      color: "#e84993",
-                      fontWeight: "bold",
-                    }}
-                    gutterBottom
-                  >
-                    Priority - NONE
-                  </Typography>
-                )}
-                <Typography
-                  className={classes.heading}
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  {element.metadata.status === "COMPLETED" ? "Done" : "Pending"}
-                </Typography>
-              </ExpansionPanelSummary>
-            </ExpansionPanel>
-
-            // <Card key={element.engagement.id} className={classes.root}>
-            //   <CardContent>
-            //     <Typography
-            //       className={classes.title}
-            //       color="textSecondary"
-            //       style={{ textAlign: "center" }}
-            //       gutterBottom
-            //     >
-            //       <b style={{ color: "red" }}> {element.engagement.type}</b>
-            //     </Typography>
-            //     <br />
-            //     {element.engagement.type === "TASK" ? (
-            //       <React.Fragment>
-            //         <Typography
-            //           className={classes.title}
-            //           color="textSecondary"
-            //           gutterBottom
-            //         >
-            //           Title -- {element.metadata.subject}
-            //         </Typography>
-            //         <br />
-            //       </React.Fragment>
-            //     ) : null}
-            //     <Typography
-            //       className={classes.title}
-            //       color="textSecondary"
-            //       gutterBottom
-            //     >
-            //       Assigned by -- {element.engagement.sourceId}
-            //     </Typography>
-
-            //     <br />
-            //     <hr></hr>
-            //     <Typography variant="h8" component="h8">
-            //       {element.engagement.bodyPreview}
-            //     </Typography>
-            //     <hr></hr>
-            //     <br></br>
-            //     <Typography variant="h7" component="h7">
-            //       {element.task_name}
-            //     </Typography>
-            //     <br></br>
-            //     <FormControlLabel
-            //       control={
-            //         <Checkbox
-            //           checked={element.metadata.status === "COMPLETED"}
-            //           color="primary"
-            //         />
-            //       }
-            //       label={
-            //         element.metadata.status === "COMPLETED"
-            //           ? "COMPLETED"
-            //           : "UNCOMPLETED"
-            //       }
-            //     />
-            //   </CardContent>
-            //   <CardActions style={{ float: "left" }}>
-            //     <a
-            //       target="blank"
-            //       href={element.url}
-            //       style={{
-            //         textDecoration: "none",
-            //         color: "#e84993",
-            //         fontWeight: "bold",
-            //       }}
-            //       size="small"
-            //     >
-            //       Go to the task
-            //     </a>
-            //   </CardActions>
-            //   {element.engagement.type === "TASK" ? (
-            //     <CardActions style={{ float: "right" }}>
-            //       <Typography
-            //         className={classes.title}
-            //         color="textSecondary"
-            //         style={{
-            //           textDecoration: "none",
-            //           color: "#e84993",
-            //           fontWeight: "bold",
-            //         }}
-            //         gutterBottom
-            //       >
-            //         Priority - {element.metadata.priority}
-            //       </Typography>
-            //     </CardActions>
-            //   ) : null}
-            // </Card>
+                </CardActions>
+              ) : null}
+            </Card>
           );
         })
       ) : (
-        <div className={classesLoader.root}>
-          <CircularProgress />
-        </div>
-      )}
+          <div className={classesLoader.root}>
+            <CircularProgress />
+          </div>
+        )}
     </React.Fragment>
   );
 }
+
+
+
+
+
