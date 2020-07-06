@@ -11,6 +11,7 @@ import { HubSpotTasksGetAPIData } from "../api/hubSpot";
 import Drawer from "../components/Analytics";
 import Button from '@material-ui/core/Button';
 import ClearIcon from '@material-ui/icons/Clear';
+import {red} from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,7 +66,7 @@ const Dashboard = () => {
             <Container> <TabView></TabView></Container>
           </Grid>
           <Grid item xs={1}>
-            <Button onClick={onClickHandler}> <AssessmentIcon style={{ fontSize: 60 }}></AssessmentIcon></Button>
+            <Button onClick={onClickHandler}> <AssessmentIcon style={{ fontSize: 60, color: red[500]}}></AssessmentIcon></Button>
           </Grid>
         </Grid>}
     </div>
