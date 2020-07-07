@@ -360,8 +360,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import GsuiteCard from "./card";
 import ConfluenceCard from "./confluenceCard";
 import HubSpotCard from "./hubspotCard";
@@ -509,7 +507,7 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Innovaccer
+            <img src="https://innovaccer.com/static/image/site-logo/innovaccer-logo-black.svg"></img>
           </Typography>
         </Toolbar>
       </AppBar>
