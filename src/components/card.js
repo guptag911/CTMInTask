@@ -13,7 +13,7 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import StarIcon from '@material-ui/icons/Star';
-import { saveStarGsuiteData } from "../api/star";
+import { saveStarGsuiteData, deleteStarGsuiteData } from "../api/star";
 import { red, blue, yellow } from '@material-ui/core/colors';
 
 const useStyleLoader = makeStyles((theme) => ({
@@ -55,12 +55,13 @@ export default function SimpleCard(props) {
   const classes = useStyles();
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
+  let [renderAgain, setRender]=useState(0);
 
   // console.log("props is ", props);
 
   let [data, getData] = useState(null);
   useEffect(() => {
-    console.log("called");
+    // console.log("called");
     if (props.product === "gsuites") {
       getGsuiteData()
         .then((data) => {
@@ -87,7 +88,7 @@ export default function SimpleCard(props) {
               });
             }
           }
-          console.log("data in cart is ", ndata);
+          // console.log("data in cart is ", ndata);
           getData(ndata);
           setLoader(false);
         })
@@ -97,6 +98,10 @@ export default function SimpleCard(props) {
         });
     }
   }, []);
+
+  useEffect(()=>{
+    getData(data);
+  }, [renderAgain])
 
   const handleChange = async (comment_id, element) => {
     setLoader(true);
@@ -135,10 +140,24 @@ export default function SimpleCard(props) {
   };
 
 
-  const onClickHandler = async (event, element) => {
-    element["is_starred"]=true;
-    const data = await saveStarGsuiteData("gsuite", element);
+  const onClickStarHandler = async (is_starred, element, index) => {
+    let Ndata = data;
+    if (is_starred) {
+      element["is_starred"] = false;
+      Ndata[index] = element;
+      getData(Ndata);
+      setRender(renderAgain+1);
+      const fdata = await deleteStarGsuiteData("gsuite", element);
+    }
+    else {
+      element["is_starred"] = true;
+      Ndata[index] = element;
+      getData(Ndata);
+      setRender(renderAgain+1);
+      const data = await saveStarGsuiteData("gsuite", element);
+    }
     const ndata = await saveGsuiteData(element.comment_id, element);
+
   }
 
 
@@ -146,7 +165,7 @@ export default function SimpleCard(props) {
   return (
     <React.Fragment>
       {data && !Loader ? (
-        data.map((element) => {
+        data.map((element, index) => {
           return element.status === "open" ? (
             <Card key={element.comment_id} className={classes.root}>
               <CardContent>
@@ -192,13 +211,13 @@ export default function SimpleCard(props) {
               </CardActions>
               <CardActions style={{ float: "right" }}>
 
-                <Button onClick={(event) => onClickHandler(event, element)}>
+                <Button onClick={(event) => onClickStarHandler(element.is_starred, element, index)}>
                   {element.is_starred ?
                     <Tooltip style={{ fontWeight: "bold" }} title="Unbookmark ?">
-                      <StarIcon style={{color:red[400], fontSize:40}}></StarIcon>
+                      <StarIcon style={{ color: red[400], fontSize: 40 }}></StarIcon>
                     </Tooltip> :
                     <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
-                      <StarBorderIcon style={{fontSize:40}}></StarBorderIcon>
+                      <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
                     </Tooltip>}
                 </Button>
               </CardActions>

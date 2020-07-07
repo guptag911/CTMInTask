@@ -49,3 +49,28 @@ export const saveStarGsuiteData = async (service,userdata) => {
     return { msg: "fail" };
   }
 };
+
+
+
+export const deleteStarGsuiteData = async (service,userdata) => {
+  try {
+    userdata["upload_time_utc"] = Date.now();
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("star")
+      .collection(service)
+      .doc(userdata.comment_id)
+      .delete();
+
+    return { msg: "success" };
+  } catch (err) {
+    console.log("Error is:", err);
+    return { msg: "fail" };
+  }
+};
