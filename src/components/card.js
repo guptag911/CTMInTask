@@ -16,6 +16,15 @@ import StarIcon from '@material-ui/icons/Star';
 import { saveStarGsuiteData, deleteStarGsuiteData } from "../api/star";
 import { red, blue, yellow } from '@material-ui/core/colors';
 
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
+import Popover from "@material-ui/core/Popover";
+
+
+
 const useStyleLoader = makeStyles((theme) => ({
   root: {
     margin: 200,
@@ -23,87 +32,78 @@ const useStyleLoader = makeStyles((theme) => ({
 }));
 
 const useStyles = makeStyles((theme) => ({
-  [theme.breakpoints.down("sm")]: {
-    root: {
-      maxWidth: "100%",
-      margin: 20,
-      float: "left",
-      display: "inline-block",
-    },
+  root: {
+    width: "100%",
   },
-  [theme.breakpoints.up("sm")]: {
-    root: {
-      maxWidth: "30%",
-      margin: 20,
-      float: "left",
-      display: "inline-block",
-    },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexBasis: "20%",
+    flexShrink: 0,
+    width: "200px",
+    marginRight: "2%",
   },
-  title: {
-    fontSize: 14,
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    marginRight: "2%",
+    width: "auto",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    flexBasis: "80%"
   },
-  pos: {
-    marginBottom: 12,
-  },
-  checked: {
-    background: "#e84993",
+  descpHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
   },
 }));
+
+
 
 export default function SimpleCard(props) {
   const [checked, setChecked] = React.useState(true);
   const classes = useStyles();
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
-  let [renderAgain, setRender]=useState(0);
-
-  // console.log("props is ", props);
-
+  let [renderAgain, setRender] = useState(0);
   let [data, getData] = useState(null);
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+
   useEffect(() => {
-    // console.log("called");
-    if (props.product === "gsuites") {
-      getGsuiteData()
-        .then((data) => {
-          console.log(data);
-          let ndata = [];
-          if (data !== null) {
-            if (props.data === "gdocs") {
-              data.forEach((ele) => {
-                if (ele.sender.includes("Google Docs")) {
-                  ndata.push(ele);
-                }
-              });
-            } else if (props.data === "gslides") {
-              data.forEach((ele) => {
-                if (ele.sender.includes("Google Slides")) {
-                  ndata.push(ele);
-                }
-              });
-            } else if (props.data === "gsheets") {
-              data.forEach((ele) => {
-                if (ele.sender.includes("Google Sheets")) {
-                  ndata.push(ele);
-                }
-              });
-            }
-          }
-          // console.log("data in cart is ", ndata);
-          getData(ndata);
-          setLoader(false);
-        })
-        .catch((err) => {
-          console.log("err is ", err);
-          setLoader(false);
-        });
-    }
+    getGsuiteData()
+      .then((data) => {
+        console.log(data);
+        getData(data);
+        setLoader(false);
+      })
+      .catch((err) => {
+        console.log("err is ", err);
+        setLoader(false);
+      });
   }, []);
 
-  useEffect(()=>{
+
+  useEffect(() => {
     getData(data);
   }, [renderAgain])
 
-  const handleChange = async (comment_id, element) => {
+
+  const MouseOverHandler = (e) => {
+    e.target.style.background = "rgba(222,222,222,0.8)";
+  };
+  const MouseLeaveHandler = (e) => {
+    e.target.style.background = "white";
+  };
+
+
+  const handleMarkDoneChange = async (comment_id, element) => {
     setLoader(true);
 
     if (props.product === "gsuites") {
@@ -111,27 +111,7 @@ export default function SimpleCard(props) {
         element.status = "resolved";
         await saveGsuiteData(comment_id, element);
         const resp = await getGsuiteData();
-        let ndata = [];
-        if (props.data === "gdocs") {
-          resp.forEach((ele) => {
-            if (ele.sender.includes("Google Docs")) {
-              ndata.push(ele);
-            }
-          });
-        } else if (props.data === "gslides") {
-          resp.forEach((ele) => {
-            if (ele.sender.includes("Google Slides")) {
-              ndata.push(ele);
-            }
-          });
-        } else if (props.data === "gsheets") {
-          resp.forEach((ele) => {
-            if (ele.sender.includes("Google Sheets")) {
-              ndata.push(ele);
-            }
-          });
-        }
-        getData(ndata);
+        getData(resp);
         setLoader(false);
       } catch (e) {
         console.log("error ", e);
@@ -146,71 +126,126 @@ export default function SimpleCard(props) {
       element["is_starred"] = false;
       Ndata[index] = element;
       getData(Ndata);
-      setRender(renderAgain+1);
+      setRender(renderAgain + 1);
       const fdata = await deleteStarGsuiteData("gsuite", element);
     }
     else {
       element["is_starred"] = true;
       Ndata[index] = element;
       getData(Ndata);
-      setRender(renderAgain+1);
+      setRender(renderAgain + 1);
       const data = await saveStarGsuiteData("gsuite", element);
     }
     const ndata = await saveGsuiteData(element.comment_id, element);
 
   }
 
-
-
   return (
+    // <React.Fragment>
+    //   {data && !Loader ? (
+    //     data.map((element, index) => {
+    //       return element.status === "open" ? (
+    //         <Card key={element.comment_id} className={classes.root}>
+    //           <CardContent>
+    //             <Typography
+    //               className={classes.title}
+    //               color="textSecondary"
+    //               gutterBottom
+    //             >
+    //               Assigned by -- {element.sender.split("<")[0]}
+    //             </Typography>
+    //             <Typography variant="h7" component="h7">
+    //               {element.task_desc}
+    //             </Typography>
+
+    //             <br />
+    //             <FormControlLabel
+    //               control={
+    //                 <Checkbox
+    //                   checked={element.status === "resolved"}
+    //                   color="primary"
+    //                   onChange={(e) => {
+    //                     setChecked(e.target.checked);
+    //                     handleMarkDoneChange(element.comment_id, element);
+    //                   }}
+    //                 />
+    //               }
+    //               label="Mark as Done"
+    //             />
+    //           </CardContent>
+    //           <CardActions style={{ float: "left" }}>
+    //             <a
+    //               target="blank"
+    //               href={element.url}
+    //               style={{
+    //                 textDecoration: "none",
+    //                 color: "#e84993",
+    //                 fontWeight: "bold",
+    //               }}
+    //               size="small"
+    //             >
+    //               Go to the task
+    //             </a>
+    //           </CardActions>
+    //           <CardActions style={{ float: "right" }}>
+
+    //             <Button onClick={(event) => onClickStarHandler(element.is_starred, element, index)}>
+    //               {element.is_starred ?
+    //                 <Tooltip style={{ fontWeight: "bold" }} title="Unbookmark ?">
+    //                   <StarIcon style={{ color: red[400], fontSize: 40 }}></StarIcon>
+    //                 </Tooltip> :
+    //                 <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
+    //                   <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
+    //                 </Tooltip>}
+    //             </Button>
+    //           </CardActions>
+
+    //         </Card>
+    //       ) : null;
+    //     })
+    //   ) : (
+    //       <div className={classesLoader.root}>
+    //         <CircularProgress />
+    //       </div>
+    //     )}
+    // </React.Fragment>
     <React.Fragment>
       {data && !Loader ? (
         data.map((element, index) => {
           return element.status === "open" ? (
-            <Card key={element.comment_id} className={classes.root}>
-              <CardContent>
-                <Typography
-                  className={classes.title}
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  Assigned by -- {element.sender.split("<")[0]}
+            <ExpansionPanel
+              onMouseOut={MouseLeaveHandler}
+              onMouseOver={MouseOverHandler}
+              key={element.comment_id}
+              expanded={expanded === "panel1"}
+              onChange={handleChange("panel1")}
+            >
+              <ExpansionPanelSummary
+                // expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1bh-content"
+                id="panel1bh-header"
+              >
+                <Typography className={classes.heading}>
+                  {element.sender.split("<")[0]}
                 </Typography>
-                <Typography variant="h7" component="h7">
+                <Typography className={classes.secondaryHeading}>
                   {element.task_desc}
                 </Typography>
-
-                <br />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={element.status === "resolved"}
-                      color="primary"
-                      onChange={(e) => {
-                        setChecked(e.target.checked);
-                        handleChange(element.comment_id, element);
-                      }}
-                    />
-                  }
-                  label="Mark as Done"
-                />
-              </CardContent>
-              <CardActions style={{ float: "left" }}>
-                <a
-                  target="blank"
-                  href={element.url}
-                  style={{
-                    textDecoration: "none",
-                    color: "#e84993",
-                    fontWeight: "bold",
-                  }}
-                  size="small"
-                >
-                  Go to the task
-                </a>
-              </CardActions>
-              <CardActions style={{ float: "right" }}>
-
+                <Typography className={classes.descpHeading}>
+                  {" "}
+                  <a
+                    target="blank"
+                    href={element.url}
+                    style={{
+                      textDecoration: "none",
+                      color: "#e84993",
+                      fontWeight: "bold",
+                    }}
+                    size="small"
+                  >
+                    <LaunchSharpIcon></LaunchSharpIcon>
+                  </a>
+                </Typography>
                 <Button onClick={(event) => onClickStarHandler(element.is_starred, element, index)}>
                   {element.is_starred ?
                     <Tooltip style={{ fontWeight: "bold" }} title="Unbookmark ?">
@@ -220,10 +255,10 @@ export default function SimpleCard(props) {
                       <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
                     </Tooltip>}
                 </Button>
-              </CardActions>
-
-            </Card>
-          ) : null;
+              </ExpansionPanelSummary>
+            </ExpansionPanel>
+          ) :
+            null;
         })
       ) : (
           <div className={classesLoader.root}>
