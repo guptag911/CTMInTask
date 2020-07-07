@@ -11,7 +11,10 @@ import { HubSpotTasksGetAPIData } from "../api/hubSpot";
 import Drawer from "../components/Analytics";
 import Button from '@material-ui/core/Button';
 import ClearIcon from '@material-ui/icons/Clear';
-import {red} from '@material-ui/core/colors';
+import { red, blue, yellow } from '@material-ui/core/colors';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,15 +31,23 @@ const Dashboard = () => {
 
   const classes = useStyles();
 
-  const [analyticsClicked, OpenAnalytics] = useState(false);
+  const [sideClicked, OpenSideBar] = useState(false);
+
+  const [service, setService]=useState(null);
 
 
-  const onClickHandler = (event) => {
-    OpenAnalytics(true);
+  const onClicAnalyticskHandler = (event) => {
+    setService("analytics");
+    OpenSideBar(true);
   }
 
-  const onClickHandlerClose = (event) =>{
-    OpenAnalytics(false);
+  const onClickHandlerClose = (event) => {
+    OpenSideBar(false);
+  }
+
+  const onClickStarTaskHandler = (event)=>{
+    setService("star_tasks");
+    OpenSideBar(true);
   }
 
   React.useEffect(() => {
@@ -51,13 +62,13 @@ const Dashboard = () => {
   return (
     <div className={classes.root}>
       <NavigationBar />
-      {analyticsClicked ? <Grid container spacing={2} maxWidth="lg" style={{ marginTop: "100px" }}>
+      {sideClicked ? <Grid container spacing={2} maxWidth="lg" style={{ marginTop: "100px" }}>
         <Grid item xs={8}>
           <Container> <TabView></TabView></Container>
         </Grid>
         <Grid item xs={4}>
-        <Button onClick={onClickHandlerClose}><ClearIcon></ClearIcon></Button>
-          <Drawer></Drawer>
+          <Button onClick={onClickHandlerClose}><ClearIcon></ClearIcon></Button>
+          <Drawer service={service}></Drawer>
         </Grid>
         {/* <Grid item xs={1}> */}
         {/* <Button onClick={onClickHandlerClose}><ClearIcon></ClearIcon></Button> */}
@@ -67,7 +78,20 @@ const Dashboard = () => {
             <Container> <TabView></TabView></Container>
           </Grid>
           <Grid item xs={1}>
-            <Button onClick={onClickHandler}> <AssessmentIcon style={{ fontSize: 60, color: red[500]}}></AssessmentIcon></Button>
+            <Button onClick={onClicAnalyticskHandler}>
+              <Tooltip style={{ "width": 200, fontWeight:"bold", fontSize:100 }} title="Analytics">
+                {/* <IconButton aria-label="delete"> */}
+                <AssessmentIcon style={{ fontSize: 60, color: red[300] }}></AssessmentIcon>
+                {/* </IconButton> */}
+              </Tooltip>
+            </Button>
+            <Button onClick={onClickStarTaskHandler}>
+              <Tooltip style={{ "width": 200, fontWeight:"bold", fontSize:100 }} title="Starred Tasks">
+                {/* <IconButton aria-label="delete"> */}
+                <BookmarkIcon style={{ fontSize: 60, color: blue[300] }}></BookmarkIcon>
+                {/* </IconButton> */}
+              </Tooltip>
+            </Button>
           </Grid>
         </Grid>}
     </div>

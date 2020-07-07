@@ -5,6 +5,7 @@ import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
 import { red } from '@material-ui/core/colors';
 import Chart from "./analyticsChart";
+import StarCard from "./stardataCard";
 
 const useStyles = makeStyles({
     fullList: {
@@ -13,13 +14,13 @@ const useStyles = makeStyles({
     },
 });
 
-export default function TemporaryDrawer() {
+export default function TemporaryDrawer(props) {
 
     const classes = useStyles();
-
+    
     return (
         <div className={classes.fullList}>
-            <Chart></Chart>
+            {props.service === "analytics" ? <Chart></Chart> : <StarCard></StarCard>}
         </div>
     );
 

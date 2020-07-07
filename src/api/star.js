@@ -1,6 +1,6 @@
 import { firebaseAuth, db } from "../config/config";
 
-export const getGsuiteData = async () => {
+export const getStarGsuiteData = async () => {
   try {
     const uid =
       firebaseAuth.currentUser.uid === null
@@ -10,8 +10,8 @@ export const getGsuiteData = async () => {
       .collection("users")
       .doc(uid)
       .collection("tasks")
-      .doc("gsuite")
-      .collection("data")
+      .doc("star")
+      .collection("gsuite")
       .get();
     let finalData = [];
     userRef.forEach((data) => {
@@ -26,25 +26,9 @@ export const getGsuiteData = async () => {
   }
 };
 
-export const getGsuiteID = async () => {
-  try {
-    let my_data = await getGsuiteData();
-    let comment_ids = [];
-    (await my_data).forEach((data) => {
-      comment_ids.push(data["comment_id"]);
-    });
-    //console.log("IDs are:", task_ids);
-    return comment_ids;
-  } catch (err) {
-    console.log("Error is:", err);
-    return [];
-  }
-};
 
-export const saveGsuiteData = async (comment_id, userdata) => {
+export const saveStarGsuiteData = async (service,userdata) => {
   try {
-    // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
-    // console.log("In atlassian function confluence data is ", userdata);
     userdata["upload_time_utc"] = Date.now();
     const uid =
       firebaseAuth.currentUser.uid === null
@@ -54,13 +38,11 @@ export const saveGsuiteData = async (comment_id, userdata) => {
       .collection("users")
       .doc(uid)
       .collection("tasks")
-      .doc("gsuite")
-      .collection("data")
-      .doc(comment_id)
-      .update(userdata);
+      .doc("star")
+      .collection(service)
+      .doc(userdata.comment_id)
+      .set(userdata);
 
-    // console.log("userRef is:", userRef);
-    // console.log("In atlassian function confluence data is ", userdata);
     return { msg: "success" };
   } catch (err) {
     console.log("Error is:", err);

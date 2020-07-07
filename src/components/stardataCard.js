@@ -13,7 +13,7 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import StarIcon from '@material-ui/icons/Star';
-import { saveStarGsuiteData } from "../api/star";
+import { getStarGsuiteData,saveStarGsuiteData } from "../api/star";
 import { red, blue, yellow } from '@material-ui/core/colors';
 
 const useStyleLoader = makeStyles((theme) => ({
@@ -60,42 +60,15 @@ export default function SimpleCard(props) {
 
   let [data, getData] = useState(null);
   useEffect(() => {
-    console.log("called");
-    if (props.product === "gsuites") {
-      getGsuiteData()
+      getStarGsuiteData()
         .then((data) => {
-          console.log(data);
-          let ndata = [];
-          if (data !== null) {
-            if (props.data === "gdocs") {
-              data.forEach((ele) => {
-                if (ele.sender.includes("Google Docs")) {
-                  ndata.push(ele);
-                }
-              });
-            } else if (props.data === "gslides") {
-              data.forEach((ele) => {
-                if (ele.sender.includes("Google Slides")) {
-                  ndata.push(ele);
-                }
-              });
-            } else if (props.data === "gsheets") {
-              data.forEach((ele) => {
-                if (ele.sender.includes("Google Sheets")) {
-                  ndata.push(ele);
-                }
-              });
-            }
-          }
-          console.log("data in cart is ", ndata);
-          getData(ndata);
+          getData(data);
           setLoader(false);
         })
         .catch((err) => {
           console.log("err is ", err);
           setLoader(false);
         });
-    }
   }, []);
 
   const handleChange = async (comment_id, element) => {
@@ -105,28 +78,8 @@ export default function SimpleCard(props) {
       try {
         element.status = "resolved";
         await saveGsuiteData(comment_id, element);
-        const resp = await getGsuiteData();
-        let ndata = [];
-        if (props.data === "gdocs") {
-          resp.forEach((ele) => {
-            if (ele.sender.includes("Google Docs")) {
-              ndata.push(ele);
-            }
-          });
-        } else if (props.data === "gslides") {
-          resp.forEach((ele) => {
-            if (ele.sender.includes("Google Slides")) {
-              ndata.push(ele);
-            }
-          });
-        } else if (props.data === "gsheets") {
-          resp.forEach((ele) => {
-            if (ele.sender.includes("Google Sheets")) {
-              ndata.push(ele);
-            }
-          });
-        }
-        getData(ndata);
+        const resp = await getStarGsuiteData();
+        getData(resp);
         setLoader(false);
       } catch (e) {
         console.log("error ", e);
@@ -162,19 +115,6 @@ export default function SimpleCard(props) {
                 </Typography>
 
                 <br />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={element.status === "resolved"}
-                      color="primary"
-                      onChange={(e) => {
-                        setChecked(e.target.checked);
-                        handleChange(element.comment_id, element);
-                      }}
-                    />
-                  }
-                  label="Mark as Done"
-                />
               </CardContent>
               <CardActions style={{ float: "left" }}>
                 <a
