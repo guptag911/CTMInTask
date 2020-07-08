@@ -121,13 +121,20 @@ export const CalendarDataGet = async () => {
 
 export const get_calendars = async () => {
   try {
-    let response = await window.gapi.client.calendar.calendarList.list();
-    let calendar_list = response.result.items;
-    // console.log("calendar list is ", calendar_list);
-    calendar_list.forEach(async (element) => {
-      await CalendarDataSave(element.id);
-    });
-  } catch (err) {
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .get();
+    let data = userRef.data();
+    let email = data.email.toString();
+    console.log(email);
+    await CalendarDataSave(email);
+  }
+  catch (err) {
     console.log("Error in fetching calendar list! ", err);
   }
 };
