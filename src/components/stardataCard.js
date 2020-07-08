@@ -119,6 +119,7 @@ export default function SimpleCard(props) {
 
   return (
     <React.Fragment>
+      <React.Fragment>
       {data && !Loader ? (
         data.map((element, index) => {
           return element.status === "open" && element.is_starred ? (
@@ -169,6 +170,66 @@ export default function SimpleCard(props) {
             <CircularProgress />
           </div>
         )}
+        </React.Fragment>
+
+
+        {/* Jira Starred Taks  */}
+
+
+
+      <React.Fragment>
+      {data && !Loader ? (
+        data.map((element, index) => {
+          return element.status === "open" && element.is_starred ? (
+            <Card key={element.comment_id} className={classes.root}>
+              <CardContent>
+                <Typography
+                  className={classes.title}
+                  color="textSecondary"
+                  gutterBottom
+                >
+                  Assigned by -- {element.sender.split("<")[0]}
+                </Typography>
+                <Typography variant="h7" component="h7">
+                  {element.task_desc}
+                </Typography>
+
+                <br />
+              </CardContent>
+              <CardActions style={{ float: "left" }}>
+                <a
+                  target="blank"
+                  href={element.url}
+                  style={{
+                    textDecoration: "none",
+                    color: "#e84993",
+                    fontWeight: "bold",
+                  }}
+                  size="small"
+                >
+                  Go to the task
+                </a>
+              </CardActions>
+              <CardActions style={{ float: "right" }}>
+
+                <Button onClick={(event) => onClickStarHandler(element.is_starred, element, index)}>
+                  {element.is_starred ?
+                    <Tooltip style={{ fontWeight: "bold" }} title="Unbookmark ?">
+                      <StarIcon style={{ color: red[400], fontSize: 40 }}></StarIcon>
+                    </Tooltip> : null}
+                </Button>
+              </CardActions>
+
+            </Card>
+          ) : null;
+        })
+      ) : (
+          <div className={classesLoader.root}>
+            <CircularProgress />
+          </div>
+        )}
+        
+    </React.Fragment>
     </React.Fragment>
   );
 }

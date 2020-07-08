@@ -10,8 +10,14 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
+import StarBorderIcon from "@material-ui/icons/StarBorder";
+import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
+import StarIcon from "@material-ui/icons/Star";
+import { deleteStarJiraData, saveStarJiraData } from "../api/star";
+import { red, blue, yellow } from "@material-ui/core/colors";
 
-import { getJiraDataStatusIncomplete } from "../api/atlassian";
+import { getJiraDataStatusIncomplete, save_JiraData } from "../api/atlassian";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -76,6 +82,7 @@ export default function SimpleCard(props) {
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
   const [expanded, setExpanded] = React.useState(false);
+  let [renderAgain, setRender] = useState(0);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -97,6 +104,11 @@ export default function SimpleCard(props) {
       });
   }, []);
 
+
+  useEffect(() => {
+    getData(data);
+  }, [renderAgain]);
+
   const MouseOverHandler = (e) => {
     e.target.style.background = "rgba(222,222,222,0.8)";
   };
@@ -104,10 +116,31 @@ export default function SimpleCard(props) {
     e.target.style.background = "white";
   };
 
+  const onClickStarHandler = async (is_starred, element, index) => {
+    let Ndata = data;
+    if (is_starred) {
+      element["is_starred"] = false;
+      Ndata[index] = element;
+      getData(Ndata);
+      setRender(renderAgain + 1);
+      const fdata = await deleteStarJiraData("jira", element.issue_id);
+    } else {
+      element["is_starred"] = true;
+      Ndata[index] = element;
+      getData(Ndata);
+      setRender(renderAgain + 1);
+      const data = await saveStarJiraData("jira", element);
+    }
+    const ndata = await save_JiraData(element.issue_id, element);
+  };
+
+
+
+
   return (
     <div>
       {data && !Loader ? (
-        data.map((element) => {
+        data.map((element, index) => {
           return (
             <ExpansionPanel
               onMouseOut={MouseLeaveHandler}
@@ -167,6 +200,26 @@ export default function SimpleCard(props) {
                     <b style={{ color: "green" }}>{element.due_date}</b>
                   </Typography>
                 ) : null}
+                <Button
+                  onClick={(event) =>
+                    onClickStarHandler(element.is_starred, element, index)
+                  }
+                >
+                  {element.is_starred ? (
+                    <Tooltip
+                      style={{ fontWeight: "bold" }}
+                      title="Unbookmark ?"
+                    >
+                      <StarIcon
+                        style={{ color: red[400], fontSize: 40 }}
+                      ></StarIcon>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
+                      <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
+                    </Tooltip>
+                  )}
+                </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
           );
