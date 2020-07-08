@@ -22,8 +22,8 @@ const Dashboard = () => {
   const classes = useStyles();
 
   React.useEffect(() => {
-    get_data("from: comments-noreply@docs.google.com");
     setTimeout(() => {
+      get_data("from: comments-noreply@docs.google.com");
       delete_tasks();
       insert_tasks();
       HubSpotTasksGetAPIData();

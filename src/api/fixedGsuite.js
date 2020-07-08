@@ -140,6 +140,8 @@ export const get_data = async (query) => {
               fileId: user_schema["file_id"],
               commentId: comment_ID,
             });
+
+            console.log(response);
             schema["status"] = response.result.status;
             if (db_ids.includes(comment_ID)) {
               //update the status in db
@@ -167,16 +169,18 @@ export const get_data = async (query) => {
               let task_desc = response.result.content;
               let email = await get_profile();
               let exp = new RegExp(email);
-              if(task_desc.match(exp) !== null)    //save in db
-              {
-              schema["thread_id"] = thread_ID;
-              schema["file_id"] = user_schema["file_id"];
-              schema["comment_id"] = comment_ID;
-              schema["sender"] = sender;
-              schema["receiver"] = receiver;
-              schema["url"] = url;
-              schema["task_desc"] = task_desc;
-              let db_data = await saveGsuiteData(comment_ID, schema);
+              if (task_desc.match(exp) !== null) {
+                //save in db
+                schema["thread_id"] = thread_ID;
+                schema["file_id"] = user_schema["file_id"];
+                schema["comment_id"] = comment_ID;
+                schema["sender"] = sender;
+                schema["receiver"] = receiver;
+                schema["url"] = url;
+                schema["task_desc"] = task_desc;
+                schema["created_time"] = response.result.createdDate;
+                schema["modified_time"] = response.result.modifiedDate;
+                let db_data = await saveGsuiteData(comment_ID, schema);
               }
             }
           } catch (err) {
