@@ -68,6 +68,7 @@ export default function SimpleCard(props) {
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
   let [renderAgain, setRender] = useState(0);
+  let [InitRender, setInitRender] = useState(false);
   let [data, getData] = useState(null);
   const [expanded, setExpanded] = React.useState(false);
 
@@ -82,10 +83,12 @@ export default function SimpleCard(props) {
         console.log(data);
         getData(data);
         setLoader(false);
+        setInitRender(InitRender+1);
       })
       .catch((err) => {
         console.log("err is ", err);
         setLoader(false);
+        setInitRender(InitRender+1);
       });
   }, []);
 
