@@ -137,14 +137,14 @@ export default function SimpleCard(props) {
                     {element.metadata.subject}
                   </Typography>
                 ) : (
-                    <Typography
-                      className={classes.heading}
-                      color="textSecondary"
-                      gutterBottom
-                    >
-                      No Title for the Note
-                    </Typography>
-                  )}
+                  <Typography
+                    className={classes.heading}
+                    color="textSecondary"
+                    gutterBottom
+                  >
+                    No Title for the Note
+                  </Typography>
+                )}
                 <Typography
                   className={classes.secondaryHeading}
                   color="textSecondary"
@@ -196,19 +196,19 @@ export default function SimpleCard(props) {
                     Priority - {element.metadata.priority}
                   </Typography>
                 ) : (
-                    <Typography
-                      className={classes.heading}
-                      color="textSecondary"
-                      style={{
-                        textDecoration: "none",
-                        color: "#e84993",
-                        fontWeight: "bold",
-                      }}
-                      gutterBottom
-                    >
-                      Priority - NONE
-                    </Typography>
-                  )}
+                  <Typography
+                    className={classes.heading}
+                    color="textSecondary"
+                    style={{
+                      textDecoration: "none",
+                      color: "#e84993",
+                      fontWeight: "bold",
+                    }}
+                    gutterBottom
+                  >
+                    Priority - NONE
+                  </Typography>
+                )}
                 <Typography
                   className={classes.heading}
                   color="textSecondary"
@@ -221,10 +221,10 @@ export default function SimpleCard(props) {
           );
         })
       ) : (
-          <div className={classesLoader.root}>
-            <CircularProgress />
-          </div>
-        )}
+        <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>
+      )}
     </React.Fragment>
   );
 }

@@ -6,15 +6,14 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-// import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getGsuiteData, saveGsuiteData } from "../api/fixedDb";
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from "@material-ui/icons/StarBorder";
+import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
+import StarIcon from "@material-ui/icons/Star";
 import { saveStarGsuiteData, deleteStarGsuiteData } from "../api/star";
-import { red, blue, yellow } from '@material-ui/core/colors';
+import { red, blue, yellow } from "@material-ui/core/colors";
 
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
@@ -22,8 +21,6 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
 import Popover from "@material-ui/core/Popover";
-
-
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -49,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     overflow: "hidden",
-    flexBasis: "80%"
+    flexBasis: "80%",
   },
   descpHeading: {
     fontSize: theme.typography.pxToRem(15),
@@ -59,8 +56,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
   },
 }));
-
-
 
 export default function SimpleCard(props) {
   const [checked, setChecked] = React.useState(true);
@@ -75,7 +70,6 @@ export default function SimpleCard(props) {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-
 
   useEffect(() => {
     getGsuiteData()
@@ -92,11 +86,9 @@ export default function SimpleCard(props) {
       });
   }, []);
 
-
   useEffect(() => {
     getData(data);
-  }, [renderAgain])
-
+  }, [renderAgain]);
 
   const MouseOverHandler = (e) => {
     e.target.style.background = "rgba(222,222,222,0.8)";
@@ -104,7 +96,6 @@ export default function SimpleCard(props) {
   const MouseLeaveHandler = (e) => {
     e.target.style.background = "white";
   };
-
 
   const handleMarkDoneChange = async (comment_id, element) => {
     setLoader(true);
@@ -122,7 +113,6 @@ export default function SimpleCard(props) {
     }
   };
 
-
   const onClickStarHandler = async (is_starred, element, index) => {
     let Ndata = data;
     if (is_starred) {
@@ -131,8 +121,7 @@ export default function SimpleCard(props) {
       getData(Ndata);
       setRender(renderAgain + 1);
       const fdata = await deleteStarGsuiteData("gsuite", element);
-    }
-    else {
+    } else {
       element["is_starred"] = true;
       Ndata[index] = element;
       getData(Ndata);
@@ -140,78 +129,9 @@ export default function SimpleCard(props) {
       const data = await saveStarGsuiteData("gsuite", element);
     }
     const ndata = await saveGsuiteData(element.comment_id, element);
-
-  }
+  };
 
   return (
-    // <React.Fragment>
-    //   {data && !Loader ? (
-    //     data.map((element, index) => {
-    //       return element.status === "open" ? (
-    //         <Card key={element.comment_id} className={classes.root}>
-    //           <CardContent>
-    //             <Typography
-    //               className={classes.title}
-    //               color="textSecondary"
-    //               gutterBottom
-    //             >
-    //               Assigned by -- {element.sender.split("<")[0]}
-    //             </Typography>
-    //             <Typography variant="h7" component="h7">
-    //               {element.task_desc}
-    //             </Typography>
-
-    //             <br />
-    //             <FormControlLabel
-    //               control={
-    //                 <Checkbox
-    //                   checked={element.status === "resolved"}
-    //                   color="primary"
-    //                   onChange={(e) => {
-    //                     setChecked(e.target.checked);
-    //                     handleMarkDoneChange(element.comment_id, element);
-    //                   }}
-    //                 />
-    //               }
-    //               label="Mark as Done"
-    //             />
-    //           </CardContent>
-    //           <CardActions style={{ float: "left" }}>
-    //             <a
-    //               target="blank"
-    //               href={element.url}
-    //               style={{
-    //                 textDecoration: "none",
-    //                 color: "#e84993",
-    //                 fontWeight: "bold",
-    //               }}
-    //               size="small"
-    //             >
-    //               Go to the task
-    //             </a>
-    //           </CardActions>
-    //           <CardActions style={{ float: "right" }}>
-
-    //             <Button onClick={(event) => onClickStarHandler(element.is_starred, element, index)}>
-    //               {element.is_starred ?
-    //                 <Tooltip style={{ fontWeight: "bold" }} title="Unbookmark ?">
-    //                   <StarIcon style={{ color: red[400], fontSize: 40 }}></StarIcon>
-    //                 </Tooltip> :
-    //                 <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
-    //                   <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
-    //                 </Tooltip>}
-    //             </Button>
-    //           </CardActions>
-
-    //         </Card>
-    //       ) : null;
-    //     })
-    //   ) : (
-    //       <div className={classesLoader.root}>
-    //         <CircularProgress />
-    //       </div>
-    //     )}
-    // </React.Fragment>
     <React.Fragment>
       {data && !Loader ? (
         data.map((element, index) => {
@@ -249,25 +169,35 @@ export default function SimpleCard(props) {
                     <LaunchSharpIcon></LaunchSharpIcon>
                   </a>
                 </Typography>
-                <Button onClick={(event) => onClickStarHandler(element.is_starred, element, index)}>
-                  {element.is_starred ?
-                    <Tooltip style={{ fontWeight: "bold" }} title="Unbookmark ?">
-                      <StarIcon style={{ color: red[400], fontSize: 40 }}></StarIcon>
-                    </Tooltip> :
+                <Button
+                  onClick={(event) =>
+                    onClickStarHandler(element.is_starred, element, index)
+                  }
+                >
+                  {element.is_starred ? (
+                    <Tooltip
+                      style={{ fontWeight: "bold" }}
+                      title="Unbookmark ?"
+                    >
+                      <StarIcon
+                        style={{ color: red[400], fontSize: 40 }}
+                      ></StarIcon>
+                    </Tooltip>
+                  ) : (
                     <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
                       <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
-                    </Tooltip>}
+                    </Tooltip>
+                  )}
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
-          ) :
-            null;
+          ) : null;
         })
       ) : (
-          <div className={classesLoader.root}>
-            <CircularProgress />
-          </div>
-        )}
+        <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>
+      )}
     </React.Fragment>
   );
 }

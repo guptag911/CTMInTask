@@ -12,7 +12,6 @@ import Typography from "@material-ui/core/Typography";
 import { firebaseAuth } from "../config/config";
 import { Link } from "react-router-dom";
 import { signout } from "../helper/auth";
-import { db } from "../config/config";
 
 const styles = (theme) => ({
   root: {
@@ -117,7 +116,7 @@ const Profile = (props) => {
           <Button
             autoFocus
             onClick={handleLogOut}
-            color="primary"
+            color="inherit"
             component={Link}
             to="/"
           >

@@ -127,7 +127,7 @@ export default function CalendarCard(props) {
         })
       ) : (
         <div className={classesLoader.root}>
-          <CircularProgress />
+          <CircularProgress style={{ color: "#000000" }} />
         </div>
       )}
     </React.Fragment>

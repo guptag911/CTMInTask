@@ -487,25 +487,6 @@ export default function MiniDrawer() {
     handleMobileMenuClose();
   };
 
-  let state = {
-    hub: false,
-    conf: false,
-    Jira: false,
-    user: false,
-  };
-
-  const handleUserAuth = async (e) => {
-    let state = {
-      hub: false,
-      conf: false,
-      Jira: false,
-      user: true,
-    };
-    localStorage.setItem("state", JSON.stringify(state));
-    const res = await user();
-    window.location.href = res;
-  };
-
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
@@ -562,6 +543,13 @@ export default function MiniDrawer() {
 
   let [contents, setShowData] = React.useState(<GsuiteCard></GsuiteCard>);
 
+  // auth connect
+
+  const [value, setValue] = React.useState(0);
+
+  const [authState, setAuthSate] = React.useState(
+    JSON.parse(localStorage.getItem("token"))
+  );
   const [hubState, setHubState] = React.useState(
     JSON.parse(localStorage.getItem("hub"))
   );
@@ -570,10 +558,52 @@ export default function MiniDrawer() {
     JSON.parse(localStorage.getItem("jira"))
   );
 
-
-  const [authState, setAuthSate] = React.useState(
-    JSON.parse(localStorage.getItem("token"))
+  const [clickState, setclickState] = React.useState(
+    JSON.parse(localStorage.getItem("state")) || {
+      hub: false,
+      conf: false,
+      Jira: false,
+      user: false,
+    }
   );
+
+  let state = {
+    hub: false,
+    conf: false,
+    Jira: false,
+    user: false,
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleState = (e) => {
+    e.preventDefault();
+    if (!window.localStorage.getItem("token")) {
+      alert(
+        'Connect to confluence and then Click the "Identify Yourself" button to identify yourself'
+      );
+    } else if (
+      window.localStorage.getItem("token") &&
+      !window.localStorage.getItem("user")
+    ) {
+      alert('Click the "Identify Yourself" button to identify yourself');
+    }
+  };
+
+  const handleReq = async (e) => {
+    state = {
+      hub: false,
+      conf: true,
+      Jira: false,
+      user: false,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
+
+    const res = await auth();
+    window.location.href = res;
+  };
 
   const handleHub = async (e) => {
     state = {
@@ -589,8 +619,6 @@ export default function MiniDrawer() {
     window.location.href = res;
   };
 
-
-
   const handleJira = async (e) => {
     state = {
       hub: false,
@@ -603,18 +631,92 @@ export default function MiniDrawer() {
     window.location.href = res;
   };
 
-
-  const handleReq = async (e) => {
-    state = {
+  const handleUserAuth = async (e) => {
+    let state = {
       hub: false,
-      conf: true,
+      conf: false,
       Jira: false,
-      user: false,
+      user: true,
     };
     localStorage.setItem("state", JSON.stringify(state));
-
-    const res = await auth();
+    const res = await user();
     window.location.href = res;
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const authCode = params.get("code");
+  setTimeout(() => {
+    if (clickState.hub && authCode) {
+      window.location.reload(false);
+      state = {
+        hub: false,
+        conf: false,
+        Jira: false,
+        user: false,
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+
+    if (clickState.Jira && authCode) {
+      window.location.reload(false);
+      state = {
+        hub: false,
+        conf: false,
+        Jira: false,
+        user: false,
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+
+    if (clickState.conf && authCode) {
+      window.location.reload(false);
+      state = {
+        hub: false,
+        conf: false,
+        Jira: false,
+        user: false,
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+
+    if (clickState.user && authCode) {
+      window.location.reload(false);
+      state = {
+        hub: false,
+        conf: false,
+        Jira: false,
+        user: false,
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+  }, 4000);
+
+  React.useEffect(() => {
+    if (clickState.hub) {
+      handleHubAuth();
+    } else if (clickState.Jira) {
+      handleJiraAuth();
+    } else if (clickState.conf) {
+      handleAuth();
+    } else if (clickState.user) {
+      handleUser();
+    }
+  }, [window.onload]);
+
+  const handleAuth = async () => {
+    await getToken();
+  };
+
+  const handleUser = async () => {
+    await getUserToken();
+  };
+
+  const handleJiraAuth = async () => {
+    await getJiraToken();
+  };
+
+  const handleHubAuth = async () => {
+    await getHubToken();
   };
 
   const onClickShow = (event, service) => {
@@ -623,43 +725,46 @@ export default function MiniDrawer() {
         setShowData(<GsuiteCard></GsuiteCard>);
         break;
       case "Hubspot":
-        firebaseAuth.currentUser && !hubState ?
-          setShowData(<Button
-            variant="contained"
-            color="primary"
-            className={classes.center}
-            onClick={handleHub}
-          >
-            Connect to HubSpot
-          </Button>
-          ) :
-          setShowData(<HubSpotCard></HubSpotCard>);
+        firebaseAuth.currentUser && !hubState
+          ? setShowData(
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.center}
+                onClick={handleHub}
+              >
+                Connect to HubSpot
+              </Button>
+            )
+          : setShowData(<HubSpotCard></HubSpotCard>);
         break;
       case "Confluence":
-        firebaseAuth.currentUser && !authState ?
-          setShowData(<Button
-            variant="contained"
-            color="primary"
-            className={classes.center}
-            onClick={handleReq}
-          >
-            Connect to Confluence
-            </Button>
-          ) :
-          setShowData(<ConfluenceCard></ConfluenceCard>);
+        firebaseAuth.currentUser && !authState
+          ? setShowData(
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.center}
+                onClick={handleReq}
+              >
+                Connect to Confluence
+              </Button>
+            )
+          : setShowData(<ConfluenceCard></ConfluenceCard>);
         break;
       case "Jira":
-        firebaseAuth.currentUser && !jiraState ?
-          setShowData(<Button
-            variant="contained"
-            color="primary"
-            className={classes.center}
-            onClick={handleJira}
-          >
-            Connect to Jira
-          </Button>)
-          :
-          setShowData(<JiraCard></JiraCard>);
+        firebaseAuth.currentUser && !jiraState
+          ? setShowData(
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.center}
+                onClick={handleJira}
+              >
+                Connect to Jira
+              </Button>
+            )
+          : setShowData(<JiraCard></JiraCard>);
         break;
       case "Calendar":
         setShowData(<CalendarCard></CalendarCard>);
@@ -766,8 +871,8 @@ export default function MiniDrawer() {
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
-                <ChevronLeftIcon />
-              )}
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </div>
         <Divider />
@@ -797,8 +902,8 @@ export default function MiniDrawer() {
                 ) : index === 4 ? (
                   <img src="https://img.icons8.com/fluent/50/calendar.png"></img>
                 ) : (
-                            <img src="https://img.icons8.com/color/50/gmail-login.png"></img>
-                          )}
+                  <img src="https://img.icons8.com/color/50/gmail-login.png"></img>
+                )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -816,8 +921,8 @@ export default function MiniDrawer() {
                 {index === 0 ? (
                   <img src="https://img.icons8.com/fluent/50/web-analystics.png"></img>
                 ) : (
-                    <img src="https://img.icons8.com/cute-clipart/50/bookmark-ribbon.png"></img>
-                  )}
+                  <img src="https://img.icons8.com/cute-clipart/50/bookmark-ribbon.png"></img>
+                )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>

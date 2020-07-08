@@ -169,10 +169,10 @@ export default function SimpleCard(props) {
           );
         })
       ) : (
-          <div className={classesLoader.root}>
-            <CircularProgress />
-          </div>
-        )}
+        <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>
+      )}
     </div>
   );
 }
