@@ -70,7 +70,7 @@ export const HubSpotDataSave = async (userdata) => {
         .doc("hubspot")
         .collection("data")
         .doc(userdata[data].engagement.id.toString())
-        .update(userdata[data]);
+        .set(userdata[data]);
     }
     return { msg: "success" };
   } catch (e) {
@@ -118,7 +118,7 @@ export const HubSpotSingleDataSave = async (userdata) => {
       .doc("hubspot")
       .collection("data")
       .doc(userdata.engagement.id.toString())
-      .update(userdata);
+      .set(userdata);
     return { msg: "success" };
   } catch (e) {
     console.log("error is -----", e);

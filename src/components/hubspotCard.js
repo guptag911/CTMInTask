@@ -126,15 +126,15 @@ export default function SimpleCard(props) {
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const fdata = await deleteStarHubspotData("hubspot", element.engagement.id.toString());
+      const fdata = deleteStarHubspotData("hubspot", element.engagement.id.toString());
     } else {
       element["is_starred"] = true;
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const data = await saveStarHubspotData("hubspot", element);
+      const data = saveStarHubspotData("hubspot", element);
     }
-    const ndata = await HubSpotSingleDataSave(element);
+    const ndata = HubSpotSingleDataSave(element);
   };
 
 
@@ -173,14 +173,14 @@ export default function SimpleCard(props) {
                     {element.metadata.subject}
                   </Typography>
                 ) : (
-                  <Typography
-                    className={classes.heading}
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    No Title for the Note
-                  </Typography>
-                )}
+                    <Typography
+                      className={classes.heading}
+                      color="textSecondary"
+                      gutterBottom
+                    >
+                      No Title for the Note
+                    </Typography>
+                  )}
                 <Typography
                   className={classes.secondaryHeading}
                   color="textSecondary"
@@ -232,19 +232,19 @@ export default function SimpleCard(props) {
                     Priority - {element.metadata.priority}
                   </Typography>
                 ) : (
-                  <Typography
-                    className={classes.heading}
-                    color="textSecondary"
-                    style={{
-                      textDecoration: "none",
-                      color: "#e84993",
-                      fontWeight: "bold",
-                    }}
-                    gutterBottom
-                  >
-                    Priority - NONE
-                  </Typography>
-                )}
+                    <Typography
+                      className={classes.heading}
+                      color="textSecondary"
+                      style={{
+                        textDecoration: "none",
+                        color: "#e84993",
+                        fontWeight: "bold",
+                      }}
+                      gutterBottom
+                    >
+                      Priority - NONE
+                    </Typography>
+                  )}
                 <Typography
                   className={classes.heading}
                   color="textSecondary"
@@ -267,20 +267,20 @@ export default function SimpleCard(props) {
                       ></StarIcon>
                     </Tooltip>
                   ) : (
-                    <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
-                      <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
-                    </Tooltip>
-                  )}
+                      <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
+                        <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
+                      </Tooltip>
+                    )}
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
           );
         })
       ) : (
-        <div className={classesLoader.root}>
-          <CircularProgress />
-        </div>
-      )}
+          <div className={classesLoader.root}>
+            <CircularProgress />
+          </div>
+        )}
     </React.Fragment>
   );
 }

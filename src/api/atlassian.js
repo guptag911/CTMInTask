@@ -16,7 +16,7 @@ export const save_confluenceData = async (task_id, userdata) => {
       .doc("atlassian")
       .collection("confluence")
       .doc(task_id)
-      .update(userdata);
+      .set(userdata);
 
     // console.log("userRef is:", userRef);
     // console.log("In atlassian function confluence data is ", userdata);
@@ -111,7 +111,7 @@ export const save_JiraData = async (issue_id, userdata) => {
       .doc("atlassian")
       .collection("jira")
       .doc(issue_id)
-      .update(userdata);
+      .set(userdata);
     //console.log("userRef is:", userRef);
     // console.log("In atlassian function Jira data is ", userdata);
 

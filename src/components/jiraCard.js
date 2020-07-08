@@ -123,15 +123,15 @@ export default function SimpleCard(props) {
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const fdata = await deleteStarJiraData("jira", element.issue_id);
+      const fdata = deleteStarJiraData("jira", element.issue_id);
     } else {
       element["is_starred"] = true;
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const data = await saveStarJiraData("jira", element);
+      const data = saveStarJiraData("jira", element);
     }
-    const ndata = await save_JiraData(element.issue_id, element);
+    const ndata = save_JiraData(element.issue_id, element);
   };
 
 
@@ -215,20 +215,20 @@ export default function SimpleCard(props) {
                       ></StarIcon>
                     </Tooltip>
                   ) : (
-                    <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
-                      <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
-                    </Tooltip>
-                  )}
+                      <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
+                        <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
+                      </Tooltip>
+                    )}
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
           );
         })
       ) : (
-        <div className={classesLoader.root}>
-          <CircularProgress />
-        </div>
-      )}
+          <div className={classesLoader.root}>
+            <CircularProgress />
+          </div>
+        )}
     </div>
   );
 }

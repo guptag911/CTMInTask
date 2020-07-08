@@ -123,15 +123,15 @@ export default function SimpleCard(props) {
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const fdata = await deleteStarConfluenceData("confluence", element.task_id);
+      const fdata = deleteStarConfluenceData("confluence", element.task_id);
     } else {
       element["is_starred"] = true;
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const data = await saveStarConfluenceData("confluence", element);
+      const data = saveStarConfluenceData("confluence", element);
     }
-    const ndata = await save_confluenceData(element.task_id, element);
+    const ndata = save_confluenceData(element.task_id, element);
   };
 
 
