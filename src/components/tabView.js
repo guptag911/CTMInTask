@@ -342,24 +342,23 @@
 //   );
 // }
 
-
-import React from 'react';
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import React from "react";
+import clsx from "clsx";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Drawer from "@material-ui/core/Drawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 import GsuiteCard from "./card";
 import ConfluenceCard from "./confluenceCard";
 import HubSpotCard from "./hubspotCard";
@@ -369,16 +368,28 @@ import AnalyticsCard from "./analyticsChart";
 import CalendarCard from "./calenderCard";
 import ReplyMailCard from "./replyEmailsCard";
 import { ReactAutosuggestExample } from "./reactAutoSuggest";
+import { firebaseAuth } from "../config/config";
+import { user } from "../helper/confUserAuth";
+import { Button } from "@material-ui/core";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import MoreIcon from "@material-ui/icons/MoreVert";
+import Profile from "./profile";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  grow: {
+    flexGrow: 1,
+  },
+
   root: {
-    display: 'flex',
+    display: "flex",
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -386,7 +397,7 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -395,35 +406,35 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 36,
   },
   hide: {
-    display: 'none',
+    display: "none",
   },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: 'nowrap',
+    whiteSpace: "nowrap",
   },
   drawerOpen: {
     width: drawerWidth,
-    transition: theme.transitions.create('width', {
+    transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
   drawerClose: {
-    transition: theme.transitions.create('width', {
+    transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    overflowX: 'hidden',
+    overflowX: "hidden",
     width: theme.spacing(7) + 1,
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       width: theme.spacing(9) + 1,
     },
   },
   toolbar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
@@ -432,12 +443,103 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  sectionDesktop: {
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+      display: "flex",
+    },
+  },
+  sectionMobile: {
+    display: "flex",
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
+  },
 }));
 
 export default function MiniDrawer() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+
+  // nav
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  // navbarMobile
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+
+  const handleMenuClose = (e) => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleUserAuth = async (e) => {
+    let state = {
+      hub: false,
+      conf: false,
+      Jira: false,
+      user: true,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
+    const res = await user();
+    window.location.href = res;
+  };
+
+  const handleMobileMenuOpen = (event) => {
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const menuId = "primary-search-account-menu";
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>
+        <Profile />
+      </MenuItem>
+    </Menu>
+  );
+
+  const mobileMenuId = "primary-search-account-menu-mobile";
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={mobileMenuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <IconButton
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit"
+        >
+          <AccountCircle />
+        </IconButton>
+        <p style={{ color: "#000000 !important" }}>Profile</p>
+      </MenuItem>
+    </Menu>
+  );
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -467,12 +569,12 @@ export default function MiniDrawer() {
         setShowData(<CalendarCard></CalendarCard>);
         break;
       case "Reply Mail":
-        setShowData(<React.Fragment>
-          <ReactAutosuggestExample>
-          </ReactAutosuggestExample>
-          <ReplyMailCard>
-          </ReplyMailCard>
-        </React.Fragment>);
+        setShowData(
+          <React.Fragment>
+            <ReactAutosuggestExample></ReactAutosuggestExample>
+            <ReplyMailCard></ReplyMailCard>
+          </React.Fragment>
+        );
         break;
       case "Analytics":
         setShowData(<AnalyticsCard></AnalyticsCard>);
@@ -483,7 +585,7 @@ export default function MiniDrawer() {
       default:
         setShowData(<GsuiteCard></GsuiteCard>);
     }
-  }
+  };
 
   return (
     <div className={classes.root}>
@@ -507,10 +609,49 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            <img src="https://innovaccer.com/static/image/site-logo/innovaccer-logo-black.svg"></img>
+            <img
+              src="https://innovaccer.com/static/image/site-logo/innovaccer-logo-black.svg"
+              alt="Innovaccer"
+            />
           </Typography>
+          <div className={classes.grow} />
+          {firebaseAuth.currentUser && !window.localStorage.getItem("user") ? (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleUserAuth}
+              style={{ fontWeight: "bold" }}
+            >
+              Identify Yourself
+            </Button>
+          ) : null}
+          <div className={classes.sectionDesktop}>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </div>
+          <div className={classes.sectionMobile}>
+            <IconButton
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="#000000"
+            >
+              <MoreIcon />
+            </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
+      {renderMobileMenu}
+      {renderMenu}
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -526,29 +667,62 @@ export default function MiniDrawer() {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === "rtl" ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </div>
         <Divider />
         <List>
-          {['Gsuite', 'Hubspot', 'Jira', 'Confluence', 'Calendar', 'Reply Mail'].map((text, index) => (
-            <ListItem button key={text} onClick={(event) => onClickShow(event, text)}>
-              <ListItemIcon>{index === 0 ? <img src="https://img.icons8.com/color/50/google-forms.png"></img> :
-                index === 1 ? <img src="https://img.icons8.com/windows/50/hubspot.png"></img> :
-                  index === 2 ? <img src="https://img.icons8.com/color/50/jira.png"></img> :
-                    index === 3 ? <img src="https://img.icons8.com/windows/50/confluence.png"></img> :
-                      index === 4 ? <img src="https://img.icons8.com/fluent/50/calendar.png"></img> :
-                        <img src="https://img.icons8.com/color/50/gmail-login.png"></img>}</ListItemIcon>
+          {[
+            "Gsuite",
+            "Hubspot",
+            "Jira",
+            "Confluence",
+            "Calendar",
+            "Reply Mail",
+          ].map((text, index) => (
+            <ListItem
+              button
+              key={text}
+              onClick={(event) => onClickShow(event, text)}
+            >
+              <ListItemIcon>
+                {index === 0 ? (
+                  <img src="https://img.icons8.com/cute-clipart/50/google-logo.png"></img>
+                ) : index === 1 ? (
+                  <img src="https://img.icons8.com/windows/50/hubspot.png"></img>
+                ) : index === 2 ? (
+                  <img src="https://img.icons8.com/color/50/jira.png"></img>
+                ) : index === 3 ? (
+                  <img src="https://img.icons8.com/windows/50/confluence.png"></img>
+                ) : index === 4 ? (
+                  <img src="https://img.icons8.com/fluent/50/calendar.png"></img>
+                ) : (
+                  <img src="https://img.icons8.com/color/50/gmail-login.png"></img>
+                )}
+              </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
         </List>
         <Divider />
         <List>
-          {['Analytics', 'Starred'].map((text, index) => (
-            <ListItem button key={text} onClick={(event) => onClickShow(event, text)}>
-              <ListItemIcon>{index === 0 ? <img src="https://img.icons8.com/fluent/50/web-analystics.png"></img> :
-                <img src="https://img.icons8.com/cute-clipart/50/bookmark-ribbon.png"></img>}</ListItemIcon>
+          {["Analytics", "Starred"].map((text, index) => (
+            <ListItem
+              button
+              key={text}
+              onClick={(event) => onClickShow(event, text)}
+            >
+              <ListItemIcon>
+                {index === 0 ? (
+                  <img src="https://img.icons8.com/fluent/50/web-analystics.png"></img>
+                ) : (
+                  <img src="https://img.icons8.com/cute-clipart/50/bookmark-ribbon.png"></img>
+                )}
+              </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}

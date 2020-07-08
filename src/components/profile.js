@@ -85,7 +85,7 @@ const Profile = (props) => {
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button variant="outlined" color="inherit" onClick={handleClickOpen}>
         Your Profile
       </Button>
       <Dialog
