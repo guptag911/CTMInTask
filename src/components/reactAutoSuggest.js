@@ -236,7 +236,7 @@ class ReactAutosuggest extends Component {
           }}
         />
         <br></br>
-        <Button variant="contained" color="primary" onClick={this.handleOnSave}>
+        <Button variant="contained" color="inherit" onClick={this.handleOnSave}>
           Save
         </Button>
         <EmailCard signal={this.state.signal}></EmailCard>
