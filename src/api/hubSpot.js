@@ -61,9 +61,8 @@ export const HubSpotDataSave = async (userdata) => {
       firebaseAuth.currentUser.uid === null
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
-    const url = userdata.url;
-    // console.log(url, uid);
     for (let data = 0; data < userdata.length; data++) {
+      userdata[data]["upload_time_utc"] = Date.now();
       const userRef = await db
         .collection("users")
         .doc(uid)
@@ -71,18 +70,10 @@ export const HubSpotDataSave = async (userdata) => {
         .doc("hubspot")
         .collection("data")
         .doc(userdata[data].engagement.id.toString())
-        .set({
-          engagement: userdata[data].engagement,
-          associations: userdata[data].associations,
-          metadata: userdata[data].metadata,
-          url: url,
-          upload_time_utc: Date.now(),
-        });
-      // console.log("userRef is ", userRef);
+        .set(userdata[data]);
     }
     return { msg: "success" };
   } catch (e) {
-    // console.log(window.sessionStorage.getItem("user"));
     console.log("error is -----", e);
     return { msg: "fail" };
   }
@@ -107,8 +98,30 @@ export const HubSpotDataGet = async () => {
     });
     return finalData;
   } catch (e) {
-    // console.log(window.sessionStorage.getItem("user"));
     console.log("error is ", e);
     return [];
+  }
+};
+
+
+export const HubSpotSingleDataSave = async (userdata) => {
+  try {
+    const uid =
+      firebaseAuth.currentUser.uid === null
+        ? JSON.parse(window.sessionStorage.getItem("user")).uid
+        : firebaseAuth.currentUser.uid;
+    userdata["upload_time_utc"] = Date.now();
+    const userRef = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("hubspot")
+      .collection("data")
+      .doc(userdata.engagement.id.toString())
+      .set(userdata);
+    return { msg: "success" };
+  } catch (e) {
+    console.log("error is -----", e);
+    return { msg: "fail" };
   }
 };

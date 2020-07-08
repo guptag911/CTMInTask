@@ -4,16 +4,13 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-// import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { getGsuiteData, saveGsuiteData } from "../api/fixedDb";
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+import { save_JiraData } from "../../api/atlassian";
+
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import StarIcon from '@material-ui/icons/Star';
-import { getStarGsuiteData, saveStarGsuiteData, deleteStarGsuiteData } from "../api/star";
+import { getStarJiraData, saveStarJiraData, deleteStarJiraData } from "../../api/star";
 import { red, blue, yellow } from '@material-ui/core/colors';
 
 const useStyleLoader = makeStyles((theme) => ({
@@ -51,17 +48,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SimpleCard(props) {
-  const [checked, setChecked] = React.useState(true);
   const classes = useStyles();
+  const [data, getData] = useState(null);
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
+
   let [renderAgain, setRender] = useState(0);
 
-  // console.log("props is ", props);
-
-  let [data, getData] = useState(null);
   useEffect(() => {
-    getStarGsuiteData()
+    getStarJiraData()
       .then((data) => {
         getData(data);
         setLoader(false);
@@ -78,23 +73,6 @@ export default function SimpleCard(props) {
   }, [renderAgain])
 
 
-  const handleChange = async (comment_id, element) => {
-    setLoader(true);
-
-    if (props.product === "gsuites") {
-      try {
-        element.status = "resolved";
-        await saveGsuiteData(comment_id, element);
-        const resp = await getStarGsuiteData();
-        getData(resp);
-        setLoader(false);
-      } catch (e) {
-        console.log("error ", e);
-      }
-    }
-  };
-
-
   const onClickStarHandler = async (is_starred, element, index) => {
     let Ndata = data;
     if (is_starred) {
@@ -102,40 +80,43 @@ export default function SimpleCard(props) {
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const fdata = await deleteStarGsuiteData("gsuite", element);
-    }
-    else {
+      const fdata = deleteStarJiraData("jira", element.issue_id);
+    } else {
       element["is_starred"] = true;
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const data = await saveStarGsuiteData("gsuite", element);
+      const data = saveStarJiraData("jira", element);
     }
-    const ndata = await saveGsuiteData(element.comment_id, element);
+    const ndata = save_JiraData(element.issue_id, element);
+  };
 
-  }
 
 
 
   return (
-    <React.Fragment>
+    <div>
       {data && !Loader ? (
         data.map((element, index) => {
-          return element.status === "open" && element.is_starred ? (
-            <Card key={element.comment_id} className={classes.root}>
+          return (element.is_starred ?
+            <Card key={element.issue_id} className={classes.root}>
               <CardContent>
                 <Typography
                   className={classes.title}
                   color="textSecondary"
                   gutterBottom
                 >
-                  Assigned by -- {element.sender.split("<")[0]}
-                </Typography>
-                <Typography variant="h7" component="h7">
-                  {element.task_desc}
+                  Project --{" "}
+                  <b style={{ color: "red" }}> {element.project_name}</b>
                 </Typography>
 
                 <br />
+                <hr></hr>
+                <Typography variant="h8" component="h8">
+                  Issue -- {element.issue_name}
+                </Typography>
+                <hr></hr>
+                <br></br>
               </CardContent>
               <CardActions style={{ float: "left" }}>
                 <a
@@ -151,8 +132,19 @@ export default function SimpleCard(props) {
                   Go to the task
                 </a>
               </CardActions>
+              {element.due_date ? (
+                <CardActions style={{ float: "right" }}>
+                  <Typography
+                    className={classes.title}
+                    color="textSecondary"
+                    gutterBottom
+                  >
+                    DUE DATE -{" "}
+                    <b style={{ color: "green" }}>{element.due_date}</b>
+                  </Typography>
+                </CardActions>
+              ) : null}
               <CardActions style={{ float: "right" }}>
-
                 <Button onClick={(event) => onClickStarHandler(element.is_starred, element, index)}>
                   {element.is_starred ?
                     <Tooltip style={{ fontWeight: "bold" }} title="Unbookmark ?">
@@ -160,17 +152,14 @@ export default function SimpleCard(props) {
                     </Tooltip> : null}
                 </Button>
               </CardActions>
-
-            </Card>
-          ) : null;
+            </Card> : null
+          );
         })
       ) : (
           <div className={classesLoader.root}>
             <CircularProgress />
           </div>
         )}
-
-
-    </React.Fragment>
+    </div>
   );
 }

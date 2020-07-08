@@ -38,6 +38,9 @@ import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 import Avatar from "@material-ui/core/Avatar";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { user } from "../helper/confUserAuth";
+import ConfStarCard from "./starred/confluenceData";
+import JiraStarCard from "./starred/jiraData";
+import HubStarCard from "./starred/hubspotData";
 
 const drawerWidth = 240;
 
@@ -378,7 +381,19 @@ export default function MiniDrawer() {
     await getHubToken();
   };
 
+  const [anchorEl1, setAnchorEl1] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl1(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl1(null);
+  };
+
   const onClickShow = (event, service) => {
+    handleClose();
+
     switch (service) {
       case "Gsuite":
         setShowData(<GsuiteCard></GsuiteCard>);
@@ -439,8 +454,17 @@ export default function MiniDrawer() {
       case "Analytics":
         setShowData(<AnalyticsCard></AnalyticsCard>);
         break;
-      case "Starred":
+      case "gsuitestar":
         setShowData(<StarCard></StarCard>);
+        break;
+      case "confstar":
+        setShowData(<ConfStarCard></ConfStarCard>);
+        break;
+      case "hubstar":
+        setShowData(<HubStarCard></HubStarCard>);
+        break;
+      case "jirastar":
+        setShowData(<JiraStarCard></JiraStarCard>);
         break;
       default:
         setShowData(<GsuiteCard></GsuiteCard>);
@@ -593,13 +617,44 @@ export default function MiniDrawer() {
             <ListItem
               button
               key={text}
-              onClick={(event) => onClickShow(event, text)}
+              onClick={
+                text === "Starred" ? null : (event) => onClickShow(event, text)
+              }
             >
               <ListItemIcon>
                 {index === 0 ? (
                   <img src="https://img.icons8.com/fluent/40/web-analystics.png"></img>
                 ) : (
-                  <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
+                  <React.Fragment>
+                    <Button
+                      style={{ marginLeft: -10 }}
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
+                      onClick={handleClick}
+                    >
+                      <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
+                    </Button>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={anchorEl1}
+                      keepMounted
+                      open={Boolean(anchorEl1)}
+                      onClose={handleClose}
+                    >
+                      <MenuItem onClick={(e) => onClickShow(e, "gsuitestar")}>
+                        Gsuite
+                      </MenuItem>
+                      <MenuItem onClick={(e) => onClickShow(e, "jirastar")}>
+                        Jira
+                      </MenuItem>
+                      <MenuItem onClick={(e) => onClickShow(e, "confstar")}>
+                        Confluence
+                      </MenuItem>
+                      <MenuItem onClick={(e) => onClickShow(e, "hubstar")}>
+                        Hubspot
+                      </MenuItem>
+                    </Menu>
+                  </React.Fragment>
                 )}
               </ListItemIcon>
               <ListItemText primary={text} />

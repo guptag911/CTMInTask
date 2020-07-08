@@ -63,6 +63,7 @@ export default function SimpleCard(props) {
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
   let [renderAgain, setRender] = useState(0);
+  let [InitRender, setInitRender] = useState(false);
   let [data, getData] = useState(null);
   const [expanded, setExpanded] = React.useState(false);
 
@@ -76,10 +77,12 @@ export default function SimpleCard(props) {
         console.log(data);
         getData(data);
         setLoader(false);
+        setInitRender(InitRender + 1);
       })
       .catch((err) => {
         console.log("err is ", err);
         setLoader(false);
+        setInitRender(InitRender + 1);
       });
   }, []);
 
@@ -117,15 +120,15 @@ export default function SimpleCard(props) {
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const fdata = await deleteStarGsuiteData("gsuite", element);
+      const fdata = deleteStarGsuiteData("gsuite", element);
     } else {
       element["is_starred"] = true;
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const data = await saveStarGsuiteData("gsuite", element);
+      const data = saveStarGsuiteData("gsuite", element);
     }
-    const ndata = await saveGsuiteData(element.comment_id, element);
+    const ndata = saveGsuiteData(element.comment_id, element);
   };
 
   return (
@@ -181,20 +184,20 @@ export default function SimpleCard(props) {
                       ></StarIcon>
                     </Tooltip>
                   ) : (
-                    <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
-                      <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
-                    </Tooltip>
-                  )}
+                      <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
+                        <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
+                      </Tooltip>
+                    )}
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
           ) : null;
         })
       ) : (
-        <div className={classesLoader.root}>
-          <CircularProgress />
-        </div>
-      )}
+          <div className={classesLoader.root}>
+            <CircularProgress />
+          </div>
+        )}
     </React.Fragment>
   );
 }

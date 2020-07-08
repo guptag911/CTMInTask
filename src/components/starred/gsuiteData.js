@@ -4,16 +4,13 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-// import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getGsuiteData, saveGsuiteData } from "../api/fixedDb";
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import StarIcon from '@material-ui/icons/Star';
-import { getStarGsuiteData, saveStarGsuiteData, deleteStarGsuiteData } from "../api/star";
+import { getStarGsuiteData, saveStarGsuiteData, deleteStarGsuiteData } from "../../api/star";
 import { red, blue, yellow } from '@material-ui/core/colors';
 
 const useStyleLoader = makeStyles((theme) => ({
@@ -102,16 +99,16 @@ export default function SimpleCard(props) {
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const fdata = await deleteStarGsuiteData("gsuite", element);
+      const fdata = deleteStarGsuiteData("gsuite", element);
     }
     else {
       element["is_starred"] = true;
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const data = await saveStarGsuiteData("gsuite", element);
+      const data = saveStarGsuiteData("gsuite", element);
     }
-    const ndata = await saveGsuiteData(element.comment_id, element);
+    const ndata = saveGsuiteData(element.comment_id, element);
 
   }
 
