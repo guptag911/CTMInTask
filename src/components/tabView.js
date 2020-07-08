@@ -376,6 +376,10 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import Profile from "./profile";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import { auth, getToken } from "../helper/confAuth";
+import { getUserToken } from "../helper/confUserAuth";
+import { hubAuth, getHubToken } from "../helper/hubAuth";
+import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
 
 const drawerWidth = 240;
 
@@ -483,6 +487,13 @@ export default function MiniDrawer() {
     handleMobileMenuClose();
   };
 
+  let state = {
+    hub: false,
+    conf: false,
+    Jira: false,
+    user: false,
+  };
+
   const handleUserAuth = async (e) => {
     let state = {
       hub: false,
@@ -551,19 +562,104 @@ export default function MiniDrawer() {
 
   let [contents, setShowData] = React.useState(<GsuiteCard></GsuiteCard>);
 
+  const [hubState, setHubState] = React.useState(
+    JSON.parse(localStorage.getItem("hub"))
+  );
+
+  const [jiraState, setJiraState] = React.useState(
+    JSON.parse(localStorage.getItem("jira"))
+  );
+
+
+  const [authState, setAuthSate] = React.useState(
+    JSON.parse(localStorage.getItem("token"))
+  );
+
+  const handleHub = async (e) => {
+    state = {
+      hub: true,
+      conf: false,
+      Jira: false,
+      user: false,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
+
+    const res = await hubAuth();
+    console.log(res);
+    window.location.href = res;
+  };
+
+
+
+  const handleJira = async (e) => {
+    state = {
+      hub: false,
+      conf: false,
+      Jira: true,
+      user: false,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
+    const res = await jiraAuth();
+    window.location.href = res;
+  };
+
+
+  const handleReq = async (e) => {
+    state = {
+      hub: false,
+      conf: true,
+      Jira: false,
+      user: false,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
+
+    const res = await auth();
+    window.location.href = res;
+  };
+
   const onClickShow = (event, service) => {
     switch (service) {
       case "Gsuite":
         setShowData(<GsuiteCard></GsuiteCard>);
         break;
       case "Hubspot":
-        setShowData(<HubSpotCard></HubSpotCard>);
+        firebaseAuth.currentUser && !hubState ?
+          setShowData(<Button
+            variant="contained"
+            color="primary"
+            className={classes.center}
+            onClick={handleHub}
+          >
+            Connect to HubSpot
+          </Button>
+          ) :
+          setShowData(<HubSpotCard></HubSpotCard>);
         break;
       case "Confluence":
-        setShowData(<ConfluenceCard></ConfluenceCard>);
+        firebaseAuth.currentUser && !authState ?
+          setShowData(<Button
+            variant="contained"
+            color="primary"
+            className={classes.center}
+            onClick={handleReq}
+          >
+            Connect to Confluence
+            </Button>
+          ) :
+          setShowData(<ConfluenceCard></ConfluenceCard>);
         break;
       case "Jira":
-        setShowData(<JiraCard></JiraCard>);
+        firebaseAuth.currentUser && !jiraState ?
+          setShowData(<Button
+            variant="contained"
+            color="primary"
+            className={classes.center}
+            onClick={handleJira}
+          >
+            Connect to Jira
+          </Button>)
+          :
+          setShowData(<JiraCard></JiraCard>);
         break;
       case "Calendar":
         setShowData(<CalendarCard></CalendarCard>);
@@ -670,8 +766,8 @@ export default function MiniDrawer() {
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
-              <ChevronLeftIcon />
-            )}
+                <ChevronLeftIcon />
+              )}
           </IconButton>
         </div>
         <Divider />
@@ -701,8 +797,8 @@ export default function MiniDrawer() {
                 ) : index === 4 ? (
                   <img src="https://img.icons8.com/fluent/50/calendar.png"></img>
                 ) : (
-                  <img src="https://img.icons8.com/color/50/gmail-login.png"></img>
-                )}
+                            <img src="https://img.icons8.com/color/50/gmail-login.png"></img>
+                          )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -720,8 +816,8 @@ export default function MiniDrawer() {
                 {index === 0 ? (
                   <img src="https://img.icons8.com/fluent/50/web-analystics.png"></img>
                 ) : (
-                  <img src="https://img.icons8.com/cute-clipart/50/bookmark-ribbon.png"></img>
-                )}
+                    <img src="https://img.icons8.com/cute-clipart/50/bookmark-ribbon.png"></img>
+                  )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
