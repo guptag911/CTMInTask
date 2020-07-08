@@ -16,12 +16,12 @@ import Dashboard from "./pages/dashboard";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      dark: "#9e1354",
-      main: "#F5F5F5",
-      light: "#e84993",
+      dark: "#000000",
+      main: "#ffffff",
+      light: "#ffffff",
     },
     secondary: {
-      dark: "#b2b2b2",
+      dark: "#000000",
       main: "#ffffff",
       light: "#ffffff",
     },

@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 12,
   },
   checked: {
-    background: "#e84993",
+    background: "#000000",
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -147,7 +147,7 @@ export default function SimpleCard(props) {
                     href={element.url}
                     style={{
                       textDecoration: "none",
-                      color: "#e84993",
+                      color: "#000000",
                       fontWeight: "bold",
                     }}
                     size="small"

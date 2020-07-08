@@ -80,6 +80,7 @@ const Profile = (props) => {
   const handleLogOut = async () => {
     await signout();
     window.sessionStorage.clear();
+    window.location.reload();
   };
 
   return (

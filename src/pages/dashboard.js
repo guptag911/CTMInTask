@@ -10,6 +10,8 @@ import { HubSpotTasksGetAPIData } from "../api/hubSpot";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    fontFamily:
+      '"Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important',
   },
   paper: {
     padding: theme.spacing(2),

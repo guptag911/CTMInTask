@@ -1,347 +1,3 @@
-// import React from "react";
-// import PropTypes from "prop-types";
-// import { makeStyles } from "@material-ui/core/styles";
-// import AppBar from "@material-ui/core/AppBar";
-// import Tabs from "@material-ui/core/Tabs";
-// import Tab from "@material-ui/core/Tab";
-// import Typography from "@material-ui/core/Typography";
-// import Box from "@material-ui/core/Box";
-// import CardView from "./card";
-// import CalenderCard from "./calenderCard";
-// import Button from "@material-ui/core/Button";
-// import { firebaseAuth } from "../config/config";
-// import { auth, getToken } from "../helper/confAuth";
-// import { getUserToken } from "../helper/confUserAuth";
-// import { hubAuth, getHubToken } from "../helper/hubAuth";
-// import { ReactAutosuggestExample, EmailData } from "./reactAutoSuggest";
-// import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
-// import ConfluenceCard from "./confluenceCard";
-// import HubSpotCard from "./hubspotCard";
-// import JiraCard from "./jiraCard";
-
-// function TabPanel(props) {
-//   const { children, value, index, ...other } = props;
-
-//   // console.log("email data is ", EmailData);
-
-//   return (
-//     <div
-//       role="tabpanel"
-//       hidden={value !== index}
-//       id={`scrollable-auto-tabpanel-${index}`}
-//       aria-labelledby={`scrollable-auto-tab-${index}`}
-//       {...other}
-//     >
-//       {value === index && (
-//         <Box p={3}>
-//           <Typography>{children}</Typography>
-//         </Box>
-//       )}
-//     </div>
-//   );
-// }
-
-// TabPanel.propTypes = {
-//   children: PropTypes.node,
-//   index: PropTypes.any.isRequired,
-//   value: PropTypes.any.isRequired,
-// };
-
-// function a11yProps(index) {
-//   return {
-//     id: `scrollable-auto-tab-${index}`,
-//     "aria-controls": `scrollable-auto-tabpanel-${index}`,
-//   };
-// }
-
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     flexGrow: 1,
-//     width: "100%",
-//     backgroundColor: theme.palette.background.paper,
-//     marginTop: 20,
-//   },
-
-//   bold: {
-//     fontWeight: "bold",
-//   },
-
-//   center: {
-//     margin: "0 auto",
-//   },
-// }));
-
-// export default function ScrollableTabsButtonAuto() {
-//   const classes = useStyles();
-//   const [value, setValue] = React.useState(0);
-//   const [authState, setAuthSate] = React.useState(
-//     JSON.parse(localStorage.getItem("token"))
-//   );
-//   const [hubState, setHubState] = React.useState(
-//     JSON.parse(localStorage.getItem("hub"))
-//   );
-
-//   const [jiraState, setJiraState] = React.useState(
-//     JSON.parse(localStorage.getItem("jira"))
-//   );
-
-//   const [clickState, setclickState] = React.useState(
-//     JSON.parse(localStorage.getItem("state")) || {
-//       hub: false,
-//       conf: false,
-//       Jira: false,
-//       user: false,
-//     }
-//   );
-
-//   let state = {
-//     hub: false,
-//     conf: false,
-//     Jira: false,
-//     user: false,
-//   };
-
-//   // if(firebaseAuth.currentUser)
-//   // console.log("firebase user is ", firebaseAuth.currentUser.email);
-
-//   const handleChange = (event, newValue) => {
-//     setValue(newValue);
-//   };
-
-//   const handleState = (e) => {
-//     e.preventDefault();
-//     if (!window.localStorage.getItem("token")) {
-//       alert(
-//         'Connect to confluence and then Click the "Identify Yourself" button to identify yourself'
-//       );
-//     } else if (
-//       window.localStorage.getItem("token") &&
-//       !window.localStorage.getItem("user")
-//     ) {
-//       alert('Click the "Identify Yourself" button to identify yourself');
-//     }
-//   };
-
-//   const handleReq = async (e) => {
-//     state = {
-//       hub: false,
-//       conf: true,
-//       Jira: false,
-//       user: false,
-//     };
-//     localStorage.setItem("state", JSON.stringify(state));
-
-//     const res = await auth();
-//     window.location.href = res;
-//   };
-
-//   const handleHub = async (e) => {
-//     state = {
-//       hub: true,
-//       conf: false,
-//       Jira: false,
-//       user: false,
-//     };
-//     localStorage.setItem("state", JSON.stringify(state));
-
-//     const res = await hubAuth();
-//     console.log(res);
-//     window.location.href = res;
-//   };
-
-//   const handleJira = async (e) => {
-//     state = {
-//       hub: false,
-//       conf: false,
-//       Jira: true,
-//       user: false,
-//     };
-//     localStorage.setItem("state", JSON.stringify(state));
-//     const res = await jiraAuth();
-//     window.location.href = res;
-//   };
-
-//   const params = new URLSearchParams(window.location.search);
-//   const authCode = params.get("code");
-//   setTimeout(() => {
-//     if (clickState.hub && authCode) {
-//       window.location.reload(false);
-//       state = {
-//         hub: false,
-//         conf: false,
-//         Jira: false,
-//         user: false,
-//       };
-//       localStorage.setItem("state", JSON.stringify(state));
-//     }
-
-//     if (clickState.Jira && authCode) {
-//       window.location.reload(false);
-//       state = {
-//         hub: false,
-//         conf: false,
-//         Jira: false,
-//         user: false,
-//       };
-//       localStorage.setItem("state", JSON.stringify(state));
-//     }
-
-//     if (clickState.conf && authCode) {
-//       window.location.reload(false);
-//       state = {
-//         hub: false,
-//         conf: false,
-//         Jira: false,
-//         user: false,
-//       };
-//       localStorage.setItem("state", JSON.stringify(state));
-//     }
-
-//     if (clickState.user && authCode) {
-//       window.location.reload(false);
-//       state = {
-//         hub: false,
-//         conf: false,
-//         Jira: false,
-//         user: false,
-//       };
-//       localStorage.setItem("state", JSON.stringify(state));
-//     }
-//   }, 5000);
-
-//   React.useEffect(() => {
-//     if (clickState.hub) {
-//       handleHubAuth();
-//     } else if (clickState.Jira) {
-//       handleJiraAuth();
-//     } else if (clickState.conf) {
-//       handleAuth();
-//     } else if (clickState.user) {
-//       handleUser();
-//     }
-//   }, [window.onload]);
-
-//   const handleAuth = async () => {
-//     await getToken();
-//   };
-
-//   const handleUser = async () => {
-//     await getUserToken();
-//   };
-
-//   const handleJiraAuth = async () => {
-//     await getJiraToken();
-//   };
-
-//   const handleHubAuth = async () => {
-//     await getHubToken();
-//   };
-
-//   return (
-//     <div className={classes.root}>
-//       <AppBar position="static" color="default">
-//         <Tabs
-//           value={value}
-//           onChange={handleChange}
-//           indicatorColor="primary"
-//           textColor="primary"
-//           variant="scrollable"
-//           scrollButtons="auto"
-//           aria-label="scrollable auto tabs example"
-//         >
-//           <Tab label="Google Docs" {...a11yProps(0)} className={classes.bold} />
-//           <Tab
-//             label="Google Sheets"
-//             {...a11yProps(1)}
-//             className={classes.bold}
-//           />
-//           <Tab
-//             label="Google Slides"
-//             {...a11yProps(2)}
-//             className={classes.bold}
-//           />
-
-//           <Tab
-//             label="Calendar Events"
-//             {...a11yProps(3)}
-//             className={classes.bold}
-//           />
-//           <Tab
-//             label="Reply to Mails"
-//             {...a11yProps(4)}
-//             className={classes.bold}
-//           />
-//           <Tab label="HubSpot" {...a11yProps(5)} className={classes.bold} />
-//           <Tab label="Jira" {...a11yProps(6)} className={classes.bold} />
-//           <Tab
-//             label="Confluence"
-//             {...a11yProps(7)}
-//             className={classes.bold}
-//             onClick={handleState}
-//           />
-//         </Tabs>
-//       </AppBar>
-//       <TabPanel value={value} index={0}>
-//         <CardView product="gsuites" data="gdocs"></CardView>
-//       </TabPanel>
-//       <TabPanel value={value} index={1}>
-//         <CardView product="gsuites" data="gsheets"></CardView>
-//       </TabPanel>
-//       <TabPanel value={value} index={2}>
-//         <CardView product="gsuites" data="gslides"></CardView>
-//       </TabPanel>
-//       <TabPanel value={value} index={3}>
-//         <CalenderCard></CalenderCard>
-//       </TabPanel>
-//       <TabPanel value={value} index={4}>
-//         <ReactAutosuggestExample />
-//       </TabPanel>
-//       <TabPanel value={value} index={5}>
-//         {firebaseAuth.currentUser && !hubState ? (
-//           <Button
-//             variant="contained"
-//             color="primary"
-//             className={classes.center}
-//             onClick={handleHub}
-//           >
-//             Connect to HubSpot
-//           </Button>
-//         ) : (
-//           <HubSpotCard></HubSpotCard>
-//         )}
-//       </TabPanel>
-//       <TabPanel value={value} index={6}>
-//         {firebaseAuth.currentUser && !jiraState ? (
-//           <Button
-//             variant="contained"
-//             color="primary"
-//             className={classes.center}
-//             onClick={handleJira}
-//           >
-//             Connect to Jira
-//           </Button>
-//         ) : (
-//           <JiraCard></JiraCard>
-//         )}
-//       </TabPanel>
-//       <TabPanel value={value} index={7}>
-//         {firebaseAuth.currentUser && !authState ? (
-//           <Button
-//             variant="contained"
-//             color="primary"
-//             className={classes.center}
-//             onClick={handleReq}
-//           >
-//             Connect to Confluence
-//           </Button>
-//         ) : (
-//           <ConfluenceCard></ConfluenceCard>
-//         )}
-//       </TabPanel>
-//     </div>
-//   );
-// }
-
 import React from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -369,7 +25,6 @@ import CalendarCard from "./calenderCard";
 import ReplyMailCard from "./replyEmailsCard";
 import { ReactAutosuggestExample } from "./reactAutoSuggest";
 import { firebaseAuth } from "../config/config";
-import { user } from "../helper/confUserAuth";
 import { Button } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
@@ -380,6 +35,9 @@ import { auth, getToken } from "../helper/confAuth";
 import { getUserToken } from "../helper/confUserAuth";
 import { hubAuth, getHubToken } from "../helper/hubAuth";
 import { jiraAuth, getJiraToken } from "../helper/jiraAuth";
+import Avatar from "@material-ui/core/Avatar";
+import RefreshIcon from "@material-ui/icons/Refresh";
+import { user } from "../helper/confUserAuth";
 
 const drawerWidth = 240;
 
@@ -465,6 +123,7 @@ export default function MiniDrawer() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const userstore = JSON.parse(sessionStorage.getItem("user"));
 
   // nav
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -526,7 +185,7 @@ export default function MiniDrawer() {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+          <Avatar alt="click" src={user.photoURL} />
         </IconButton>
         <p style={{ color: "#000000 !important" }}>Profile</p>
       </MenuItem>
@@ -788,6 +447,10 @@ export default function MiniDrawer() {
     }
   };
 
+  function refreshPage() {
+    window.location.reload(false);
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -816,10 +479,17 @@ export default function MiniDrawer() {
             />
           </Typography>
           <div className={classes.grow} />
+          <IconButton
+            color="inherit"
+            style={{ marginRight: "20px" }}
+            onClick={refreshPage}
+          >
+            <RefreshIcon style={{ width: "1.5em", height: "1.5em" }} />
+          </IconButton>
           {firebaseAuth.currentUser && !window.localStorage.getItem("user") ? (
             <Button
               variant="contained"
-              color="secondary"
+              color="inherit"
               onClick={handleUserAuth}
               style={{ fontWeight: "bold" }}
             >
@@ -835,7 +505,7 @@ export default function MiniDrawer() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
+              <Avatar alt="click" src={userstore.photoURL} />
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>
@@ -867,7 +537,15 @@ export default function MiniDrawer() {
         }}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
+          <span
+            style={{ fontSize: "20px", color: "black", fontWeight: "bold" }}
+          >
+            Browse by Category
+          </span>
+          <IconButton
+            onClick={handleDrawerClose}
+            style={{ paddingLeft: "5px" }}
+          >
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
@@ -892,17 +570,17 @@ export default function MiniDrawer() {
             >
               <ListItemIcon>
                 {index === 0 ? (
-                  <img src="https://img.icons8.com/cute-clipart/50/google-logo.png"></img>
+                  <img src="https://img.icons8.com/cute-clipart/40/google-logo.png"></img>
                 ) : index === 1 ? (
-                  <img src="https://img.icons8.com/windows/50/hubspot.png"></img>
+                  <img src="https://img.icons8.com/windows/40/hubspot.png"></img>
                 ) : index === 2 ? (
-                  <img src="https://img.icons8.com/color/50/jira.png"></img>
+                  <img src="https://img.icons8.com/color/40/jira.png"></img>
                 ) : index === 3 ? (
-                  <img src="https://img.icons8.com/windows/50/confluence.png"></img>
+                  <img src="https://img.icons8.com/windows/40/confluence.png"></img>
                 ) : index === 4 ? (
-                  <img src="https://img.icons8.com/fluent/50/calendar.png"></img>
+                  <img src="https://img.icons8.com/cute-clipart/40/calendar.png"></img>
                 ) : (
-                  <img src="https://img.icons8.com/color/50/gmail-login.png"></img>
+                  <img src="https://img.icons8.com/fluent/40/gmail.png"></img>
                 )}
               </ListItemIcon>
               <ListItemText primary={text} />
@@ -919,9 +597,9 @@ export default function MiniDrawer() {
             >
               <ListItemIcon>
                 {index === 0 ? (
-                  <img src="https://img.icons8.com/fluent/50/web-analystics.png"></img>
+                  <img src="https://img.icons8.com/fluent/40/web-analystics.png"></img>
                 ) : (
-                  <img src="https://img.icons8.com/cute-clipart/50/bookmark-ribbon.png"></img>
+                  <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
                 )}
               </ListItemIcon>
               <ListItemText primary={text} />

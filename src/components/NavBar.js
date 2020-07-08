@@ -187,8 +187,9 @@ const NavigationBar = () => {
     </Menu>
   );
 
+
   return (
-    <div >
+    <div>
       <CssBaseline />
       <AppBar
         position="fixed"
