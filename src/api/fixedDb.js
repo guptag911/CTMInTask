@@ -44,12 +44,13 @@ export const getGsuiteID = async () => {
 export const saveGsuiteData = async (comment_id, userdata) => {
   try {
     // console.log("CURRENT USER IS ", firebaseAuth.currentUser.uid);
-    // console.log("In atlassian function confluence data is ", userdata);
+    console.log("Gdata is ", userdata);
     userdata["upload_time_utc"] = Date.now();
     const uid =
       firebaseAuth.currentUser.uid === null
         ? JSON.parse(window.sessionStorage.getItem("user")).uid
         : firebaseAuth.currentUser.uid;
+    console.log(uid);
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -57,7 +58,7 @@ export const saveGsuiteData = async (comment_id, userdata) => {
       .doc("gsuite")
       .collection("data")
       .doc(comment_id)
-      .update(userdata);
+      .set(userdata);
 
     // console.log("userRef is:", userRef);
     // console.log("In atlassian function confluence data is ", userdata);
