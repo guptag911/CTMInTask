@@ -173,7 +173,7 @@ export default function SimpleCard(props) {
         })
       ) : (
         <div className={classesLoader.root}>
-          <CircularProgress />
+          <CircularProgress style={{ color: "black" }} />
         </div>
       )}
     </div>

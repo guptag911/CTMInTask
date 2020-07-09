@@ -57,7 +57,9 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
     width: "200px",
     marginRight: "2%",
+    fontFamily: "'Nunito Sans', sans-serif",
   },
+
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
     marginRight: "2%",
@@ -66,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: "nowrap",
     overflow: "hidden",
     flexBasis: "80%",
+    fontFamily: "'Nunito Sans', sans-serif",
   },
   descpHeading: {
     fontSize: theme.typography.pxToRem(15),
@@ -73,6 +76,7 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     overflow: "hidden",
+    fontFamily: "'Nunito Sans', sans-serif",
   },
 }));
 
@@ -81,11 +85,11 @@ export default function SimpleCard(props) {
   const [data, getData] = useState(null);
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(true);
   let [renderAgain, setRender] = useState(0);
 
   const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+    setExpanded(isExpanded ? panel : true);
   };
 
   useEffect(() => {
@@ -103,7 +107,6 @@ export default function SimpleCard(props) {
         setLoader(false);
       });
   }, []);
-
 
   useEffect(() => {
     getData(data);
@@ -134,9 +137,6 @@ export default function SimpleCard(props) {
     const ndata = save_JiraData(element.issue_id, element);
   };
 
-
-
-
   return (
     <div>
       {data && !Loader ? (
@@ -146,7 +146,7 @@ export default function SimpleCard(props) {
               onMouseOut={MouseLeaveHandler}
               onMouseOver={MouseOverHandler}
               key={element.issue_id}
-              expanded={expanded === "panel1"}
+              expanded={expanded}
               onChange={handleChange("panel1")}
             >
               <ExpansionPanelSummary
@@ -159,7 +159,7 @@ export default function SimpleCard(props) {
                   color="textSecondary"
                   gutterBottom
                 >
-                  <b style={{ color: "red" }}> {element.project_name}</b>
+                  <b style={{ color: "#f73378" }}> {element.project_name}</b>
                 </Typography>
                 <Typography
                   variant="h8"
@@ -204,6 +204,7 @@ export default function SimpleCard(props) {
                   onClick={(event) =>
                     onClickStarHandler(element.is_starred, element, index)
                   }
+                  style={{ marginTop: "-10px" }}
                 >
                   {element.is_starred ? (
                     <Tooltip
@@ -211,24 +212,24 @@ export default function SimpleCard(props) {
                       title="Unbookmark ?"
                     >
                       <StarIcon
-                        style={{ color: red[400], fontSize: 40 }}
+                        style={{ color: red[400], fontSize: 30 }}
                       ></StarIcon>
                     </Tooltip>
                   ) : (
-                      <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
-                        <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
-                      </Tooltip>
-                    )}
+                    <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
+                      <StarBorderIcon style={{ fontSize: 30 }}></StarBorderIcon>
+                    </Tooltip>
+                  )}
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
           );
         })
       ) : (
-          <div className={classesLoader.root}>
-            <CircularProgress />
-          </div>
-        )}
+        <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>
+      )}
     </div>
   );
 }

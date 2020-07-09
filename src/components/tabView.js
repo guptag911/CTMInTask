@@ -41,6 +41,7 @@ import { user } from "../helper/confUserAuth";
 import ConfStarCard from "./starred/confluenceData";
 import JiraStarCard from "./starred/jiraData";
 import HubStarCard from "./starred/hubspotData";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const drawerWidth = 240;
 
@@ -503,13 +504,15 @@ export default function MiniDrawer() {
             />
           </Typography>
           <div className={classes.grow} />
-          <IconButton
-            color="inherit"
-            style={{ marginRight: "20px" }}
-            onClick={refreshPage}
-          >
-            <RefreshIcon style={{ width: "1.5em", height: "1.5em" }} />
-          </IconButton>
+          <Tooltip title="Refresh">
+            <IconButton
+              color="inherit"
+              style={{ marginRight: "20px" }}
+              onClick={refreshPage}
+            >
+              <RefreshIcon style={{ width: "1.5em", height: "1.5em" }} />
+            </IconButton>
+          </Tooltip>
           {firebaseAuth.currentUser && !window.localStorage.getItem("user") ? (
             <Button
               variant="contained"

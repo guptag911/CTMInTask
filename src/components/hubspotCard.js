@@ -13,7 +13,6 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
 
-
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -21,7 +20,11 @@ import StarIcon from "@material-ui/icons/Star";
 import { saveStarHubspotData, deleteStarHubspotData } from "../api/star";
 import { red, blue, yellow } from "@material-ui/core/colors";
 
-import { HubSpotTasksGetAPIData, HubSpotDataGet, HubSpotSingleDataSave } from "../api/hubSpot";
+import {
+  HubSpotTasksGetAPIData,
+  HubSpotDataGet,
+  HubSpotSingleDataSave,
+} from "../api/hubSpot";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -60,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: "10%",
     flexShrink: 0,
     marginRight: "2%",
+    fontFamily: "'Nunito Sans', sans-serif",
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
@@ -67,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     overflow: "hidden",
+    fontFamily: "'Nunito Sans', sans-serif",
   },
   descpHeading: {
     fontSize: theme.typography.pxToRem(15),
@@ -74,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     overflow: "hidden",
+    fontFamily: "'Nunito Sans', sans-serif",
   },
 }));
 
@@ -84,10 +90,10 @@ export default function SimpleCard(props) {
   let [Loader, setLoader] = useState(true);
   let [renderAgain, setRender] = useState(0);
 
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(true);
 
   const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+    setExpanded(isExpanded ? panel : true);
   };
   useEffect(() => {
     setLoader(true);
@@ -105,11 +111,9 @@ export default function SimpleCard(props) {
     })();
   }, []);
 
-
   useEffect(() => {
     getData(data);
   }, [renderAgain]);
-
 
   const MouseOverHandler = (e) => {
     e.target.style.background = "rgba(222,222,222,0.8)";
@@ -118,7 +122,6 @@ export default function SimpleCard(props) {
     e.target.style.background = "white";
   };
 
-
   const onClickStarHandler = async (is_starred, element, index) => {
     let Ndata = data;
     if (is_starred) {
@@ -126,7 +129,10 @@ export default function SimpleCard(props) {
       Ndata[index] = element;
       getData(Ndata);
       setRender(renderAgain + 1);
-      const fdata = deleteStarHubspotData("hubspot", element.engagement.id.toString());
+      const fdata = deleteStarHubspotData(
+        "hubspot",
+        element.engagement.id.toString()
+      );
     } else {
       element["is_starred"] = true;
       Ndata[index] = element;
@@ -137,8 +143,6 @@ export default function SimpleCard(props) {
     const ndata = HubSpotSingleDataSave(element);
   };
 
-
-
   return (
     <React.Fragment>
       {data && !Loader ? (
@@ -148,7 +152,7 @@ export default function SimpleCard(props) {
               onMouseOut={MouseLeaveHandler}
               onMouseOver={MouseOverHandler}
               key={element.engagement.id}
-              expanded={expanded === "panel1"}
+              expanded={expanded}
               onChange={handleChange("panel1")}
             >
               <ExpansionPanelSummary
@@ -158,35 +162,35 @@ export default function SimpleCard(props) {
               >
                 <Typography
                   className={classes.heading}
-                  color="textSecondary"
+                  color="black"
                   style={{ textAlign: "center" }}
                   gutterBottom
                 >
-                  <b style={{ color: "red" }}> {element.engagement.type}</b>
+                  <b style={{ color: "#f73378" }}> {element.engagement.type}</b>
                 </Typography>
                 {element.engagement.type === "TASK" ? (
                   <Typography
                     className={classes.heading}
-                    color="textSecondary"
+                    color="black"
                     gutterBottom
                   >
                     {element.metadata.subject}
                   </Typography>
                 ) : (
-                    <Typography
-                      className={classes.heading}
-                      color="textSecondary"
-                      gutterBottom
-                    >
-                      No Title for the Note
-                    </Typography>
-                  )}
+                  <Typography
+                    className={classes.heading}
+                    color="black"
+                    gutterBottom
+                  >
+                    No Title for the Note
+                  </Typography>
+                )}
                 <Typography
                   className={classes.secondaryHeading}
-                  color="textSecondary"
+                  color="black"
                   gutterBottom
                 >
-                  By -- {element.engagement.sourceId}
+                  By: {element.engagement.sourceId}
                 </Typography>
                 <Typography
                   variant="h8"
@@ -232,30 +236,35 @@ export default function SimpleCard(props) {
                     Priority - {element.metadata.priority}
                   </Typography>
                 ) : (
-                    <Typography
-                      className={classes.heading}
-                      color="textSecondary"
-                      style={{
-                        textDecoration: "none",
-                        color: "#e84993",
-                        fontWeight: "bold",
-                      }}
-                      gutterBottom
-                    >
-                      Priority - NONE
-                    </Typography>
-                  )}
+                  <Typography
+                    className={classes.heading}
+                    color="textSecondary"
+                    style={{
+                      textDecoration: "none",
+                      color: "#e84993",
+                      fontWeight: "bold",
+                    }}
+                    gutterBottom
+                  >
+                    Priority - NONE
+                  </Typography>
+                )}
                 <Typography
                   className={classes.heading}
                   color="textSecondary"
                   gutterBottom
                 >
-                  {element.metadata.status === "COMPLETED" ? "Done" : "Pending"}
+                  <b>
+                    {element.metadata.status === "COMPLETED"
+                      ? "Done"
+                      : "Pending"}
+                  </b>
                 </Typography>
                 <Button
                   onClick={(event) =>
                     onClickStarHandler(element.is_starred, element, index)
                   }
+                  style={{ marginTop: "-10px" }}
                 >
                   {element.is_starred ? (
                     <Tooltip
@@ -263,24 +272,24 @@ export default function SimpleCard(props) {
                       title="Unbookmark ?"
                     >
                       <StarIcon
-                        style={{ color: red[400], fontSize: 40 }}
+                        style={{ color: red[400], fontSize: 30 }}
                       ></StarIcon>
                     </Tooltip>
                   ) : (
-                      <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
-                        <StarBorderIcon style={{ fontSize: 40 }}></StarBorderIcon>
-                      </Tooltip>
-                    )}
+                    <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
+                      <StarBorderIcon style={{ fontSize: 30 }}></StarBorderIcon>
+                    </Tooltip>
+                  )}
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
           );
         })
       ) : (
-          <div className={classesLoader.root}>
-            <CircularProgress />
-          </div>
-        )}
+        <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>
+      )}
     </React.Fragment>
   );
 }
