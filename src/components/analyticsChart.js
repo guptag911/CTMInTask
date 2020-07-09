@@ -150,7 +150,7 @@ export default function ChartFunc() {
           datasets: [
             {
               label: "Tasks",
-              backgroundColor: ["rgba(200,00,00,0.8)", "rgba(00,200,00, 0.8)", "rgba(00,00,200,0.8)"],
+              backgroundColor: ["#ff6d00", "#ffc400", "#ffff00"],
               borderColor: "rgba(0,0,0,1)",
               borderWidth: 2,
               data: [pendTasks, compTasks, totTasks, 0],
@@ -177,15 +177,13 @@ export default function ChartFunc() {
     if (e.length) {
       if (e[0]._index == 2) {
         setCont("Total Task clicked");
-      }
-      else if (e[0]._index == 1) {
+      } else if (e[0]._index == 1) {
         setCont("Completed Tasks clicked");
-      }
-      else if (e[0]._index == 0) {
+      } else if (e[0]._index == 0) {
         setCont("Pending Tasks clicked");
       }
     }
-  }
+  };
 
 
   const onClickRecentHandler = (e) => {

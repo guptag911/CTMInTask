@@ -46,3 +46,15 @@ a {
   text-decoration: none;
   color: black;
 }
+
+#panel1bh-header:hover {
+  background-color: white !important;
+}
+
+.MuiTypography-root:hover,
+.Mui-expanded,
+.Mui-expanded:hover,
+b,
+b:hover {
+  background-color: white !important;
+}
