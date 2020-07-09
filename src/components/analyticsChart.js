@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 import { getGsuiteData } from "../api/fixedDb";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { HubSpotDataGet } from "../api/hubSpot";
 import { get_JiraData, get_confluenceData } from "../api/atlassian";
 
-export default function Chart() {
+export default function ChartFunc() {
   const [loader, setLoader] = useState(true);
   const [pendingTasks, setPendingTasks] = useState(0);
   const [completedTasks, setCompletedTasks] = useState(0);
@@ -74,7 +74,7 @@ export default function Chart() {
           datasets: [
             {
               label: "Tasks",
-              backgroundColor: "rgba(220,80,80,0.8)",
+              backgroundColor: ["rgba(200,00,00,0.8)", "rgba(00,200,00, 0.8)", "rgba(00,00,200,0.8)"],
               borderColor: "rgba(0,0,0,1)",
               borderWidth: 2,
               data: [pendTasks, compTasks, totTasks, 0],
@@ -91,11 +91,31 @@ export default function Chart() {
     })();
   }, []);
 
+
+
+  const [cont, setCont] = React.useState(null);
+
+  const onClickEventHandler = (e) => {
+    // console.log("event is ", e);
+    if (e.length) {
+      if (e[0]._index == 2) {
+        setCont("Total Task clicked");
+      }
+      else if (e[0]._index == 1) {
+        setCont("Completed Tasks clicked");
+      }
+      else if (e[0]._index == 0) {
+        setCont("Pending Tasks clicked");
+      }
+    }
+  }
+
   return (
     <div>
       {!loader ? (
-        <Bar
+        <Doughnut
           data={chartData}
+          onElementsClick={(e) => onClickEventHandler(e)}
           options={{
             title: {
               display: true,
@@ -109,8 +129,13 @@ export default function Chart() {
           }}
         />
       ) : (
-        <CircularProgress />
-      )}
+          <CircularProgress />
+        )}
+      {cont ?
+        <React.Fragment>
+          {cont}
+        </React.Fragment> : null
+      }
     </div>
   );
 }
