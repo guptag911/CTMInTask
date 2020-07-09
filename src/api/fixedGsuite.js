@@ -179,10 +179,11 @@ export const get_data = async (query) => {
                 schema["url"] = url;
                 schema["task_desc"] = task_desc;
                 schema["created_time"] = response.result.createdDate;
-                schema["modified_time"] = response.result.modifiedDate;
+                schema["modified_time"] = (new Date(response.result.modifiedDate)).getTime();
                 let db_data = await saveGsuiteData(comment_ID, schema);
               }
             }
+
           } catch (err) {
             console.log("no comment ID", err);
           }

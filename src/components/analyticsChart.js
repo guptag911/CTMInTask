@@ -2,8 +2,48 @@ import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { getGsuiteData } from "../api/fixedDb";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { HubSpotDataGet } from "../api/hubSpot";
+import { getAnalyticsGsuiteData, getAnalyticsCompletedGsuiteData } from "../api/analytics";
 import { get_JiraData, get_confluenceData } from "../api/atlassian";
+import { HubSpotDataGet } from "../api/hubSpot";
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+
+
+
+const useStyles = makeStyles((theme) => ({
+  [theme.breakpoints.down("sm")]: {
+    root: {
+      maxWidth: "100%",
+      margin: 20,
+      float: "left",
+      display: "inline-block",
+    },
+  },
+  [theme.breakpoints.up("sm")]: {
+    root: {
+      maxWidth: "30%",
+      margin: 20,
+      float: "left",
+      display: "inline-block",
+    },
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+  checked: {
+    background: "#e84993",
+  },
+}));
+
+
+
+
 
 export default function ChartFunc() {
   const [loader, setLoader] = useState(true);
@@ -11,6 +51,42 @@ export default function ChartFunc() {
   const [completedTasks, setCompletedTasks] = useState(0);
   const [totalTasks, setTotalTasks] = useState(0);
   const [chartData, setChartData] = useState(null);
+  const [recentData, setRecentData] = useState(0);
+  const [recentChart, setRecentChart] = useState(null);
+  const classes = useStyles();
+
+
+  useEffect(() => {
+    (async function anyNameFunction() {
+      try {
+        const Rdata = await getAnalyticsGsuiteData();
+        const Tdata = await getAnalyticsCompletedGsuiteData();
+        console.log("data is ", Rdata.length, Tdata.length);
+        setRecentData(Rdata.length + Tdata.length);
+        setRecentChart({
+          labels: ["Completed Tasks", "Recently Completed Tasks"],
+          datasets: [
+            {
+              label: "Tasks",
+              backgroundColor: ["rgba(00,00,200,0.8)", "rgba(00,200,00, 0.8)"],
+              borderColor: "rgba(0,0,0,1)",
+              borderWidth: 2,
+              data: [Tdata.length, Rdata.length, 0],
+            },
+          ],
+        });
+        setTimeout(() => {
+          setLoader(false);
+        }, 500);
+      } catch (e) {
+        console.log("Error is ", e);
+        setLoader(false);
+      }
+    })();
+  }, [])
+
+
+
 
   useEffect(() => {
     (async function anyNameFunction() {
@@ -93,7 +169,8 @@ export default function ChartFunc() {
 
 
 
-  const [cont, setCont] = React.useState(null);
+  const [contRecent, setContRecent] = React.useState(null);
+  const [contTask, setCont] = React.useState(null);
 
   const onClickEventHandler = (e) => {
     // console.log("event is ", e);
@@ -110,32 +187,80 @@ export default function ChartFunc() {
     }
   }
 
+
+  const onClickRecentHandler = (e) => {
+    // console.log("event is ", e);
+    if (e.length) {
+      if (e[0]._index == 0) {
+        setContRecent("Completed Task clicked in recent chart");
+      }
+      else if (e[0]._index == 1) {
+        setContRecent("Recent Completed Tasks clicked in recent chart");
+      }
+    }
+  }
+
+
+
   return (
-    <div>
+    <React.Fragment>
       {!loader ? (
-        <Doughnut
-          data={chartData}
-          onElementsClick={(e) => onClickEventHandler(e)}
-          options={{
-            title: {
-              display: true,
-              text: "Tasks Analytics",
-              fontSize: 20,
-            },
-            legend: {
-              display: true,
-              position: "right",
-            },
-          }}
-        />
-      ) : (
+        <Card className={classes.root}>
+          <CardContent>
+            <Doughnut
+              data={chartData}
+              onElementsClick={(e) => onClickEventHandler(e)}
+              options={{
+                cutoutPercentage: 60,
+                responsive: true,
+                title: {
+                  display: true,
+                  text: "Tasks Analytics",
+                  fontSize: 20,
+                },
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+              }}
+            />
+            {contTask ?
+              <React.Fragment>
+                {contTask}
+              </React.Fragment> : null
+            }
+
+          </CardContent>
+        </Card>) : (
           <CircularProgress />
         )}
-      {cont ?
-        <React.Fragment>
-          {cont}
-        </React.Fragment> : null
-      }
-    </div>
+      <Card className={classes.root}>
+        <CardContent>
+          {recentData > 0 ? <Doughnut
+            data={recentChart}
+            onElementsClick={(e) => onClickRecentHandler(e)}
+            options={{
+              cutoutPercentage: 60,
+              responsive: true,
+              title: {
+                display: true,
+                text: "Recent Tasks Analytics",
+                fontSize: 20,
+              },
+              legend: {
+                display: true,
+                position: "right",
+              },
+            }}
+          /> : "No Recent Task Completed"}
+          {contRecent ?
+            <React.Fragment>
+              {contRecent}
+            </React.Fragment> : null
+          }
+        </CardContent>
+      </Card>
+
+    </React.Fragment>
   );
 }
