@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { getGsuiteData } from "../api/fixedDb";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { getAnalyticsGsuiteData, getAnalyticsCompletedGsuiteData } from "../api/analytics";
+import {
+  getAnalyticsGsuiteData,
+  getAnalyticsCompletedGsuiteData,
+} from "../api/analytics";
 import { get_JiraData, get_confluenceData } from "../api/atlassian";
 import { HubSpotDataGet } from "../api/hubSpot";
 import Card from "@material-ui/core/Card";
@@ -10,8 +13,6 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-
-
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.down("sm")]: {
@@ -41,10 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-
-
 export default function ChartFunc() {
   const [loader, setLoader] = useState(true);
   const [pendingTasks, setPendingTasks] = useState(0);
@@ -54,7 +51,6 @@ export default function ChartFunc() {
   const [recentData, setRecentData] = useState(0);
   const [recentChart, setRecentChart] = useState(null);
   const classes = useStyles();
-
 
   useEffect(() => {
     (async function anyNameFunction() {
@@ -68,9 +64,9 @@ export default function ChartFunc() {
           datasets: [
             {
               label: "Tasks",
-              backgroundColor: ["rgba(00,00,200,0.8)", "rgba(00,200,00, 0.8)"],
-              borderColor: "rgba(0,0,0,1)",
-              borderWidth: 2,
+              backgroundColor: ["#2979ff", "#00bcd4"],
+              borderColor: "rgba(255,255,255,1)",
+              borderWidth: 1,
               data: [Tdata.length, Rdata.length, 0],
             },
           ],
@@ -83,10 +79,7 @@ export default function ChartFunc() {
         setLoader(false);
       }
     })();
-  }, [])
-
-
-
+  }, []);
 
   useEffect(() => {
     (async function anyNameFunction() {
@@ -150,9 +143,9 @@ export default function ChartFunc() {
           datasets: [
             {
               label: "Tasks",
-              backgroundColor: ["#ff6d00", "#ffc400", "#ffff00"],
-              borderColor: "rgba(0,0,0,1)",
-              borderWidth: 2,
+              backgroundColor: ["#ff6d00", "#e91e63", "#ffd000"],
+              borderColor: "rgba(255,255,255,1)",
+              borderWidth: 1,
               data: [pendTasks, compTasks, totTasks, 0],
             },
           ],
@@ -166,8 +159,6 @@ export default function ChartFunc() {
       }
     })();
   }, []);
-
-
 
   const [contRecent, setContRecent] = React.useState(null);
   const [contTask, setCont] = React.useState(null);
@@ -185,20 +176,16 @@ export default function ChartFunc() {
     }
   };
 
-
   const onClickRecentHandler = (e) => {
     // console.log("event is ", e);
     if (e.length) {
       if (e[0]._index == 0) {
         setContRecent("Completed Task clicked in recent chart");
-      }
-      else if (e[0]._index == 1) {
+      } else if (e[0]._index == 1) {
         setContRecent("Recent Completed Tasks clicked in recent chart");
       }
     }
-  }
-
-
+  };
 
   return (
     <React.Fragment>
@@ -209,7 +196,7 @@ export default function ChartFunc() {
               data={chartData}
               onElementsClick={(e) => onClickEventHandler(e)}
               options={{
-                cutoutPercentage: 60,
+                cutoutPercentage: 65,
                 responsive: true,
                 title: {
                   display: true,
@@ -222,43 +209,38 @@ export default function ChartFunc() {
                 },
               }}
             />
-            {contTask ?
-              <React.Fragment>
-                {contTask}
-              </React.Fragment> : null
-            }
-
+            {/* {contTask ? <React.Fragment>{contTask}</React.Fragment> : null} */}
           </CardContent>
-        </Card>) : (
-          <CircularProgress />
-        )}
+        </Card>
+      ) : (
+        <CircularProgress style={{ color: "black" }} />
+      )}
       <Card className={classes.root}>
         <CardContent>
-          {recentData > 0 ? <Doughnut
-            data={recentChart}
-            onElementsClick={(e) => onClickRecentHandler(e)}
-            options={{
-              cutoutPercentage: 60,
-              responsive: true,
-              title: {
-                display: true,
-                text: "Recent Tasks Analytics",
-                fontSize: 20,
-              },
-              legend: {
-                display: true,
-                position: "right",
-              },
-            }}
-          /> : "No Recent Task Completed"}
-          {contRecent ?
-            <React.Fragment>
-              {contRecent}
-            </React.Fragment> : null
-          }
+          {recentData > 0 ? (
+            <Doughnut
+              data={recentChart}
+              onElementsClick={(e) => onClickRecentHandler(e)}
+              options={{
+                cutoutPercentage: 65,
+                responsive: true,
+                title: {
+                  display: true,
+                  text: "Recent Tasks Analytics",
+                  fontSize: 20,
+                },
+                legend: {
+                  display: true,
+                  position: "right",
+                },
+              }}
+            />
+          ) : (
+            "No Recent Task Completed"
+          )}
+          {/* {contRecent ? <React.Fragment>{contRecent}</React.Fragment> : null} */}
         </CardContent>
       </Card>
-
     </React.Fragment>
   );
 }
