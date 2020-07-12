@@ -156,7 +156,7 @@ export default function ChartFunc() {
 
 
     const onClickRecentHandler = (e) => {
-        // console.log("event is ", e);
+        console.log("event is ", e);
         if (e.length) {
             if (e[0]._index == 0) {
                 setContRecent("Completed Task clicked in recent chart");
@@ -174,6 +174,7 @@ export default function ChartFunc() {
                 data={data}
                 width={500}
                 height={500}
+                onClick={onClickRecentHandler}
                 margin={{ top: 40, right: 150, bottom: 80, left: 150 }}
                 innerRadius={0.6}
                 padAngle={0.7}
