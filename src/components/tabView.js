@@ -669,7 +669,6 @@ export default function MiniDrawer() {
               button
               key={text}
               onClick={(event) => onClickShow(event, text)}
-
             >
               <ListItemIcon>
                 {index === 0 ? (

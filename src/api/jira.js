@@ -113,6 +113,10 @@ async function issues_data() {
                 console.log("error!", err);
               }
             } else {
+              user_schema["create_date"] = fields_list.created;
+              user_schema["complete_date"] = fields_list.resolutionDate
+                ? fields_list.resolutionDate
+                : null;
               user_schema["issue_id"] = issue_ID;
               user_schema["project_name"] = fields_list.project.name;
               user_schema["project_type"] = fields_list.project.projectTypeKey;
@@ -124,8 +128,6 @@ async function issues_data() {
               user_schema["status"] = status;
               user_schema["priority"] = fields_list.priority.name;
               user_schema["issue_type"] = fields_list.issuetype.name;
-              user_schema["create_date"] = fields_list.created;
-              user_schema["complete_date"] = fields_list.resolutionDate;
 
               // console.log(user_schema);
               //saving the data
