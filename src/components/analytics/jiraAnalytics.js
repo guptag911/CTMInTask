@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Bar, Doughnut } from "react-chartjs-2";
-import { getGsuiteData } from "../../api/fixedDb";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { getAnalyticsGsuiteData, getAnalyticsCompletedGsuiteData } from "../../api/analytics";
-import { get_JiraData, get_confluenceData } from "../../api/atlassian";
-import { HubSpotDataGet } from "../../api/hubSpot";
+import { getAnalyticsJiraData, getAnalyticsCompletedJiraData } from "../../api/analytics";
+import { get_JiraData } from "../../api/atlassian";
 import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from '@nivo/pie'
 
@@ -47,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ChartFunc() {
     const [loader, setLoader] = useState(true);
     const [chartData, setChartData] = useState(null);
-    const [recentData, setRecentData] = useState(0);
+    const [recentData, setRecentData] = useState(null);
     const [recentChart, setRecentChart] = useState(null);
     const classes = useStyles();
 
@@ -55,8 +52,8 @@ export default function ChartFunc() {
     useEffect(() => {
         (async function anyNameFunction() {
             try {
-                const Rdata = await getAnalyticsGsuiteData();
-                const Tdata = await getAnalyticsCompletedGsuiteData();
+                const Rdata = await getAnalyticsJiraData();
+                const Tdata = await getAnalyticsCompletedJiraData();
                 console.log("data is ", Rdata.length, Tdata.length);
                 setRecentData(Rdata.length + Tdata.length);
 
@@ -182,13 +179,6 @@ export default function ChartFunc() {
             : null
     )
 
-
-
-
-
-
-
-
     return (
         <React.Fragment>
             {!loader ? (
@@ -200,7 +190,7 @@ export default function ChartFunc() {
                     </div> : null) : (
                     <CircularProgress />
                 )}
-            {recentData > 0 ?
+            {recentData !==null ?
                 <div className={classes.root} style={{ width: 700, height: 600, marginLeft: 100 }}>
                     <MyResponsivePie
                         data={recentChart}>

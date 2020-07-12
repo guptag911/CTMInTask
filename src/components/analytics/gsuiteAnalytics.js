@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ChartFunc() {
     const [loader, setLoader] = useState(true);
     const [chartData, setChartData] = useState(null);
-    const [recentData, setRecentData] = useState(0);
+    const [recentData, setRecentData] = useState(null);
     const [recentChart, setRecentChart] = useState(null);
     const classes = useStyles();
 
@@ -192,7 +192,7 @@ export default function ChartFunc() {
                     </div> : null) : (
                     <CircularProgress />
                 )}
-            {recentData > 0 ?
+            {recentData !==null ?
                 <div className={classes.root} style={{ width: 700, height: 600, marginLeft: 100 }}>
                     <MyResponsivePie
                         data={recentChart}>
