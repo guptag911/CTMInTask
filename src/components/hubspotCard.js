@@ -147,7 +147,7 @@ export default function SimpleCard(props) {
     <React.Fragment>
       {data && !Loader ? (
         data.map((element, index) => {
-          return (
+          return element.metadata.status!=="COMPLETED" ? (
             <ExpansionPanel
               onMouseOut={MouseLeaveHandler}
               onMouseOver={MouseOverHandler}
@@ -283,7 +283,7 @@ export default function SimpleCard(props) {
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
-          );
+          ):null
         })
       ) : (
         <div className={classesLoader.root}>
