@@ -142,7 +142,7 @@ export default function SimpleCard(props) {
     <div>
       {data && !Loader ? (
         data.map((element, index) => {
-          return (
+          return  (
             <ExpansionPanel
               onMouseOut={MouseLeaveHandler}
               onMouseOver={MouseOverHandler}

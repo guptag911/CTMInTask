@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
-import { getGsuiteData } from "../api/fixedDb";
+import { getGsuiteData } from "../../api/fixedDb";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {
-  getAnalyticsGsuiteData,
-  getAnalyticsCompletedGsuiteData,
-} from "../api/analytics";
-import { get_JiraData, get_confluenceData } from "../api/atlassian";
-import { HubSpotDataGet } from "../api/hubSpot";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
+import { getAnalyticsGsuiteData, getAnalyticsCompletedGsuiteData } from "../../api/analytics";
+import { get_JiraData, get_confluenceData } from "../../api/atlassian";
+import { HubSpotDataGet } from "../../api/hubSpot";
 import { makeStyles } from "@material-ui/core/styles";
+import { ResponsivePie } from '@nivo/pie'
+
+import TreeDropDown from "./dropdown";
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.down("sm")]: {
@@ -42,7 +38,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ChartFunc() {
+
+
+
+
+export default function ChartFunc(props) {
   const [loader, setLoader] = useState(true);
   const [pendingTasks, setPendingTasks] = useState(0);
   const [completedTasks, setCompletedTasks] = useState(0);
@@ -59,21 +59,24 @@ export default function ChartFunc() {
         const Tdata = await getAnalyticsCompletedGsuiteData();
         console.log("data is ", Rdata.length, Tdata.length);
         setRecentData(Rdata.length + Tdata.length);
-        setRecentChart({
-          labels: ["Completed Tasks", "Recently Completed Tasks"],
-          datasets: [
-            {
-              label: "Tasks",
-              backgroundColor: ["#2979ff", "#00bcd4"],
-              borderColor: "rgba(255,255,255,1)",
-              borderWidth: 1,
-              data: [Tdata.length, Rdata.length, 0],
-            },
-          ],
-        });
-        setTimeout(() => {
-          setLoader(false);
-        }, 500);
+
+        setRecentChart([
+          {
+            "id": "Completed",
+            "label": "Completed Tasks",
+            "value": Tdata.length,
+            "color": "hsl(169, 70%, 50%)"
+          },
+          {
+            "id": "Recently Completed",
+            "label": "Recently Completed Tasks",
+            "value": Rdata.length,
+            "color": "hsl(257, 70%, 50%)"
+          }
+        ])
+        // setTimeout(() => {
+        setLoader(false);
+        // }, 500);
       } catch (e) {
         console.log("Error is ", e);
         setLoader(false);
@@ -137,22 +140,32 @@ export default function ChartFunc() {
             pendTasks += 1;
           }
         }
-
-        setChartData({
-          labels: ["Pending Tasks", "Completed Tasks", "Total Tasks"],
-          datasets: [
+        setChartData(
+          [
             {
-              label: "Tasks",
-              backgroundColor: ["#ff6d00", "#e91e63", "#ffd000"],
-              borderColor: "rgba(255,255,255,1)",
-              borderWidth: 1,
-              data: [pendTasks, compTasks, totTasks, 0],
+              "id": "Pending",
+              "label": "Pending Tasks",
+              "value": pendTasks,
+              "color": "hsl(169, 70%, 50%)"
             },
-          ],
-        });
-        setTimeout(() => {
-          setLoader(false);
-        }, 500);
+            {
+              "id": "Completed",
+              "label": "Completed Tasks",
+              "value": compTasks,
+              "color": "hsl(257, 70%, 50%)"
+            },
+            {
+              "id": "Total",
+              "label": "Total Tasks",
+              "value": totTasks,
+              "color": "hsl(241, 70%, 50%)"
+            }
+          ]
+
+        )
+        // setTimeout(() => {
+        setLoader(false);
+        // }, 500);
       } catch (e) {
         console.log("Error is ", e);
         setLoader(false);
@@ -185,62 +198,85 @@ export default function ChartFunc() {
         setContRecent("Recent Completed Tasks clicked in recent chart");
       }
     }
-  };
+  }
+
+  const graphdata = [
+    {
+      "id": "stylus",
+      "label": "stylus",
+      "value": 179,
+      "color": "hsl(169, 70%, 50%)"
+    },
+    {
+      "id": "php",
+      "label": "php",
+      "value": 25,
+      "color": "hsl(257, 70%, 50%)"
+    },
+    {
+      "id": "rust",
+      "label": "rust",
+      "value": 478,
+      "color": "hsl(241, 70%, 50%)"
+    },
+    {
+      "id": "hack",
+      "label": "hack",
+      "value": 65,
+      "color": "hsl(185, 70%, 50%)"
+    },
+    {
+      "id": "go",
+      "label": "go",
+      "value": 181,
+      "color": "hsl(260, 70%, 50%)"
+    }
+  ]
+
+
+
+  const MyResponsivePie = ({ data }) => (
+    data ?
+      <ResponsivePie
+        data={data}
+        width={500}
+        height={500}
+        margin={{ top: 40, right: 150, bottom: 80, left: 150 }}
+        innerRadius={0.6}
+        padAngle={0.7}
+        cornerRadius={3}
+        colors={{ scheme: 'nivo' }}
+        borderWidth={1}
+        borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+      />
+      : null
+  )
+
+
+
+
+
+
+
 
   return (
     <React.Fragment>
+      <TreeDropDown></TreeDropDown>
       {!loader ? (
-        <Card className={classes.root}>
-          <CardContent>
-            <Doughnut
+        chartData ?
+          <div className={classes.root} style={{ width: 700, height: 500 }}>
+            <MyResponsivePie
               data={chartData}
-              onElementsClick={(e) => onClickEventHandler(e)}
-              options={{
-                cutoutPercentage: 65,
-                responsive: true,
-                title: {
-                  display: true,
-                  text: "Tasks Analytics",
-                  fontSize: 20,
-                },
-                legend: {
-                  display: true,
-                  position: "right",
-                },
-              }}
             />
-            {/* {contTask ? <React.Fragment>{contTask}</React.Fragment> : null} */}
-          </CardContent>
-        </Card>
-      ) : (
-        <CircularProgress style={{ color: "black" }} />
-      )}
-      <Card className={classes.root}>
-        <CardContent>
-          {recentData > 0 ? (
-            <Doughnut
-              data={recentChart}
-              onElementsClick={(e) => onClickRecentHandler(e)}
-              options={{
-                cutoutPercentage: 65,
-                responsive: true,
-                title: {
-                  display: true,
-                  text: "Recent Tasks Analytics",
-                  fontSize: 20,
-                },
-                legend: {
-                  display: true,
-                  position: "right",
-                },
-              }}
-            />
-          ) : (
-            "No Recent Task Completed"
-          )}
-          {/* {contRecent ? <React.Fragment>{contRecent}</React.Fragment> : null} */}
-        </CardContent>
-      </Card>
+          </div> : null) : (
+          <CircularProgress />
+        )}
+      {recentData > 0 ?
+        <div className={classes.root} style={{ width: 700, height: 600, marginLeft:100 }}>
+          <MyResponsivePie
+            data={recentChart}>
+          </MyResponsivePie>
+        </div> : null}
     </React.Fragment>
   );
 }

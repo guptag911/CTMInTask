@@ -20,7 +20,7 @@ import ConfluenceCard from "./confluenceCard";
 import HubSpotCard from "./hubspotCard";
 import JiraCard from "./jiraCard";
 import StarCard from "./stardataCard";
-import AnalyticsCard from "./analyticsChart";
+import AnalyticsCard from "./analytics/analyticsChart";
 import CalendarCard from "./calenderCard";
 import ReplyMailCard from "./replyEmailsCard";
 import { ReactAutosuggestExample } from "./reactAutoSuggest";

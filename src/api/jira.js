@@ -113,7 +113,7 @@ async function issues_data() {
                 console.log("error!", err);
               }
             } else {
-              user_schema["create_date"] = fields_list.created;
+              user_schema["create_date"] = new Date(fields_list.created).getTime();
               user_schema["complete_date"] = fields_list.resolutionDate
                 ? fields_list.resolutionDate
                 : null;
