@@ -76,10 +76,27 @@ export default function SimpleCard(props) {
     setExpanded(isExpanded ? panel : true);
   };
 
+  const filterData = (data) => {
+    console.log(data);
+    let filtData = data.filter((obj) => {
+      for (const key in obj) {
+        if (typeof obj[key] === "string") {
+          if (obj[key].includes(props.val)) {
+            return obj;
+          }
+        }
+      }
+    });
+    return filtData;
+  };
+
+  if (props.val) {
+    let filtData = filterData(data);
+  }
+
   useEffect(() => {
     getGsuiteData()
       .then((data) => {
-        console.log(data);
         getData(data);
         setLoader(false);
         setInitRender(InitRender + 1);

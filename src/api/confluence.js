@@ -49,7 +49,7 @@ async function task(account_id, start, limit) {
           Accept: "application/json",
         },
       });
-      // console.log("conf data is in confl", result.data);
+      console.log("conf data is in confl", result.data);
       return [
         result.data.results,
         result.data.start,
@@ -102,6 +102,7 @@ async function get_data() {
     let size = 20;
     while (limit == size) {
       let taskResult = await task(account_ID, start, limit);
+      console.log(taskResult);
       start = start + taskResult[2];
       limit = taskResult[2];
       size = taskResult[3];
@@ -158,6 +159,8 @@ async function get_data() {
               if (user_schema["due_date"] !== null)
                 task_name += user_schema["due_date"];
               user_schema["task_name"] = task_name;
+              user_schema["create_date"] = element.createDate;
+              user_schema["complete_date"] = element.completeDate;
               // console.log(user_schema);
               //saving the data
               let db_data = await save_confluenceData(
