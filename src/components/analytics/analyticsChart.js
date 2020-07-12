@@ -10,8 +10,6 @@ import { ResponsivePie } from '@nivo/pie'
 
 import TreeDropDown from "./dropdown";
 
-
-
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.down("sm")]: {
     root: {
@@ -54,7 +52,6 @@ export default function ChartFunc(props) {
   const [recentChart, setRecentChart] = useState(null);
   const classes = useStyles();
 
-
   useEffect(() => {
     (async function anyNameFunction() {
       try {
@@ -85,10 +82,7 @@ export default function ChartFunc(props) {
         setLoader(false);
       }
     })();
-  }, [])
-
-
-
+  }, []);
 
   useEffect(() => {
     (async function anyNameFunction() {
@@ -179,8 +173,6 @@ export default function ChartFunc(props) {
     })();
   }, []);
 
-
-
   const [contRecent, setContRecent] = React.useState(null);
   const [contTask, setCont] = React.useState(null);
 
@@ -197,14 +189,12 @@ export default function ChartFunc(props) {
     }
   };
 
-
   const onClickRecentHandler = (e) => {
     // console.log("event is ", e);
     if (e.length) {
       if (e[0]._index == 0) {
         setContRecent("Completed Task clicked in recent chart");
-      }
-      else if (e[0]._index == 1) {
+      } else if (e[0]._index == 1) {
         setContRecent("Recent Completed Tasks clicked in recent chart");
       }
     }
