@@ -142,6 +142,10 @@ async function get_data() {
             } else {
               let data = await content(content_ID);
               //making user schema
+              user_schema["create_date"] = element.createDate;
+              user_schema["complete_date"] = element.completeDate
+                ? element.completeDate
+                : null;
               user_schema["content_id"] = content_ID;
               user_schema["task_id"] = task_ID;
               user_schema["status"] = status;
@@ -159,9 +163,8 @@ async function get_data() {
               if (user_schema["due_date"] !== null)
                 task_name += user_schema["due_date"];
               user_schema["task_name"] = task_name;
-              user_schema["create_date"] = element.createDate;
-              user_schema["complete_date"] = element.completeDate;
-              // console.log(user_schema);
+
+              console.log(user_schema);
               //saving the data
               let db_data = await save_confluenceData(
                 user_schema["task_id"],
