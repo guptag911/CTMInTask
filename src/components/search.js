@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: theme.spacing(3),
       width: "40%",
     },
-    border: "2px solid grey",
+    border: "2px solid black",
     margin: "0 auto !important",
   },
   searchIcon: {
@@ -58,8 +58,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("md")]: {
       width: "80%",
     },
-    borderRadius: "10px",
-    boxShadow: "0 4px 48px 0 rgba(0, 0, 0, 0.2)",
+    borderRadius: "16px",
+    boxShadow: "0 4px 48px 0 rgba(0, 0, 0, 0.1)",
     padding: "4px 48px 0 64px !important",
     height: "50px",
   },
@@ -91,7 +91,10 @@ export default function SearchBar({ getData, service }) {
         // console.log("key is ", key, obj[key]);
         for (const key2 in obj[key]) {
           if (typeof obj[key][key2] === "string") {
-            if (val && obj[key][key2].toLowerCase().includes(val.toLowerCase())) {
+            if (
+              val &&
+              obj[key][key2].toLowerCase().includes(val.toLowerCase())
+            ) {
               return obj;
             }
           }

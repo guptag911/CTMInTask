@@ -10,9 +10,10 @@ import {
 import { get_JiraData, get_confluenceData } from "../../api/atlassian";
 import { HubSpotDataGet } from "../../api/hubSpot";
 import { makeStyles } from "@material-ui/core/styles";
-import { ResponsivePie } from '@nivo/pie'
+import { ResponsivePie } from "@nivo/pie";
 
 import TreeDropDown from "./dropdown";
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.down("sm")]: {
@@ -42,10 +43,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-
-
 export default function ChartFunc(props) {
   const [loader, setLoader] = useState(true);
   const [chartData, setChartData] = useState(null);
@@ -62,32 +59,32 @@ export default function ChartFunc(props) {
         console.log("data is ", Rdata.length, Tdata.length, Mdata);
         setTimeFunc([
           {
-            "id": "Last 7 days",
-            "label": "Last 7 days avg task per day",
-            "value": Math.round(((Rdata.length / 7) + Number.EPSILON) * 100) / 100,
-            "color": "hsl(257, 70%, 50%)"
+            id: "Last 7 days",
+            label: "Last 7 days avg task per day",
+            value: Math.round((Rdata.length / 7 + Number.EPSILON) * 100) / 100,
+            color: "hsl(257, 70%, 50%)",
           },
           {
-            "id": "Last 30 days",
-            "label": "Last 30 days avg task per day",
-            "value": Math.round(((Mdata.length / 30) + Number.EPSILON) * 100) / 100,
-            "color": "hsl(169, 70%, 50%)"
-          }
-        ])
+            id: "Last 30 days",
+            label: "Last 30 days avg task per day",
+            value: Math.round((Mdata.length / 30 + Number.EPSILON) * 100) / 100,
+            color: "hsl(169, 70%, 50%)",
+          },
+        ]);
         setRecentChart([
           {
-            "id": "Completed",
-            "label": "Completed Tasks",
-            "value": Tdata.length,
-            "color": "hsl(169, 70%, 50%)"
+            id: "Completed",
+            label: "Completed Tasks",
+            value: Tdata.length,
+            color: "hsl(169, 70%, 50%)",
           },
           {
-            "id": "Recently Completed",
-            "label": "Recently Completed Tasks",
-            "value": Rdata.length,
-            "color": "hsl(257, 70%, 50%)"
-          }
-        ])
+            id: "Recently Completed",
+            label: "Recently Completed Tasks",
+            value: Rdata.length,
+            color: "hsl(257, 70%, 50%)",
+          },
+        ]);
         // setTimeout(() => {
         setLoader(false);
         // }, 500);
@@ -148,29 +145,26 @@ export default function ChartFunc(props) {
             pendTasks += 1;
           }
         }
-        setChartData(
-          [
-            {
-              "id": "Pending",
-              "label": "Pending Tasks",
-              "value": pendTasks,
-              "color": "hsl(169, 70%, 50%)"
-            },
-            {
-              "id": "Completed",
-              "label": "Completed Tasks",
-              "value": compTasks,
-              "color": "hsl(257, 70%, 50%)"
-            },
-            {
-              "id": "Total",
-              "label": "Total Tasks",
-              "value": totTasks,
-              "color": "hsl(241, 70%, 50%)"
-            }
-          ]
-
-        )
+        setChartData([
+          {
+            id: "Pending",
+            label: "Pending Tasks",
+            value: pendTasks,
+            color: "hsl(169, 70%, 50%)",
+          },
+          {
+            id: "Completed",
+            label: "Completed Tasks",
+            value: compTasks,
+            color: "hsl(257, 70%, 50%)",
+          },
+          {
+            id: "Total",
+            label: "Total Tasks",
+            value: totTasks,
+            color: "hsl(241, 70%, 50%)",
+          },
+        ]);
         // setTimeout(() => {
         setLoader(false);
         // }, 500);
@@ -206,91 +200,95 @@ export default function ChartFunc(props) {
         setContRecent("Recent Completed Tasks clicked in recent chart");
       }
     }
-  }
+  };
 
   const graphdata = [
     {
-      "id": "stylus",
-      "label": "stylus",
-      "value": 179,
-      "color": "hsl(169, 70%, 50%)"
+      id: "stylus",
+      label: "stylus",
+      value: 179,
+      color: "hsl(169, 70%, 50%)",
     },
     {
-      "id": "php",
-      "label": "php",
-      "value": 25,
-      "color": "hsl(257, 70%, 50%)"
+      id: "php",
+      label: "php",
+      value: 25,
+      color: "hsl(257, 70%, 50%)",
     },
     {
-      "id": "rust",
-      "label": "rust",
-      "value": 478,
-      "color": "hsl(241, 70%, 50%)"
+      id: "rust",
+      label: "rust",
+      value: 478,
+      color: "hsl(241, 70%, 50%)",
     },
     {
-      "id": "hack",
-      "label": "hack",
-      "value": 65,
-      "color": "hsl(185, 70%, 50%)"
+      id: "hack",
+      label: "hack",
+      value: 65,
+      color: "hsl(185, 70%, 50%)",
     },
     {
-      "id": "go",
-      "label": "go",
-      "value": 181,
-      "color": "hsl(260, 70%, 50%)"
-    }
-  ]
+      id: "go",
+      label: "go",
+      value: 181,
+      color: "hsl(260, 70%, 50%)",
+    },
+  ];
 
-
-
-  const MyResponsivePie = ({ data }) => (
-    data ?
+  const MyResponsivePie = ({ data }) =>
+    data ? (
       <ResponsivePie
         data={data}
-        width={500}
-        height={500}
-        margin={{ top: 40, right: 150, bottom: 80, left: 150 }}
+        width={250}
+        height={250}
         innerRadius={0.6}
         padAngle={0.7}
         cornerRadius={3}
-        colors={{ scheme: 'nivo' }}
+        colors={{ scheme: "nivo" }}
         borderWidth={1}
-        borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+        borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
       />
-      : null
-  )
-
-
-
-
-
-
-
+    ) : null;
 
   return (
     <React.Fragment>
       <TreeDropDown></TreeDropDown>
-      {!loader ? (
-        chartData ?
-          <div className={classes.root} style={{ width: 700, height: 300 }}>
-            <MyResponsivePie
-              data={chartData}
-            />
-          </div> : null) : (
-          <CircularProgress />
-        )}
-      {recentChart ?
-        <div className={classes.root} style={{ width: 700, height: 300, marginLeft: 100 }}>
-          <MyResponsivePie
-            data={recentChart}>
-          </MyResponsivePie>
-        </div> : null}
-      {avgTime ?
-        <div className={classes.root} style={{ width: 700, height: 400, marginLeft: 100 }}>
-          <MyResponsivePie
-            data={avgTime}>
-          </MyResponsivePie>
-        </div> : null}
+      <Grid container spacing={0} style={{ margin: "0 auto !important" }}>
+        <Grid item xs>
+          {!loader ? (
+            chartData ? (
+              <div
+                className={classes.root}
+                style={{ width: "300px", height: "300px" }}
+              >
+                <MyResponsivePie data={chartData} />
+              </div>
+            ) : null
+          ) : (
+            <CircularProgress />
+          )}
+        </Grid>
+        <Grid item xs>
+          {recentChart ? (
+            <div
+              className={classes.root}
+              style={{ width: "300px", height: "300px" }}
+            >
+              <MyResponsivePie data={recentChart}></MyResponsivePie>
+            </div>
+          ) : null}
+        </Grid>
+        <Grid item xs>
+          {avgTime ? (
+            <div
+              className={classes.root}
+              style={{ width: "300px", height: "300px" }}
+            >
+              <MyResponsivePie data={avgTime}></MyResponsivePie>
+            </div>
+          ) : null}
+        </Grid>
+      </Grid>
     </React.Fragment>
   );
 }

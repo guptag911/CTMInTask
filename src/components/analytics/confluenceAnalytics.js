@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { getAnalyticsConfData, getAnalyticsCompletedConfData, getAnalyticsMonthConfData } from "../../api/analytics";
+import {
+  getAnalyticsConfData,
+  getAnalyticsCompletedConfData,
+  getAnalyticsMonthConfData,
+} from "../../api/analytics";
 import { get_confluenceData } from "../../api/atlassian";
 import { makeStyles } from "@material-ui/core/styles";
-import { ResponsivePie } from '@nivo/pie'
-
-
-
+import { ResponsivePie } from "@nivo/pie";
+import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.down("sm")]: {
@@ -36,17 +38,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-
-
 export default function ChartFunc() {
   const [loader, setLoader] = useState(true);
   const [chartData, setChartData] = useState(null);
   const [recentChart, setRecentChart] = useState(null);
   const [avgTime, setTimeFunc] = useState(null);
   const classes = useStyles();
-
 
   useEffect(() => {
     (async function anyNameFunction() {
@@ -57,47 +54,43 @@ export default function ChartFunc() {
         console.log("data is ", Rdata.length, Tdata.length, Mdata);
         setTimeFunc([
           {
-            "id": "Last 7 days",
-            "label": "Last 7 days avg task per day",
-            "value": Math.round(((Rdata.length / 7) + Number.EPSILON) * 100) / 100,
-            "color": "hsl(257, 70%, 50%)"
+            id: "Last 7 days",
+            label: "Last 7 days avg task per day",
+            value: Math.round((Rdata.length / 7 + Number.EPSILON) * 100) / 100,
+            color: "hsl(257, 70%, 50%)",
           },
           {
-            "id": "Last 30 days",
-            "label": "Last 30 days avg task per day",
-            "value": Math.round(((Mdata.length / 30) + Number.EPSILON) * 100) / 100,
-            "color": "hsl(169, 70%, 50%)"
-          }
-        ])
+            id: "Last 30 days",
+            label: "Last 30 days avg task per day",
+            value: Math.round((Mdata.length / 30 + Number.EPSILON) * 100) / 100,
+            color: "hsl(169, 70%, 50%)",
+          },
+        ]);
         setRecentChart([
           {
-            "id": "Completed",
-            "label": "Completed Tasks",
-            "value": Tdata.length,
-            "color": "hsl(169, 70%, 50%)"
+            id: "Completed",
+            label: "Completed Tasks",
+            value: Tdata.length,
+            color: "hsl(169, 70%, 50%)",
           },
           {
-            "id": "Recently Completed",
-            "label": "Recently Completed Tasks",
-            "value": Rdata.length,
-            "color": "hsl(257, 70%, 50%)"
-          }
-        ])
+            id: "Recently Completed",
+            label: "Recently Completed Tasks",
+            value: Rdata.length,
+            color: "hsl(257, 70%, 50%)",
+          },
+        ]);
         setLoader(false);
       } catch (e) {
         console.log("Error is ", e);
         setLoader(false);
       }
     })();
-  }, [])
-
-
-
+  }, []);
 
   useEffect(() => {
     (async function anyNameFunction() {
       try {
-
         let Confdata = await get_confluenceData();
         let pendTasks = 0;
         let compTasks = 0;
@@ -109,29 +102,26 @@ export default function ChartFunc() {
             pendTasks += 1;
           }
         }
-        setChartData(
-          [
-            {
-              "id": "Pending",
-              "label": "Pending Tasks",
-              "value": pendTasks,
-              "color": "hsl(169, 70%, 50%)"
-            },
-            {
-              "id": "Completed",
-              "label": "Completed Tasks",
-              "value": compTasks,
-              "color": "hsl(257, 70%, 50%)"
-            },
-            {
-              "id": "Total",
-              "label": "Total Tasks",
-              "value": totTasks,
-              "color": "hsl(241, 70%, 50%)"
-            }
-          ]
-
-        )
+        setChartData([
+          {
+            id: "Pending",
+            label: "Pending Tasks",
+            value: pendTasks,
+            color: "hsl(169, 70%, 50%)",
+          },
+          {
+            id: "Completed",
+            label: "Completed Tasks",
+            value: compTasks,
+            color: "hsl(257, 70%, 50%)",
+          },
+          {
+            id: "Total",
+            label: "Total Tasks",
+            value: totTasks,
+            color: "hsl(241, 70%, 50%)",
+          },
+        ]);
         setLoader(false);
       } catch (e) {
         console.log("Error is ", e);
@@ -139,8 +129,6 @@ export default function ChartFunc() {
       }
     })();
   }, []);
-
-
 
   const [contRecent, setContRecent] = React.useState(null);
   const [contTask, setCont] = React.useState(null);
@@ -158,69 +146,70 @@ export default function ChartFunc() {
     }
   };
 
-
   const onClickRecentHandler = (e) => {
     // console.log("event is ", e);
     if (e.length) {
       if (e[0]._index == 0) {
         setContRecent("Completed Task clicked in recent chart");
-      }
-      else if (e[0]._index == 1) {
+      } else if (e[0]._index == 1) {
         setContRecent("Recent Completed Tasks clicked in recent chart");
       }
     }
-  }
+  };
 
-
-
-
-  const MyResponsivePie = ({ data }) => (
-    data ?
+  const MyResponsivePie = ({ data }) =>
+    data ? (
       <ResponsivePie
         data={data}
-        width={500}
-        height={500}
-        margin={{ top: 40, right: 150, bottom: 80, left: 150 }}
+        width={250}
+        height={250}
         innerRadius={0.6}
         padAngle={0.7}
         cornerRadius={3}
-        colors={{ scheme: 'nivo' }}
+        colors={{ scheme: "nivo" }}
         borderWidth={1}
-        borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+        borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
       />
-      : null
-  )
-
-
-
-
-
-
-
+    ) : null;
 
   return (
     <React.Fragment>
-      {!loader ? (
-        chartData ?
-          <div className={classes.root} style={{ width: 700, height: 300 }}>
-            <MyResponsivePie
-              data={chartData}
-            />
-          </div> : null) : (
-          <CircularProgress />
-        )}
-      {recentChart ?
-        <div className={classes.root} style={{ width: 700, height: 300, marginLeft: 100 }}>
-          <MyResponsivePie
-            data={recentChart}>
-          </MyResponsivePie>
-        </div> : null}
-      {avgTime ?
-        <div className={classes.root} style={{ width: 700, height: 400, marginLeft: 100 }}>
-          <MyResponsivePie
-            data={avgTime}>
-          </MyResponsivePie>
-        </div> : null}
+      <Grid container spacing={0} style={{ margin: "0 auto !important" }}>
+        <Grid item xs>
+          {!loader ? (
+            chartData ? (
+              <div
+                className={classes.root}
+                style={{ width: "300px", height: "300px" }}
+              >
+                <MyResponsivePie data={chartData} />
+              </div>
+            ) : null
+          ) : (
+            <CircularProgress />
+          )}
+        </Grid>
+        <Grid item xs>
+          {recentChart ? (
+            <div
+              className={classes.root}
+              style={{ width: "300px", height: "300px" }}
+            >
+              <MyResponsivePie data={recentChart}></MyResponsivePie>
+            </div>
+          ) : null}
+        </Grid>
+        <Grid item xs>
+          {avgTime ? (
+            <div
+              className={classes.root}
+              style={{ width: "300px", height: "300px" }}
+            >
+              <MyResponsivePie data={avgTime}></MyResponsivePie>
+            </div>
+          ) : null}
+        </Grid>
+      </Grid>
     </React.Fragment>
   );
 }
