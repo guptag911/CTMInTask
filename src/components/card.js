@@ -69,17 +69,23 @@ export default function SimpleCard(props) {
   let [Loader, setLoader] = useState(true);
   let [renderAgain, setRender] = useState(0);
   let [InitRender, setInitRender] = useState(false);
-  let [data, getData] = useState(props.newData !== null ? props.newData : null);
+  let [data, getData] = useState(null);
   const [expanded, setExpanded] = React.useState(true);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : true);
   };
-  console.log(data, props.newData);
   useEffect(() => {
     getGsuiteData()
       .then((data) => {
-        getData(props.newData !== null ? props.newData : data);
+        if (props.newData) {
+          console.log("ne wdata is ", props.newData)
+          getData(props.newData);
+        }
+        else {
+          console.log("in else")
+          getData(data);
+        }
         setLoader(false);
         setInitRender(InitRender + 1);
       })
@@ -91,7 +97,14 @@ export default function SimpleCard(props) {
   }, []);
 
   useEffect(() => {
-    getData(props.newData !== null ? props.newData : data);
+    if (props.newData) {
+      console.log("in if 2")
+      getData(props.newData);
+    }
+    else {
+      console.log("in else 2")
+      getData(data);
+    }
   }, [renderAgain]);
 
   const MouseOverHandler = (e) => {
@@ -134,6 +147,8 @@ export default function SimpleCard(props) {
     }
     const ndata = saveGsuiteData(element.comment_id, element);
   };
+
+  console.log("data and newdata from props are ", data, props.newData);
 
   return (
     <React.Fragment>
@@ -189,20 +204,20 @@ export default function SimpleCard(props) {
                       ></StarIcon>
                     </Tooltip>
                   ) : (
-                    <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
-                      <StarBorderIcon style={{ fontSize: 30 }}></StarBorderIcon>
-                    </Tooltip>
-                  )}
+                      <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
+                        <StarBorderIcon style={{ fontSize: 30 }}></StarBorderIcon>
+                      </Tooltip>
+                    )}
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
           ) : null;
         })
       ) : (
-        <div className={classesLoader.root}>
-          <CircularProgress />
-        </div>
-      )}
+          <div className={classesLoader.root}>
+            <CircularProgress />
+          </div>
+        )}
     </React.Fragment>
   );
 }

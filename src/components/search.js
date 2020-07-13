@@ -74,6 +74,7 @@ export default function SearchBar({ setShowData }) {
     const data = await getGsuiteData();
     setVal(e.target.value);
     const newData = await filterData(data);
+    console.log("new data is ", newData);
     setShowData(<GsuiteCard newData={newData}></GsuiteCard>);
     console.log(val);
   };
