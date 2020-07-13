@@ -138,7 +138,8 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: theme.spacing(3),
       width: "40%",
     },
-    border: "1px solid grey",
+    border: "2px solid grey",
+    margin: "0 auto !important",
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
@@ -559,20 +560,7 @@ export default function MiniDrawer() {
               alt="Innovaccer"
             />
           </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-              onChange={handleInput}
-            />
-          </div>
+
           <div className={classes.grow} />
           <Tooltip title="Refresh">
             <IconButton
@@ -741,6 +729,20 @@ export default function MiniDrawer() {
         </List>
       </Drawer>
       <main className={classes.content}>
+        <div className={classes.search}>
+          <div className={classes.searchIcon}>
+            <SearchIcon />
+          </div>
+          <InputBase
+            placeholder="Search…"
+            classes={{
+              root: classes.inputRoot,
+              input: classes.inputInput,
+            }}
+            inputProps={{ "aria-label": "search" }}
+            onChange={handleInput}
+          />
+        </div>
         <div className={classes.toolbar} />
         {contents}
       </main>

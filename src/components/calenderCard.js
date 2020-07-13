@@ -77,19 +77,19 @@ export default function CalendarCard(props) {
                   color="textSecondary"
                   gutterBottom
                 >
-                  Created By -- {element.creator}
+                  <b>Created By</b> -- {element.creator}
                 </Typography>
                 <Typography variant="h7" component="h7">
                   {element.summary}
                 </Typography>
                 <br />
                 <Typography className={classes.pos} color="textSecondary">
-                  Event timing - {new Date(element.start_time).toString()} -{" "}
+                  <b>Event timing</b> - {new Date(element.start_time).toString()} -{" "}
                   {new Date(element.end_time).toString()}
                 </Typography>
                 <br></br>
                 <Typography className={classes.pos} color="textSecondary">
-                  Last Modified - {new Date(element.updated).toString()}
+                  <b>Last Modified</b> - {new Date(element.updated).toString()}
                 </Typography>
               </CardContent>
               <CardActions style={{ float: "left" }}>
