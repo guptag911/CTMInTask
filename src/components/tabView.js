@@ -42,8 +42,7 @@ import ConfStarCard from "./starred/confluenceData";
 import JiraStarCard from "./starred/jiraData";
 import HubStarCard from "./starred/hubspotData";
 import Tooltip from "@material-ui/core/Tooltip";
-import SearchIcon from "@material-ui/icons/Search";
-import InputBase from "@material-ui/core/InputBase";
+import SearchBar from "./search";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const drawerWidth = 240;
@@ -122,46 +121,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     [theme.breakpoints.up("md")]: {
       display: "none",
-    },
-  },
-  search: {
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(3),
-      width: "40%",
-    },
-    border: "2px solid grey",
-    margin: "0 auto !important",
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  inputRoot: {
-    color: "inherit",
-    width: "100%",
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "80%",
     },
   },
 }));
@@ -433,13 +392,6 @@ export default function MiniDrawer() {
   };
 
   const [anchorEl1, setAnchorEl1] = React.useState(null);
-  const [val, setVal] = React.useState(null);
-
-  // Input Search
-  const handleInput = (e) => {
-    setVal(e.target.value);
-    console.log(val);
-  };
 
   const handleClick = (event) => {
     setAnchorEl1(event.currentTarget);
@@ -454,7 +406,7 @@ export default function MiniDrawer() {
 
     switch (service) {
       case "Gsuite":
-        setShowData(<GsuiteCard val={val}></GsuiteCard>);
+        setShowData(<GsuiteCard></GsuiteCard>);
         break;
       case "Hubspot":
         firebaseAuth.currentUser && !hubState
@@ -468,7 +420,7 @@ export default function MiniDrawer() {
                 Connect to HubSpot
               </Button>
             )
-          : setShowData(<HubSpotCard val={val}></HubSpotCard>);
+          : setShowData(<HubSpotCard></HubSpotCard>);
         break;
       case "Confluence":
         firebaseAuth.currentUser && !authState
@@ -482,7 +434,7 @@ export default function MiniDrawer() {
                 Connect to Confluence
               </Button>
             )
-          : setShowData(<ConfluenceCard val={val}></ConfluenceCard>);
+          : setShowData(<ConfluenceCard></ConfluenceCard>);
         break;
       case "Jira":
         firebaseAuth.currentUser && !jiraState
@@ -496,36 +448,36 @@ export default function MiniDrawer() {
                 Connect to Jira
               </Button>
             )
-          : setShowData(<JiraCard val={val}></JiraCard>);
+          : setShowData(<JiraCard></JiraCard>);
         break;
       case "Calendar":
-        setShowData(<CalendarCard val={val}></CalendarCard>);
+        setShowData(<CalendarCard></CalendarCard>);
         break;
       case "Reply Mail":
         setShowData(
           <React.Fragment>
             <ReactAutosuggestExample></ReactAutosuggestExample>
-            <ReplyMailCard val={val}></ReplyMailCard>
+            <ReplyMailCard></ReplyMailCard>
           </React.Fragment>
         );
         break;
       case "Analytics":
-        setShowData(<AnalyticsCard val={val}></AnalyticsCard>);
+        setShowData(<AnalyticsCard></AnalyticsCard>);
         break;
       case "gsuitestar":
-        setShowData(<StarCard val={val}></StarCard>);
+        setShowData(<StarCard></StarCard>);
         break;
       case "confstar":
-        setShowData(<ConfStarCard val={val}></ConfStarCard>);
+        setShowData(<ConfStarCard></ConfStarCard>);
         break;
       case "hubstar":
-        setShowData(<HubStarCard val={val}></HubStarCard>);
+        setShowData(<HubStarCard></HubStarCard>);
         break;
       case "jirastar":
-        setShowData(<JiraStarCard val={val}></JiraStarCard>);
+        setShowData(<JiraStarCard></JiraStarCard>);
         break;
       default:
-        setShowData(<GsuiteCard val={val}></GsuiteCard>);
+        setShowData(<GsuiteCard></GsuiteCard>);
     }
   };
 
@@ -533,6 +485,7 @@ export default function MiniDrawer() {
     window.location.reload(false);
   }
 
+  console.log({ contents });
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -729,20 +682,7 @@ export default function MiniDrawer() {
         </List>
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
-          <InputBase
-            placeholder="Search…"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-            }}
-            inputProps={{ "aria-label": "search" }}
-            onChange={handleInput}
-          />
-        </div>
+        <SearchBar setShowData={setShowData} />
         <div className={classes.toolbar} />
         {contents}
       </main>

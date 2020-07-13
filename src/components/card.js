@@ -69,35 +69,17 @@ export default function SimpleCard(props) {
   let [Loader, setLoader] = useState(true);
   let [renderAgain, setRender] = useState(0);
   let [InitRender, setInitRender] = useState(false);
-  let [data, getData] = useState(null);
+  let [data, getData] = useState(props.newData !== null ? props.newData : null);
   const [expanded, setExpanded] = React.useState(true);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : true);
   };
-
-  const filterData = (data) => {
-    console.log(data);
-    let filtData = data.filter((obj) => {
-      for (const key in obj) {
-        if (typeof obj[key] === "string") {
-          if (obj[key].includes(props.val)) {
-            return obj;
-          }
-        }
-      }
-    });
-    return filtData;
-  };
-
-  if (props.val) {
-    let filtData = filterData(data);
-  }
-
+  console.log(data, props.newData);
   useEffect(() => {
     getGsuiteData()
       .then((data) => {
-        getData(data);
+        getData(props.newData !== null ? props.newData : data);
         setLoader(false);
         setInitRender(InitRender + 1);
       })
@@ -109,7 +91,7 @@ export default function SimpleCard(props) {
   }, []);
 
   useEffect(() => {
-    getData(data);
+    getData(props.newData !== null ? props.newData : data);
   }, [renderAgain]);
 
   const MouseOverHandler = (e) => {
