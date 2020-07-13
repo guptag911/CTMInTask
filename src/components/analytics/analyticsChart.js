@@ -64,13 +64,13 @@ export default function ChartFunc(props) {
           {
             "id": "Last 7 days",
             "label": "Last 7 days avg task per day",
-            "value": Rdata.length / 7,
+            "value": Math.round(((Rdata.length / 7) + Number.EPSILON) * 100) / 100,
             "color": "hsl(257, 70%, 50%)"
           },
           {
             "id": "Last 30 days",
             "label": "Last 30 days avg task per day",
-            "value": Mdata.length / 30,
+            "value": Math.round(((Mdata.length / 30) + Number.EPSILON) * 100) / 100,
             "color": "hsl(169, 70%, 50%)"
           }
         ])

@@ -55,18 +55,18 @@ export default function ChartFunc() {
                 console.log("data is ", Rdata.length, Tdata.length, Mdata);
                 setTimeFunc([
                     {
-                        "id": "Last 7 days",
-                        "label": "Last 7 days avg task per day",
-                        "value": Rdata.length / 7,
-                        "color": "hsl(257, 70%, 50%)"
+                      "id": "Last 7 days",
+                      "label": "Last 7 days avg task per day",
+                      "value": Math.round(((Rdata.length / 7) + Number.EPSILON) * 100) / 100,
+                      "color": "hsl(257, 70%, 50%)"
                     },
                     {
-                        "id": "Last 30 days",
-                        "label": "Last 30 days avg task per day",
-                        "value": Mdata.length / 30,
-                        "color": "hsl(169, 70%, 50%)"
+                      "id": "Last 30 days",
+                      "label": "Last 30 days avg task per day",
+                      "value": Math.round(((Mdata.length / 30) + Number.EPSILON) * 100) / 100,
+                      "color": "hsl(169, 70%, 50%)"
                     }
-                ])
+                  ])
                 setRecentChart([
                     {
                         "id": "Completed",
