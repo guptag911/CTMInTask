@@ -247,6 +247,7 @@ export default function ChartFunc(props) {
         colors={{ scheme: "nivo" }}
         borderWidth={1}
         borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+        enableRadialLabels={false}
       />
     ) : null;
 
