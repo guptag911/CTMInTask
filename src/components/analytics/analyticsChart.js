@@ -60,14 +60,14 @@ export default function ChartFunc(props) {
         setTimeFunc([
           {
             id: "Last 7 days",
-            label: "Last 7 days avg task per day",
-            value: Math.round((Rdata.length / 7 + Number.EPSILON) * 100) / 100,
+            label: "Last 7 days avg time(hours) per task",
+            value: Math.round((7*24 / Rdata.length + Number.EPSILON) * 100) / 100,
             color: "hsl(257, 70%, 50%)",
           },
           {
             id: "Last 30 days",
-            label: "Last 30 days avg task per day",
-            value: Math.round((Mdata.length / 30 + Number.EPSILON) * 100) / 100,
+            label: "Last 30 days avg time(hours) per task",
+            value: Math.round((30*24/ Mdata.length + Number.EPSILON) * 100) / 100,
             color: "hsl(169, 70%, 50%)",
           },
         ]);
