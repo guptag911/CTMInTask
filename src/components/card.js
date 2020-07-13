@@ -135,6 +135,8 @@ export default function SimpleCard(props) {
     const ndata = saveGsuiteData(element.comment_id, element);
   };
 
+  console.log("data and newdata from props are ", data, props.newData);
+
   return (
     <React.Fragment>
       <SearchBar getData={getData} service="Gsuite" />
@@ -190,20 +192,20 @@ export default function SimpleCard(props) {
                       ></StarIcon>
                     </Tooltip>
                   ) : (
-                    <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
-                      <StarBorderIcon style={{ fontSize: 30 }}></StarBorderIcon>
-                    </Tooltip>
-                  )}
+                      <Tooltip style={{ fontWeight: "bold" }} title="Bookmark ?">
+                        <StarBorderIcon style={{ fontSize: 30 }}></StarBorderIcon>
+                      </Tooltip>
+                    )}
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
           ) : null;
         })
       ) : (
-        <div className={classesLoader.root}>
-          <CircularProgress />
-        </div>
-      )}
+          <div className={classesLoader.root}>
+            <CircularProgress />
+          </div>
+        )}
     </React.Fragment>
   );
 }

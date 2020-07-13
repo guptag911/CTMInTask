@@ -75,8 +75,25 @@ export default function SearchBar({ getData, service }) {
     let filtData = data.filter((obj) => {
       for (const key in obj) {
         if (typeof obj[key] === "string") {
-          if (obj[key].includes(val)) {
+          if (val && obj[key].toLowerCase().includes(val.toLowerCase())) {
             return obj;
+          }
+        }
+      }
+    });
+    return filtData;
+  };
+
+  const HubspotfilterData = async (data) => {
+    console.log(data);
+    let filtData = data.filter((obj) => {
+      for (const key in obj) {
+        // console.log("key is ", key, obj[key]);
+        for (const key2 in obj[key]) {
+          if (typeof obj[key][key2] === "string") {
+            if (val && obj[key][key2].toLowerCase().includes(val.toLowerCase())) {
+              return obj;
+            }
           }
         }
       }
@@ -103,7 +120,7 @@ export default function SearchBar({ getData, service }) {
       getData(newData);
     } else if (service === "hubspot") {
       const data = await HubSpotDataGet();
-      const newData = await filterData(data);
+      const newData = await HubspotfilterData(data);
       getData(newData);
     } else if (service === "calendar") {
       const data = await CalendarDataGet();
@@ -123,7 +140,7 @@ export default function SearchBar({ getData, service }) {
       getData(newData);
     } else if (service === "hubstar") {
       const data = await getStarHubspotData();
-      const newData = await filterData(data);
+      const newData = await HubspotfilterData(data);
       getData(newData);
     } else if (service === "confstar") {
       const data = await getStarConfluenceData();

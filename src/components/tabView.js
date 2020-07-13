@@ -42,7 +42,8 @@ import ConfStarCard from "./starred/confluenceData";
 import JiraStarCard from "./starred/jiraData";
 import HubStarCard from "./starred/hubspotData";
 import Tooltip from "@material-ui/core/Tooltip";
-import SearchBar from "./search";
+import SearchIcon from "@material-ui/icons/Search";
+import InputBase from "@material-ui/core/InputBase";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const drawerWidth = 240;
@@ -121,6 +122,46 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     [theme.breakpoints.up("md")]: {
       display: "none",
+    },
+  },
+  search: {
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginRight: theme.spacing(2),
+    marginLeft: 0,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(3),
+      width: "40%",
+    },
+    border: "2px solid grey",
+    margin: "0 auto !important",
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inputRoot: {
+    color: "inherit",
+    width: "100%",
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "80%",
     },
   },
 }));
@@ -392,6 +433,13 @@ export default function MiniDrawer() {
   };
 
   const [anchorEl1, setAnchorEl1] = React.useState(null);
+  const [val, setVal] = React.useState(null);
+
+  // Input Search
+  const handleInput = (e) => {
+    setVal(e.target.value);
+    console.log(val);
+  };
 
   const handleClick = (event) => {
     setAnchorEl1(event.currentTarget);
@@ -406,78 +454,78 @@ export default function MiniDrawer() {
 
     switch (service) {
       case "Gsuite":
-        setShowData(<GsuiteCard></GsuiteCard>);
+        setShowData(<GsuiteCard val={val}></GsuiteCard>);
         break;
       case "Hubspot":
         firebaseAuth.currentUser && !hubState
           ? setShowData(
-              <Button
-                variant="contained"
-                color="inherit"
-                className={classes.center}
-                onClick={handleHub}
-              >
-                Connect to HubSpot
+            <Button
+              variant="contained"
+              color="inherit"
+              className={classes.center}
+              onClick={handleHub}
+            >
+              Connect to HubSpot
               </Button>
-            )
-          : setShowData(<HubSpotCard></HubSpotCard>);
+          )
+          : setShowData(<HubSpotCard val={val}></HubSpotCard>);
         break;
       case "Confluence":
         firebaseAuth.currentUser && !authState
           ? setShowData(
-              <Button
-                variant="contained"
-                color="inherit"
-                className={classes.center}
-                onClick={handleReq}
-              >
-                Connect to Confluence
+            <Button
+              variant="contained"
+              color="inherit"
+              className={classes.center}
+              onClick={handleReq}
+            >
+              Connect to Confluence
               </Button>
-            )
-          : setShowData(<ConfluenceCard></ConfluenceCard>);
+          )
+          : setShowData(<ConfluenceCard val={val}></ConfluenceCard>);
         break;
       case "Jira":
         firebaseAuth.currentUser && !jiraState
           ? setShowData(
-              <Button
-                variant="contained"
-                color="inherit"
-                className={classes.center}
-                onClick={handleJira}
-              >
-                Connect to Jira
+            <Button
+              variant="contained"
+              color="inherit"
+              className={classes.center}
+              onClick={handleJira}
+            >
+              Connect to Jira
               </Button>
-            )
-          : setShowData(<JiraCard></JiraCard>);
+          )
+          : setShowData(<JiraCard val={val}></JiraCard>);
         break;
       case "Calendar":
-        setShowData(<CalendarCard></CalendarCard>);
+        setShowData(<CalendarCard val={val}></CalendarCard>);
         break;
       case "Reply Mail":
         setShowData(
           <React.Fragment>
             <ReactAutosuggestExample></ReactAutosuggestExample>
-            <ReplyMailCard></ReplyMailCard>
+            <ReplyMailCard val={val}></ReplyMailCard>
           </React.Fragment>
         );
         break;
       case "Analytics":
-        setShowData(<AnalyticsCard></AnalyticsCard>);
+        setShowData(<AnalyticsCard val={val}></AnalyticsCard>);
         break;
       case "gsuitestar":
-        setShowData(<StarCard></StarCard>);
+        setShowData(<StarCard val={val}></StarCard>);
         break;
       case "confstar":
-        setShowData(<ConfStarCard></ConfStarCard>);
+        setShowData(<ConfStarCard val={val}></ConfStarCard>);
         break;
       case "hubstar":
-        setShowData(<HubStarCard></HubStarCard>);
+        setShowData(<HubStarCard val={val}></HubStarCard>);
         break;
       case "jirastar":
-        setShowData(<JiraStarCard></JiraStarCard>);
+        setShowData(<JiraStarCard val={val}></JiraStarCard>);
         break;
       default:
-        setShowData(<GsuiteCard></GsuiteCard>);
+        setShowData(<GsuiteCard val={val}></GsuiteCard>);
     }
   };
 
@@ -485,7 +533,6 @@ export default function MiniDrawer() {
     window.location.reload(false);
   }
 
-  console.log({ contents });
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -592,8 +639,8 @@ export default function MiniDrawer() {
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
-              <ChevronLeftIcon />
-            )}
+                <ChevronLeftIcon />
+              )}
           </IconButton>
         </div>
         <Divider />
@@ -623,8 +670,8 @@ export default function MiniDrawer() {
                 ) : index === 4 ? (
                   <img src="https://img.icons8.com/cute-clipart/40/calendar.png"></img>
                 ) : (
-                  <img src="https://img.icons8.com/fluent/40/gmail.png"></img>
-                )}
+                            <img src="https://img.icons8.com/fluent/40/gmail.png"></img>
+                          )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -644,37 +691,37 @@ export default function MiniDrawer() {
                 {index === 0 ? (
                   <img src="https://img.icons8.com/fluent/40/web-analystics.png"></img>
                 ) : (
-                  <React.Fragment>
-                    <Button
-                      style={{ marginLeft: -10 }}
-                      aria-controls="simple-menu"
-                      aria-haspopup="true"
-                      onClick={handleClick}
-                    >
-                      <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
-                    </Button>
-                    <Menu
-                      id="simple-menu"
-                      anchorEl={anchorEl1}
-                      keepMounted
-                      open={Boolean(anchorEl1)}
-                      onClose={handleClose}
-                    >
-                      <MenuItem onClick={(e) => onClickShow(e, "gsuitestar")}>
-                        Gsuite
+                    <React.Fragment>
+                      <Button
+                        style={{ marginLeft: -10 }}
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={handleClick}
+                      >
+                        <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
+                      </Button>
+                      <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl1}
+                        keepMounted
+                        open={Boolean(anchorEl1)}
+                        onClose={handleClose}
+                      >
+                        <MenuItem onClick={(e) => onClickShow(e, "gsuitestar")}>
+                          Gsuite
                       </MenuItem>
-                      <MenuItem onClick={(e) => onClickShow(e, "jirastar")}>
-                        Jira
+                        <MenuItem onClick={(e) => onClickShow(e, "jirastar")}>
+                          Jira
                       </MenuItem>
-                      <MenuItem onClick={(e) => onClickShow(e, "confstar")}>
-                        Confluence
+                        <MenuItem onClick={(e) => onClickShow(e, "confstar")}>
+                          Confluence
                       </MenuItem>
-                      <MenuItem onClick={(e) => onClickShow(e, "hubstar")}>
-                        Hubspot
+                        <MenuItem onClick={(e) => onClickShow(e, "hubstar")}>
+                          Hubspot
                       </MenuItem>
-                    </Menu>
-                  </React.Fragment>
-                )}
+                      </Menu>
+                    </React.Fragment>
+                  )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
