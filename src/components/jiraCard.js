@@ -18,6 +18,7 @@ import { deleteStarJiraData, saveStarJiraData } from "../api/star";
 import { red, blue, yellow } from "@material-ui/core/colors";
 
 import { getJiraDataStatusIncomplete, save_JiraData } from "../api/atlassian";
+import SearchBar from "./search";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -139,6 +140,7 @@ export default function SimpleCard(props) {
 
   return (
     <div>
+      <SearchBar getData={getData} service="jira" />
       {data && !Loader ? (
         data.map((element, index) => {
           return (

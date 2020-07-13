@@ -10,6 +10,7 @@ import {
   get_calendars,
 } from "../api/calendarAPI";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import SearchBar from "./search";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -67,6 +68,7 @@ export default function CalendarCard(props) {
 
   return (
     <React.Fragment>
+      <SearchBar getData={getData} service="calendar" />
       {data && !Loader ? (
         data.map((element) => {
           return (
@@ -84,7 +86,8 @@ export default function CalendarCard(props) {
                 </Typography>
                 <br />
                 <Typography className={classes.pos} color="textSecondary">
-                  <b>Event timing</b> - {new Date(element.start_time).toString()} -{" "}
+                  <b>Event timing</b> -{" "}
+                  {new Date(element.start_time).toString()} -{" "}
                   {new Date(element.end_time).toString()}
                 </Typography>
                 <br></br>

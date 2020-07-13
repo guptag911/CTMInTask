@@ -21,6 +21,7 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
 import Popover from "@material-ui/core/Popover";
+import SearchBar from "./search";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -69,17 +70,16 @@ export default function SimpleCard(props) {
   let [Loader, setLoader] = useState(true);
   let [renderAgain, setRender] = useState(0);
   let [InitRender, setInitRender] = useState(false);
-  let [data, getData] = useState(props.newData !== null ? props.newData : null);
+  let [data, getData] = useState(null);
   const [expanded, setExpanded] = React.useState(true);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : true);
   };
-  console.log(data, props.newData);
   useEffect(() => {
     getGsuiteData()
       .then((data) => {
-        getData(props.newData !== null ? props.newData : data);
+        getData(data);
         setLoader(false);
         setInitRender(InitRender + 1);
       })
@@ -91,7 +91,7 @@ export default function SimpleCard(props) {
   }, []);
 
   useEffect(() => {
-    getData(props.newData !== null ? props.newData : data);
+    getData(data);
   }, [renderAgain]);
 
   const MouseOverHandler = (e) => {
@@ -137,6 +137,7 @@ export default function SimpleCard(props) {
 
   return (
     <React.Fragment>
+      <SearchBar getData={getData} service="Gsuite" />
       {data && !Loader ? (
         data.map((element, index) => {
           return element.status === "open" ? (

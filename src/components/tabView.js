@@ -682,7 +682,6 @@ export default function MiniDrawer() {
         </List>
       </Drawer>
       <main className={classes.content}>
-        <SearchBar setShowData={setShowData} />
         <div className={classes.toolbar} />
         {contents}
       </main>

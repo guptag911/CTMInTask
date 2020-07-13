@@ -21,6 +21,7 @@ import {
   getConfluenceDataStatusIncomplete,
   save_confluenceData,
 } from "../api/atlassian";
+import SearchBar from "./search";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -140,9 +141,10 @@ export default function SimpleCard(props) {
 
   return (
     <div>
+      <SearchBar getData={getData} service="confluence" />
       {data && !Loader ? (
         data.map((element, index) => {
-          return  (
+          return (
             <ExpansionPanel
               onMouseOut={MouseLeaveHandler}
               onMouseOver={MouseOverHandler}
