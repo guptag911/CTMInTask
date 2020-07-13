@@ -7,11 +7,16 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { save_JiraData } from "../../api/atlassian";
 
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import StarIcon from '@material-ui/icons/Star';
-import { getStarJiraData, saveStarJiraData, deleteStarJiraData } from "../../api/star";
-import { red, blue, yellow } from '@material-ui/core/colors';
+import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
+import StarIcon from "@material-ui/icons/Star";
+import {
+  getStarJiraData,
+  saveStarJiraData,
+  deleteStarJiraData,
+} from "../../api/star";
+import { red, blue, yellow } from "@material-ui/core/colors";
+import SearchBar from "../search";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -67,11 +72,9 @@ export default function SimpleCard(props) {
       });
   }, []);
 
-
   useEffect(() => {
     getData(data);
-  }, [renderAgain])
-
+  }, [renderAgain]);
 
   const onClickStarHandler = async (is_starred, element, index) => {
     let Ndata = data;
@@ -91,14 +94,12 @@ export default function SimpleCard(props) {
     const ndata = save_JiraData(element.issue_id, element);
   };
 
-
-
-
   return (
     <div>
+      <SearchBar getData={getData} service="jirastar" />
       {data && !Loader ? (
         data.map((element, index) => {
-          return (element.is_starred ?
+          return element.is_starred ? (
             <Card key={element.issue_id} className={classes.root}>
               <CardContent>
                 <Typography
@@ -145,21 +146,31 @@ export default function SimpleCard(props) {
                 </CardActions>
               ) : null}
               <CardActions style={{ float: "right" }}>
-                <Button onClick={(event) => onClickStarHandler(element.is_starred, element, index)}>
-                  {element.is_starred ?
-                    <Tooltip style={{ fontWeight: "bold" }} title="Unbookmark ?">
-                      <StarIcon style={{ color: red[400], fontSize: 40 }}></StarIcon>
-                    </Tooltip> : null}
+                <Button
+                  onClick={(event) =>
+                    onClickStarHandler(element.is_starred, element, index)
+                  }
+                >
+                  {element.is_starred ? (
+                    <Tooltip
+                      style={{ fontWeight: "bold" }}
+                      title="Unbookmark ?"
+                    >
+                      <StarIcon
+                        style={{ color: red[400], fontSize: 40 }}
+                      ></StarIcon>
+                    </Tooltip>
+                  ) : null}
                 </Button>
               </CardActions>
-            </Card> : null
-          );
+            </Card>
+          ) : null;
         })
       ) : (
-          <div className={classesLoader.root}>
-            <CircularProgress />
-          </div>
-        )}
+        <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>
+      )}
     </div>
   );
 }

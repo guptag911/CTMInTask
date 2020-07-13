@@ -729,20 +729,6 @@ export default function MiniDrawer() {
         </List>
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
-          <InputBase
-            placeholder="Search…"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-            }}
-            inputProps={{ "aria-label": "search" }}
-            onChange={handleInput}
-          />
-        </div>
         <div className={classes.toolbar} />
         {contents}
       </main>

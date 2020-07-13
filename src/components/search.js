@@ -4,6 +4,19 @@ import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import GsuiteCard from "./card";
 import { getGsuiteData } from "../api/fixedDb";
+import {
+  getJiraDataStatusIncomplete,
+  getConfluenceDataStatusIncomplete,
+} from "../api/atlassian";
+import { HubSpotDataGet } from "../api/hubSpot";
+import { CalendarDataGet } from "../api/calendarAPI";
+import { GsuiteDataGetReplyFalse } from "../api/gsuiteApi";
+import {
+  getStarConfluenceData,
+  getStarHubspotData,
+  getStarJiraData,
+  getStarGsuiteData,
+} from "../api/star";
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -48,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SearchBar({ setShowData }) {
+export default function SearchBar({ getData, service }) {
   const theme = useTheme();
   const classes = useStyles();
   const [val, setVal] = React.useState(null);
@@ -58,8 +71,25 @@ export default function SearchBar({ setShowData }) {
     let filtData = data.filter((obj) => {
       for (const key in obj) {
         if (typeof obj[key] === "string") {
-          if (obj[key].includes(val)) {
+          if (val && obj[key].toLowerCase().includes(val.toLowerCase())) {
             return obj;
+          }
+        }
+      }
+    });
+    return filtData;
+  };
+
+  const HubspotfilterData = async (data) => {
+    console.log(data);
+    let filtData = data.filter((obj) => {
+      for (const key in obj) {
+        // console.log("key is ", key, obj[key]);
+        for (const key2 in obj[key]) {
+          if (typeof obj[key][key2] === "string") {
+            if (val && obj[key][key2].toLowerCase().includes(val.toLowerCase())) {
+              return obj;
+            }
           }
         }
       }
@@ -71,11 +101,49 @@ export default function SearchBar({ setShowData }) {
   const handleInput = async (e) => {
     e.preventDefault();
     e.persist();
-    const data = await getGsuiteData();
     setVal(e.target.value);
-    const newData = await filterData(data);
-    console.log("new data is ", newData);
-    setShowData(<GsuiteCard newData={newData}></GsuiteCard>);
+    if (service === "Gsuite") {
+      const data = await getGsuiteData();
+      const newData = await filterData(data);
+      getData(newData);
+    } else if (service === "jira") {
+      const data = await getJiraDataStatusIncomplete();
+      const newData = await filterData(data);
+      getData(newData);
+    } else if (service === "confluence") {
+      const data = await getConfluenceDataStatusIncomplete();
+      const newData = await filterData(data);
+      getData(newData);
+    } else if (service === "hubspot") {
+      const data = await HubSpotDataGet();
+      const newData = await HubspotfilterData(data);
+      getData(newData);
+    } else if (service === "calendar") {
+      const data = await CalendarDataGet();
+      const newData = await filterData(data);
+      getData(newData);
+    } else if (service === "reply") {
+      const data = await GsuiteDataGetReplyFalse();
+      const newData = await filterData(data);
+      getData(newData);
+    } else if (service === "gsuitestar") {
+      const data = await getStarGsuiteData();
+      const newData = await filterData(data);
+      getData(newData);
+    } else if (service === "jirastar") {
+      const data = await getStarJiraData();
+      const newData = await filterData(data);
+      getData(newData);
+    } else if (service === "hubstar") {
+      const data = await getStarHubspotData();
+      const newData = await HubspotfilterData(data);
+      getData(newData);
+    } else if (service === "confstar") {
+      const data = await getStarConfluenceData();
+      const newData = await filterData(data);
+      getData(newData);
+    }
+
     console.log(val);
   };
 

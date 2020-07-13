@@ -9,12 +9,17 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 // import { GsuiteDataGet, GsuiteDataSave } from "../api/gsuiteApi";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getGsuiteData, saveGsuiteData } from "../api/fixedDb";
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import StarIcon from '@material-ui/icons/Star';
-import { getStarGsuiteData, saveStarGsuiteData, deleteStarGsuiteData } from "../api/star";
-import { red, blue, yellow } from '@material-ui/core/colors';
+import StarBorderIcon from "@material-ui/icons/StarBorder";
+import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
+import StarIcon from "@material-ui/icons/Star";
+import {
+  getStarGsuiteData,
+  saveStarGsuiteData,
+  deleteStarGsuiteData,
+} from "../api/star";
+import { red, blue, yellow } from "@material-ui/core/colors";
+import SearchBar from "./search";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -72,11 +77,9 @@ export default function SimpleCard(props) {
       });
   }, []);
 
-
   useEffect(() => {
     getData(data);
-  }, [renderAgain])
-
+  }, [renderAgain]);
 
   const handleChange = async (comment_id, element) => {
     setLoader(true);
@@ -94,7 +97,6 @@ export default function SimpleCard(props) {
     }
   };
 
-
   const onClickStarHandler = async (is_starred, element, index) => {
     let Ndata = data;
     if (is_starred) {
@@ -103,8 +105,7 @@ export default function SimpleCard(props) {
       getData(Ndata);
       setRender(renderAgain + 1);
       const fdata = await deleteStarGsuiteData("gsuite", element);
-    }
-    else {
+    } else {
       element["is_starred"] = true;
       Ndata[index] = element;
       getData(Ndata);
@@ -112,13 +113,11 @@ export default function SimpleCard(props) {
       const data = await saveStarGsuiteData("gsuite", element);
     }
     const ndata = await saveGsuiteData(element.comment_id, element);
-
-  }
-
-
+  };
 
   return (
     <React.Fragment>
+      <SearchBar getData={getData} service="gsuitestar" />
       {data && !Loader ? (
         data.map((element, index) => {
           return element.status === "open" && element.is_starred ? (
@@ -152,25 +151,31 @@ export default function SimpleCard(props) {
                 </a>
               </CardActions>
               <CardActions style={{ float: "right" }}>
-
-                <Button onClick={(event) => onClickStarHandler(element.is_starred, element, index)}>
-                  {element.is_starred ?
-                    <Tooltip style={{ fontWeight: "bold" }} title="Unbookmark ?">
-                      <StarIcon style={{ color: red[400], fontSize: 40 }}></StarIcon>
-                    </Tooltip> : null}
+                <Button
+                  onClick={(event) =>
+                    onClickStarHandler(element.is_starred, element, index)
+                  }
+                >
+                  {element.is_starred ? (
+                    <Tooltip
+                      style={{ fontWeight: "bold" }}
+                      title="Unbookmark ?"
+                    >
+                      <StarIcon
+                        style={{ color: red[400], fontSize: 40 }}
+                      ></StarIcon>
+                    </Tooltip>
+                  ) : null}
                 </Button>
               </CardActions>
-
             </Card>
           ) : null;
         })
       ) : (
-          <div className={classesLoader.root}>
-            <CircularProgress />
-          </div>
-        )}
-
-
+        <div className={classesLoader.root}>
+          <CircularProgress />
+        </div>
+      )}
     </React.Fragment>
   );
 }

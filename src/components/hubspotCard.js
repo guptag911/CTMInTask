@@ -25,6 +25,7 @@ import {
   HubSpotDataGet,
   HubSpotSingleDataSave,
 } from "../api/hubSpot";
+import SearchBar from "./search";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -145,9 +146,10 @@ export default function SimpleCard(props) {
 
   return (
     <React.Fragment>
+      <SearchBar getData={getData} service="hubspot" />
       {data && !Loader ? (
         data.map((element, index) => {
-          return element.metadata.status!=="COMPLETED" ? (
+          return element.metadata.status !== "COMPLETED" ? (
             <ExpansionPanel
               onMouseOut={MouseLeaveHandler}
               onMouseOver={MouseOverHandler}
@@ -283,7 +285,7 @@ export default function SimpleCard(props) {
                 </Button>
               </ExpansionPanelSummary>
             </ExpansionPanel>
-          ):null
+          ) : null;
         })
       ) : (
         <div className={classesLoader.root}>
