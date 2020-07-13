@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { getGsuiteData } from "../../api/fixedDb";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { getAnalyticsGsuiteData, getAnalyticsCompletedGsuiteData } from "../../api/analytics";
+import {
+  getAnalyticsOverallCompletedData,
+  getAnalyticsOverallCompletedDataRecently,
+  getAnalyticsOverallCompletedDataMonth,
+} from "../../api/analytics";
 import { get_JiraData, get_confluenceData } from "../../api/atlassian";
 import { HubSpotDataGet } from "../../api/hubSpot";
 import { makeStyles } from "@material-ui/core/styles";
@@ -44,22 +48,32 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ChartFunc(props) {
   const [loader, setLoader] = useState(true);
-  const [pendingTasks, setPendingTasks] = useState(0);
-  const [completedTasks, setCompletedTasks] = useState(0);
-  const [totalTasks, setTotalTasks] = useState(0);
   const [chartData, setChartData] = useState(null);
-  const [recentData, setRecentData] = useState(0);
   const [recentChart, setRecentChart] = useState(null);
   const classes = useStyles();
+  const [avgTime, setTimeFunc] = useState(null);
 
   useEffect(() => {
     (async function anyNameFunction() {
       try {
-        const Rdata = await getAnalyticsGsuiteData();
-        const Tdata = await getAnalyticsCompletedGsuiteData();
-        console.log("data is ", Rdata.length, Tdata.length);
-        setRecentData(Rdata.length + Tdata.length);
-
+        const Rdata = await getAnalyticsOverallCompletedDataRecently();
+        const Tdata = await getAnalyticsOverallCompletedData();
+        const Mdata = await getAnalyticsOverallCompletedDataMonth();
+        console.log("data is ", Rdata.length, Tdata.length, Mdata);
+        setTimeFunc([
+          {
+            "id": "Last 7 days",
+            "label": "Last 7 days avg task per day",
+            "value": Rdata.length / 7,
+            "color": "hsl(257, 70%, 50%)"
+          },
+          {
+            "id": "Last 30 days",
+            "label": "Last 30 days avg task per day",
+            "value": Mdata.length / 30,
+            "color": "hsl(169, 70%, 50%)"
+          }
+        ])
         setRecentChart([
           {
             "id": "Completed",
@@ -88,8 +102,6 @@ export default function ChartFunc(props) {
     (async function anyNameFunction() {
       try {
         const data = await getGsuiteData();
-        // SetGsuiteData(data);
-        // console.log("Data in analytics is ", data);
         let pendTasks = 0;
         let compTasks = 0;
         let totTasks = data.length;
@@ -100,11 +112,7 @@ export default function ChartFunc(props) {
             pendTasks += 1;
           }
         }
-        setPendingTasks(pendingTasks + pendTasks);
-        setTotalTasks(totalTasks + totTasks);
-        setCompletedTasks(completedTasks + compTasks);
         let Hubdata = await HubSpotDataGet();
-        // console.log("Data hub ", Hubdata);
         for (let ele in Hubdata) {
           if (
             Hubdata[ele].engagement.type === "TASK" &&
@@ -264,17 +272,23 @@ export default function ChartFunc(props) {
       <TreeDropDown></TreeDropDown>
       {!loader ? (
         chartData ?
-          <div className={classes.root} style={{ width: 700, height: 500 }}>
+          <div className={classes.root} style={{ width: 700, height: 300 }}>
             <MyResponsivePie
               data={chartData}
             />
           </div> : null) : (
           <CircularProgress />
         )}
-      {recentData > 0 ?
-        <div className={classes.root} style={{ width: 700, height: 600, marginLeft:100 }}>
+      {recentChart ?
+        <div className={classes.root} style={{ width: 700, height: 300, marginLeft: 100 }}>
           <MyResponsivePie
             data={recentChart}>
+          </MyResponsivePie>
+        </div> : null}
+      {avgTime ?
+        <div className={classes.root} style={{ width: 700, height: 400, marginLeft: 100 }}>
+          <MyResponsivePie
+            data={avgTime}>
           </MyResponsivePie>
         </div> : null}
     </React.Fragment>

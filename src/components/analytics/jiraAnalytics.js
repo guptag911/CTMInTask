@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { getAnalyticsJiraData, getAnalyticsCompletedJiraData } from "../../api/analytics";
+import { getAnalyticsJiraData, getAnalyticsCompletedJiraData, getAnalyticsMonthJiraData } from "../../api/analytics";
 import { get_JiraData } from "../../api/atlassian";
 import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from '@nivo/pie'
-
-import TreeDropDown from "./dropdown";
-
 
 
 const useStyles = makeStyles((theme) => ({
@@ -44,9 +41,9 @@ const useStyles = makeStyles((theme) => ({
 export default function ChartFunc() {
     const [loader, setLoader] = useState(true);
     const [chartData, setChartData] = useState(null);
-    const [recentData, setRecentData] = useState(null);
     const [recentChart, setRecentChart] = useState(null);
     const classes = useStyles();
+    const [avgTime, setTimeFunc] = useState(null);
 
 
     useEffect(() => {
@@ -54,9 +51,22 @@ export default function ChartFunc() {
             try {
                 const Rdata = await getAnalyticsJiraData();
                 const Tdata = await getAnalyticsCompletedJiraData();
-                console.log("data is ", Rdata.length, Tdata.length);
-                setRecentData(Rdata.length + Tdata.length);
-
+                const Mdata = await getAnalyticsMonthJiraData();
+                console.log("data is ", Rdata.length, Tdata.length, Mdata);
+                setTimeFunc([
+                    {
+                        "id": "Last 7 days",
+                        "label": "Last 7 days avg task per day",
+                        "value": Rdata.length / 7,
+                        "color": "hsl(257, 70%, 50%)"
+                    },
+                    {
+                        "id": "Last 30 days",
+                        "label": "Last 30 days avg task per day",
+                        "value": Mdata.length / 30,
+                        "color": "hsl(169, 70%, 50%)"
+                    }
+                ])
                 setRecentChart([
                     {
                         "id": "Completed",
@@ -168,7 +178,7 @@ export default function ChartFunc() {
                 data={data}
                 width={500}
                 height={500}
-                margin={{ top: 40, right: 150, bottom: 80, left: 150 }}
+                margin={{ top: 40, right: 150, bottom: 40, left: 150 }}
                 innerRadius={0.6}
                 padAngle={0.7}
                 cornerRadius={3}
@@ -183,19 +193,24 @@ export default function ChartFunc() {
         <React.Fragment>
             {!loader ? (
                 chartData ?
-                    <div className={classes.root} style={{ width: 700, height: 500 }}>
+                    <div className={classes.root} style={{ width: 700, height: 300 }}>
                         <MyResponsivePie
                             data={chartData}
                         />
                     </div> : null) : (
                     <CircularProgress />
                 )}
-            {recentData !==null ?
-                <div className={classes.root} style={{ width: 700, height: 600, marginLeft: 100 }}>
+            {recentChart ?
+                <div className={classes.root} style={{ width: 700, height: 300, marginLeft: 100 }}>
                     <MyResponsivePie
                         data={recentChart}>
                     </MyResponsivePie>
                 </div> : null}
+            {avgTime ? <div className={classes.root} style={{ width: 700, height: 400, marginLeft: 100 }}>
+                <MyResponsivePie
+                    data={avgTime}>
+                </MyResponsivePie>
+            </div> : null}
         </React.Fragment>
     );
 }

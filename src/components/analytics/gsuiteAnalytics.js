@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Bar, Doughnut } from "react-chartjs-2";
 import { getGsuiteData } from "../../api/fixedDb";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { getAnalyticsGsuiteData, getAnalyticsCompletedGsuiteData } from "../../api/analytics";
-import { get_JiraData, get_confluenceData } from "../../api/atlassian";
-import { HubSpotDataGet } from "../../api/hubSpot";
+import { getAnalyticsGsuiteData, getAnalyticsCompletedGsuiteData, getAnalyticsMonthGsuiteData } from "../../api/analytics";
 import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from '@nivo/pie'
-
-import TreeDropDown from "./dropdown";
-
 
 
 const useStyles = makeStyles((theme) => ({
@@ -47,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
 export default function ChartFunc() {
     const [loader, setLoader] = useState(true);
     const [chartData, setChartData] = useState(null);
-    const [recentData, setRecentData] = useState(null);
     const [recentChart, setRecentChart] = useState(null);
+    const [avgTime, setTimeFunc] = useState(null);
     const classes = useStyles();
 
 
@@ -57,9 +51,22 @@ export default function ChartFunc() {
             try {
                 const Rdata = await getAnalyticsGsuiteData();
                 const Tdata = await getAnalyticsCompletedGsuiteData();
-                console.log("data is ", Rdata.length, Tdata.length);
-                setRecentData(Rdata.length + Tdata.length);
-
+                const Mdata = await getAnalyticsMonthGsuiteData();
+                console.log("data is ", Rdata.length, Tdata.length, Mdata);
+                setTimeFunc([
+                    {
+                        "id": "Last 7 days",
+                        "label": "Last 7 days avg task per day",
+                        "value": Rdata.length / 7,
+                        "color": "hsl(257, 70%, 50%)"
+                    },
+                    {
+                        "id": "Last 30 days",
+                        "label": "Last 30 days avg task per day",
+                        "value": Mdata.length / 30,
+                        "color": "hsl(169, 70%, 50%)"
+                    }
+                ])
                 setRecentChart([
                     {
                         "id": "Completed",
@@ -185,17 +192,23 @@ export default function ChartFunc() {
         <React.Fragment>
             {!loader ? (
                 chartData ?
-                    <div className={classes.root} style={{ width: 700, height: 500 }}>
+                    <div className={classes.root} style={{ width: 700, height: 300 }}>
                         <MyResponsivePie
                             data={chartData}
                         />
                     </div> : null) : (
                     <CircularProgress />
                 )}
-            {recentData !==null ?
-                <div className={classes.root} style={{ width: 700, height: 600, marginLeft: 100 }}>
+            {recentChart ?
+                <div className={classes.root} style={{ width: 700, height: 300, marginLeft: 100 }}>
                     <MyResponsivePie
                         data={recentChart}>
+                    </MyResponsivePie>
+                </div> : null}
+            {avgTime ?
+                <div className={classes.root} style={{ width: 700, height: 400, marginLeft: 100 }}>
+                    <MyResponsivePie
+                        data={avgTime}>
                     </MyResponsivePie>
                 </div> : null}
         </React.Fragment>
