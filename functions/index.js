@@ -12,7 +12,6 @@ const express = require("express");
 const OptionSelecter = require("./chatbot/optiondata");
 const { google } = require("googleapis");
 
-
 const app = express();
 
 // const refreshTokenStore = {};
@@ -187,6 +186,22 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
       }
     };
 
+    const hubspotStarredTasks = async (agent) => {
+      const data = await HubspotGetStarredTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
+
+      if (data.length) {
+        data.forEach((element) => {
+          agent.add(new Card(element));
+        });
+      } else {
+        agent.add("You don't have any Hubspot pinned tasks");
+      }
+    };
+
     const confluenceAllTasks = async (agent) => {
       const data = await ConfluenceGetAllTasks(
         Email_UID[
@@ -232,6 +247,22 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
         });
       } else {
         agent.add("You don't have any Confluence pending tasks");
+      }
+    };
+
+    const confluenceStarredTasks = async (agent) => {
+      const data = await ConfluenceGetStarredTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
+
+      if (data.length) {
+        data.forEach((element) => {
+          agent.add(new Card(element));
+        });
+      } else {
+        agent.add("You don't have any Confluence pinned tasks");
       }
     };
 
@@ -282,6 +313,41 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
         agent.add("You don't have any Jira pending tasks");
       }
     };
+
+    const jiraStarredTasks = async (agent) => {
+      const data = await JiraGetStarredTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
+
+      if (data.length) {
+        data.forEach((element) => {
+          agent.add(new Card(element));
+        });
+      } else {
+        agent.add("You don't have any Jira pinned tasks");
+      }
+    };
+
+    const gsuiteStarredTasks = async (agent) => {
+      const data = await GsuiteGetStarredTasks(
+        Email_UID[
+          request.body.originalDetectIntentRequest.payload.data.event.user.email
+        ]
+      );
+
+      if (data.length) {
+        data.forEach((element) => {
+          agent.add(new Card(element));
+        });
+      } else {
+        agent.add(
+          "You don't have any pinned tasks from docs, slides or sheets"
+        );
+      }
+    };
+
     // console.log("agent is ", agent);
 
     // Run the proper function handler based on the matched Dialogflow intent name
@@ -298,6 +364,11 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
     intentMap.set("Jira-pending-tasks", jiraPendingTasks);
     intentMap.set("Jira-all-tasks", jiraAllTasks);
     intentMap.set("Jira-completed-tasks", jiraCompletedTasks);
+    intentMap.set("jira-starred-tasks", jiraStarredTasks);
+    intentMap.set("hubspot-starred-tasks", hubspotStarredTasks);
+    intentMap.set("Gsuite-starred-tasks", gsuiteStarredTasks);
+    intentMap.set("confluence-starred-tasks", confluenceStarredTasks);
+
     // intentMap.set('your intent name here', googleAssistantHandler);
     agent.handleRequest(intentMap);
   }
@@ -388,6 +459,35 @@ const HubspotGetCompletedTasks = async (uid) => {
   }
 };
 
+const HubspotGetStarredTasks = async (uid) => {
+  let Taskdata = [];
+  try {
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("star")
+      .collection("hubspot")
+      .get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        title:
+          element.data().engagement.type === "NOTE"
+            ? element.data().metadata.body
+            : element.data().metadata.subject,
+        text: element.data().engagement.bodyPreview,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+};
+
 const ConfluenceGetAllTasks = async (uid) => {
   let Taskdata = [];
   try {
@@ -468,6 +568,32 @@ const ConfluenceGetPendingTasks = async (uid) => {
   }
 };
 
+const ConfluenceGetStarredTasks = async (uid) => {
+  let Taskdata = [];
+  try {
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("star")
+      .collection("confluence")
+      .get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        title: element.data().space_name,
+        text: element.data().task_name,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+};
+
 const JiraGetAllTasks = async (uid) => {
   let Taskdata = [];
   try {
@@ -544,6 +670,58 @@ const JiraGetPendingTasks = async (uid) => {
     });
     return Taskdata;
   } catch (e) {
+    return Taskdata;
+  }
+};
+
+const JiraGetStarredTasks = async (uid) => {
+  let Taskdata = [];
+  try {
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("star")
+      .collection("jira")
+      .get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        title: element.data().project_name,
+        text: element.data().issue_name,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
+    return Taskdata;
+  }
+};
+
+const GsuiteGetStarredTasks = async (uid) => {
+  let Taskdata = [];
+  try {
+    const data = await db
+      .collection("users")
+      .doc(uid)
+      .collection("tasks")
+      .doc("star")
+      .collection("gsuite")
+      .get();
+    data.docs.forEach((element) => {
+      let widgets = {
+        title: element.data().sender,
+        text: element.data().task_desc,
+        buttonText: "VISIT TASK",
+        buttonUrl: element.data().url,
+      };
+      Taskdata.push(widgets);
+    });
+    return Taskdata;
+  } catch (e) {
+    console.log("error is ", e);
     return Taskdata;
   }
 };
