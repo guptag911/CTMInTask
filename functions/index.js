@@ -684,7 +684,7 @@ const HubspotGetStarredTasks = async (uid) => {
       let widgets = {
         title:
           element.data().engagement.type === "NOTE"
-            ? element.data().metadata.body
+            ? element.data().engagement.bodyPreview
             : element.data().metadata.subject,
         text: element.data().engagement.bodyPreview,
         buttonText: "VISIT TASK",
