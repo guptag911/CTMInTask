@@ -312,7 +312,55 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
       } else {
         agent.add("You don't have any Jira pending tasks");
       }
-    };
+	};
+	
+	const gsuiteAllTasks = async (agent) => {
+		
+		let data = await GsuiteAllTasks(
+		Email_UID[
+			request.body.originalDetectIntentRequest.payload.data.event.user.email
+			]
+		);
+		if(data.length){
+			data.forEach((element) => {
+				agent.add(new Card(element));
+			});
+		} else{
+			agent.add("You have No Tasks in your Gsuite");
+		}
+	};
+
+	const gsuiteCompletedTasks = async (agent) => {
+		let data = await GsuiteCompletedTasks(
+		Email_UID[
+			request.body.originalDetectIntentRequest.payload.data.event.user.email
+			]
+		);
+		//console.log("Length of data", data.length);
+		if(data.length){
+			data.forEach((element) => {
+				agent.add(new Card(element));
+			});
+		} else {
+			agent.add("Uh Oh! you have no completed Gsuite Tasks!");
+		}
+	};
+
+	const gsuitePendingTasks = async (agent) => {
+		let data = await GsuitePendingTasks(
+		Email_UID[
+			request.body.originalDetectIntentRequest.payload.data.event.user.email
+			]
+		);
+		console.log("Length of data ,", data.length);
+		if(data.length){
+			data.forEach((element) => {
+				agent.add(new Card(element));
+			});
+		} else {
+			agent.add("Congrats! You have no pending Gsuite tasks!");
+		}
+	}
 
     const jiraStarredTasks = async (agent) => {
       const data = await JiraGetStarredTasks(
@@ -365,9 +413,12 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
     intentMap.set("Jira-all-tasks", jiraAllTasks);
     intentMap.set("Jira-completed-tasks", jiraCompletedTasks);
     intentMap.set("jira-starred-tasks", jiraStarredTasks);
-    intentMap.set("hubspot-starred-tasks", hubspotStarredTasks);
+	intentMap.set("hubspot-starred-tasks", hubspotStarredTasks);
+	intentMap.set("Gsuite-All-Tasks", gsuiteAllTasks);
     intentMap.set("Gsuite-starred-tasks", gsuiteStarredTasks);
-    intentMap.set("confluence-starred-tasks", confluenceStarredTasks);
+	intentMap.set("confluence-starred-tasks", confluenceStarredTasks);
+	intentMap.set("Gsuite-Completed-Tasks", gsuiteCompletedTasks);
+	intentMap.set("Gsuite-Pending-Tasks", gsuitePendingTasks);
 
     // intentMap.set('your intent name here', googleAssistantHandler);
     agent.handleRequest(intentMap);
@@ -674,6 +725,91 @@ const JiraGetPendingTasks = async (uid) => {
   }
 };
 
+const GsuiteAllTasks = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.get();
+		//console.log("Data is", data);
+		data.forEach(element => {
+			let widgets = {
+				title: "A task from " + element.data().sender,
+				text : element.data().task_desc, 
+				buttonText: "VISIT TASK",
+				buttonUrl: element.data().url,
+			};
+			TaskData.push(widgets);
+		});
+		//console.log("Done computing tasks");
+		return TaskData;
+	} catch (e){
+		console.log("Error is", e);
+		return TaskData;
+	}
+};
+
+const GsuitePendingTasks = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.where("status", "==", "open")
+			.get();
+		//console.log("HEre rn!");
+		data.forEach(element => {
+			let widgets = {
+				title: "A task from " + element.data().sender,
+				text : element.data().task_desc, 
+				buttonText: "VISIT TASK",
+				buttonUrl: element.data().url,
+			}
+			TaskData.push(widgets);
+		});
+		//console.log("OK!");
+		return TaskData;
+	}catch (e){
+		console.log("Error is, ",e);
+		return TaskData;
+	}
+};
+
+const GsuiteCompletedTasks = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.where("status", "==", "resolved")
+			.get();
+		data.forEach(element => {
+			let widgets = {
+				title: "A task from " + element.data().sender,
+				text : element.data().task_desc, 
+				buttonText: "VISIT TASK",
+				buttonUrl: element.data().url,
+			}
+			TaskData.push(widgets);
+		});
+		return TaskData;
+	}catch (e){
+		console.log("Exception Occured ", e);
+		return TaskData;
+	}
+};
+
+
 const JiraGetStarredTasks = async (uid) => {
   let Taskdata = [];
   try {
@@ -725,3 +861,4 @@ const GsuiteGetStarredTasks = async (uid) => {
     return Taskdata;
   }
 };
+
