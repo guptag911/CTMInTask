@@ -49,6 +49,7 @@ export default function ChartFunc(props) {
   const [recentChart, setRecentChart] = useState(null);
   const classes = useStyles();
   const [avgTime, setTimeFunc] = useState(null);
+  const [isfinitTime, setFinite] = useState(true);
 
   useEffect(() => {
     (async function anyNameFunction() {
@@ -57,20 +58,25 @@ export default function ChartFunc(props) {
         const Tdata = await getAnalyticsOverallCompletedData();
         const Mdata = await getAnalyticsOverallCompletedDataMonth();
         console.log("data is ", Rdata.length, Tdata.length, Mdata);
-        setTimeFunc([
-          {
-            id: "Last 7 days",
-            label: "Last 7 days avg time(hours) per task",
-            value: Math.round((7*24 / Rdata.length + Number.EPSILON) * 100) / 100,
-            color: "hsl(257, 70%, 50%)",
-          },
-          {
-            id: "Last 30 days",
-            label: "Last 30 days avg time(hours) per task",
-            value: Math.round((30*24/ Mdata.length + Number.EPSILON) * 100) / 100,
-            color: "hsl(169, 70%, 50%)",
-          },
-        ]);
+        if (Rdata.length == 0 || Mdata.length == 0) {
+          setFinite(false);
+        }
+        else {
+          setTimeFunc([
+            {
+              id: "Last 7 days",
+              label: "Last 7 days avg time(hours) per task",
+              value: Math.round((7 * 24 / Rdata.length + Number.EPSILON) * 100) / 100,
+              color: "hsl(257, 70%, 50%)",
+            },
+            {
+              id: "Last 30 days",
+              label: "Last 30 days avg time(hours) per task",
+              value: Math.round((30 * 24 / Mdata.length + Number.EPSILON) * 100) / 100,
+              color: "hsl(169, 70%, 50%)",
+            },
+          ]);
+        }
         setRecentChart([
           {
             id: "Completed",
@@ -265,8 +271,8 @@ export default function ChartFunc(props) {
               </div>
             ) : null
           ) : (
-            <CircularProgress />
-          )}
+              <CircularProgress />
+            )}
         </Grid>
         <Grid item xs>
           {recentChart ? (
@@ -279,7 +285,7 @@ export default function ChartFunc(props) {
           ) : null}
         </Grid>
         <Grid item xs>
-          {avgTime ? (
+          {avgTime && isfinitTime ? (
             <div
               className={classes.root}
               style={{ width: "300px", height: "300px" }}
