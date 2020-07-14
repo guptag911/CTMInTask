@@ -396,6 +396,158 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
       }
     };
 
+	const gsuiteAllDocs = async (agent) => {
+		let data = await GsuiteAllDocs(
+		Email_UID[
+			request.body.originalDetectIntentRequest.payload.data.event.user.email
+			]
+		);
+		if(data.length){
+			data.forEach((element) => {
+				agent.add(new Card(element));
+			});
+		}
+		else{
+			//console.log("No Data");
+			agent.add("You have no tasks assigned in Google Docs");
+		}
+	};
+
+	const gsuiteAllSheets = async (agent) => {
+		let data = await GsuiteAllSheets(
+		Email_UID[
+			request.body.originalDetectIntentRequest.payload.data.event.user.email
+			]
+		);
+		if(data.length){
+			data.forEach((element) => {
+				agent.add(new Card(element));
+			});
+		}
+		else{
+			//console.log("No Data");
+			agent.add("You have no tasks assigned in Google Sheets");
+		}
+	};
+
+	const gsuiteAllSlides = async (agent) => {
+		let data = await GsuiteAllSlides(
+		Email_UID[
+			request.body.originalDetectIntentRequest.payload.data.event.user.email
+			]
+		);
+		if(data.length){
+			data.forEach((element) => {
+				agent.add(new Card(element));
+			});
+		}
+		else{
+			//console.log("No Data");
+			agent.add("You have no tasks assigned in Google Slides");
+		}
+	};
+
+	const gsuiteCompletedDocs = async (agent) => {
+		let data = await GsuiteCompletedDocs(
+			Email_UID[
+				request.body.originalDetectIntentRequest.payload.data.event.user.email
+				]
+			);
+			if(data.length){
+				data.forEach((element) => {
+					agent.add(new Card(element));
+				});
+			}
+			else{
+				//console.log("No Data");
+				agent.add("Uh Oh! You have no completed google docs!");
+			}
+	};
+
+	const gsuitePendingDocs = async (agent) => {
+		let data = await GsuitePendingDocs(
+			Email_UID[
+				request.body.originalDetectIntentRequest.payload.data.event.user.email
+				]
+			);
+			if(data.length){
+				data.forEach((element) => {
+					agent.add(new Card(element));
+				});
+			}
+			else{
+				//console.log("No Data");
+				agent.add("Congrats! You have no pending tasks in google docs!");
+			}
+	};
+
+	const gsuiteCompletedSlides = async (agent) => {
+		let data = await GsuiteCompletedSlides(
+			Email_UID[
+				request.body.originalDetectIntentRequest.payload.data.event.user.email
+				]
+			);
+			if(data.length){
+				data.forEach((element) => {
+					agent.add(new Card(element));
+				});
+			}
+			else{
+				//console.log("No Data");
+				agent.add("Uh Oh! You have no completed google slides!");
+			}
+	};
+
+	const gsuitePendingSlides = async (agent) => {
+		let data = await GsuitePendingSlides(
+			Email_UID[
+				request.body.originalDetectIntentRequest.payload.data.event.user.email
+				]
+			);
+			if(data.length){
+				data.forEach((element) => {
+					agent.add(new Card(element));
+				});
+			}
+			else{
+				//console.log("No Data");
+				agent.add("Congrats! You have no pending tasks in google slides!");
+			}
+	};
+
+	const gsuiteCompletedSheets = async (agent) => {
+		let data = await GsuiteCompletedSheets(
+			Email_UID[
+				request.body.originalDetectIntentRequest.payload.data.event.user.email
+				]
+			);
+			if(data.length){
+				data.forEach((element) => {
+					agent.add(new Card(element));
+				});
+			}
+			else{
+				//console.log("No Data");
+				agent.add("Uh Oh! You have no completed google sheets!");
+			}
+	};
+
+	const gsuitePendingSheets = async (agent) => {
+		let data = await GsuitePendingSheets(
+			Email_UID[
+				request.body.originalDetectIntentRequest.payload.data.event.user.email
+				]
+			);
+			if(data.length){
+				data.forEach((element) => {
+					agent.add(new Card(element));
+				});
+			}
+			else{
+				//console.log("No Data");
+				agent.add("Congrats! You have no pending tasks in google sheets!");
+			}
+	};
     // console.log("agent is ", agent);
 
     // Run the proper function handler based on the matched Dialogflow intent name
@@ -419,7 +571,15 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
 	intentMap.set("confluence-starred-tasks", confluenceStarredTasks);
 	intentMap.set("Gsuite-Completed-Tasks", gsuiteCompletedTasks);
 	intentMap.set("Gsuite-Pending-Tasks", gsuitePendingTasks);
-
+	intentMap.set("Gsuite-All-Docs", gsuiteAllDocs);
+	intentMap.set("Gsuite-All-Slides", gsuiteAllSlides);
+	intentMap.set("Gsuite-All-Sheets", gsuiteAllSheets);
+	intentMap.set("Gsuite-Completed-Docs", gsuiteCompletedDocs);
+	intentMap.set("Gsuite-Pending-Docs", gsuitePendingDocs);
+	intentMap.set("Gsuite-Completed-Slides", gsuiteCompletedSlides);
+	intentMap.set("Gsuite-Pending-Slides", gsuitePendingSlides);
+	intentMap.set("Gsuite-Completed-Sheets", gsuiteCompletedSheets);
+	intentMap.set("Gsuite-Pending-Sheets", gsuitePendingSheets);
     // intentMap.set('your intent name here', googleAssistantHandler);
     agent.handleRequest(intentMap);
   }
@@ -862,3 +1022,297 @@ const GsuiteGetStarredTasks = async (uid) => {
   }
 };
 
+const GsuiteAllDocs = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.get();
+		var exp = new RegExp("Google Docs");
+		data.forEach((element) => {
+			var ref = (element.data().sender).toString();
+			var res = ref.match(exp);
+			if(res!==null)
+			{
+				let widgets = {
+					title: element.data().sender,
+					text: element.data().task_desc,
+					buttonText: "VISIT TASK",
+					buttonUrl: element.data().url,
+				  };
+				  TaskData.push(widgets);
+			}
+		});
+		return TaskData;
+	} catch(e){
+		console.log("Exceotion Occured", e);
+		return TaskData;
+	}
+};
+
+const GsuitePendingDocs = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.where("status", "==", "open")
+			.get();
+		var exp = new RegExp("Google Docs");
+		data.forEach((element) => {
+			var ref = (element.data().sender).toString();
+			var res = ref.match(exp);
+			if(res!==null)
+			{
+				let widgets = {
+					title: element.data().sender,
+					text: element.data().task_desc,
+					buttonText: "VISIT TASK",
+					buttonUrl: element.data().url,
+				  };
+				  TaskData.push(widgets);
+			}
+		});
+		return TaskData;
+	} catch(e){
+		console.log("Exceotion Occured", e);
+		return TaskData;
+	}
+};
+
+const GsuiteCompletedDocs = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.where("status", "==", "resolved")
+			.get();
+		var exp = new RegExp("Google Docs");
+		data.forEach((element) => {
+			var ref = (element.data().sender).toString();
+			var res = ref.match(exp);
+			if(res!==null)
+			{
+				let widgets = {
+					title: element.data().sender,
+					text: element.data().task_desc,
+					buttonText: "VISIT TASK",
+					buttonUrl: element.data().url,
+				  };
+				  TaskData.push(widgets);
+			}
+		});
+		return TaskData;
+	} catch(e){
+		console.log("Exceotion Occured", e);
+		return TaskData;
+	}
+};
+
+const GsuiteAllSlides = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.get();
+		var exp = new RegExp("Google Slides");
+		data.forEach((element) => {
+			var ref = (element.data().sender).toString();
+			var res = ref.match(exp);
+			if(res!==null)
+			{
+				let widgets = {
+					title: element.data().sender,
+					text: element.data().task_desc,
+					buttonText: "VISIT TASK",
+					buttonUrl: element.data().url,
+				  };
+				  TaskData.push(widgets);
+			}
+		});
+		return TaskData;
+	} catch(e){
+		console.log("Exceotion Occured", e);
+		return TaskData;
+	}
+};
+
+const GsuitePendingSlides = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.where("status", "==", "open")
+			.get();
+		var exp = new RegExp("Google Slides");
+		data.forEach((element) => {
+			var ref = (element.data().sender).toString();
+			var res = ref.match(exp);
+			if(res!==null)
+			{
+				let widgets = {
+					title: element.data().sender,
+					text: element.data().task_desc,
+					buttonText: "VISIT TASK",
+					buttonUrl: element.data().url,
+				  };
+				  TaskData.push(widgets);
+			}
+		});
+		return TaskData;
+	} catch(e){
+		console.log("Exceotion Occured", e);
+		return TaskData;
+	}
+};
+
+const GsuiteCompletedSlides = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.where("status", "==", "resolved")
+			.get();
+		var exp = new RegExp("Google Slides");
+		data.forEach((element) => {
+			var ref = (element.data().sender).toString();
+			var res = ref.match(exp);
+			if(res!==null)
+			{
+				let widgets = {
+					title: element.data().sender,
+					text: element.data().task_desc,
+					buttonText: "VISIT TASK",
+					buttonUrl: element.data().url,
+				  };
+				  TaskData.push(widgets);
+			}
+		});
+		return TaskData;
+	} catch(e){
+		console.log("Exceotion Occured", e);
+		return TaskData;
+	}
+};
+
+
+const GsuiteAllSheets = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.get();
+		var exp = new RegExp("Google Sheets");
+		data.forEach((element) => {
+			var ref = (element.data().sender).toString();
+			var res = ref.match(exp);
+			if(res!==null)
+			{
+				let widgets = {
+					title: element.data().sender,
+					text: element.data().task_desc,
+					buttonText: "VISIT TASK",
+					buttonUrl: element.data().url,
+				  };
+				  TaskData.push(widgets);
+			}
+		});
+		return TaskData;
+	} catch(e){
+		console.log("Exceotion Occured", e);
+		return TaskData;
+	}
+};
+
+const GsuitePendingSheets = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.where("status", "==", "open")
+			.get();
+		var exp = new RegExp("Google Sheets");
+		data.forEach((element) => {
+			var ref = (element.data().sender).toString();
+			var res = ref.match(exp);
+			if(res!==null)
+			{
+				let widgets = {
+					title: element.data().sender,
+					text: element.data().task_desc,
+					buttonText: "VISIT TASK",
+					buttonUrl: element.data().url,
+				  };
+				  TaskData.push(widgets);
+			}
+		});
+		return TaskData;
+	} catch(e){
+		console.log("Exceotion Occured", e);
+		return TaskData;
+	}
+};
+
+const GsuiteCompletedSheets = async (uid) => {
+	let TaskData = [];
+	try{
+		const data = await db
+			.collection("users")
+			.doc(uid)
+			.collection("tasks")
+			.doc("gsuite")
+			.collection("data")
+			.where("status", "==", "resolved")
+			.get();
+		var exp = new RegExp("Google Sheets");
+		data.forEach((element) => {
+			var ref = (element.data().sender).toString();
+			var res = ref.match(exp);
+			if(res!==null)
+			{
+				let widgets = {
+					title: element.data().sender,
+					text: element.data().task_desc,
+					buttonText: "VISIT TASK",
+					buttonUrl: element.data().url,
+				  };
+				  TaskData.push(widgets);
+			}
+		});
+		return TaskData;
+	} catch(e){
+		console.log("Exceotion Occured", e);
+		return TaskData;
+	}
+};
