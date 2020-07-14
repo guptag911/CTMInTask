@@ -63,6 +63,7 @@ export const HubSpotDataSave = async (userdata) => {
         : firebaseAuth.currentUser.uid;
     for (let data = 0; data < userdata.length; data++) {
       userdata[data]["upload_time_utc"] = Date.now();
+      userdata[data]["url"]=userdata["url"]
       const userRef = await db
         .collection("users")
         .doc(uid)
