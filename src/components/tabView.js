@@ -272,12 +272,14 @@ export default function MiniDrawer() {
   );
 
   const [clickState, setclickState] = React.useState(
-    JSON.parse(localStorage.getItem("state")) || {
-      hub: false,
-      conf: false,
-      Jira: false,
-      user: false,
-    }
+    localStorage.getItem("state")
+      ? JSON.parse(localStorage.getItem("state"))
+      : {
+          hub: false,
+          conf: false,
+          Jira: false,
+          user: false,
+        }
   );
 
   let state = {
@@ -402,7 +404,7 @@ export default function MiniDrawer() {
       };
       localStorage.setItem("state", JSON.stringify(state));
     }
-  }, 4000);
+  }, 3000);
 
   React.useEffect(() => {
     if (clickState.hub) {
@@ -414,7 +416,7 @@ export default function MiniDrawer() {
     } else if (clickState.user) {
       handleUser();
     }
-  }, [window.onload]);
+  }, []);
 
   const handleAuth = async () => {
     await getToken();
@@ -459,43 +461,43 @@ export default function MiniDrawer() {
       case "Hubspot":
         firebaseAuth.currentUser && !hubState
           ? setShowData(
-            <Button
-              variant="contained"
-              color="inherit"
-              className={classes.center}
-              onClick={handleHub}
-            >
-              Connect to HubSpot
+              <Button
+                variant="contained"
+                color="inherit"
+                className={classes.center}
+                onClick={handleHub}
+              >
+                Connect to HubSpot
               </Button>
-          )
+            )
           : setShowData(<HubSpotCard val={val}></HubSpotCard>);
         break;
       case "Confluence":
         firebaseAuth.currentUser && !authState
           ? setShowData(
-            <Button
-              variant="contained"
-              color="inherit"
-              className={classes.center}
-              onClick={handleReq}
-            >
-              Connect to Confluence
+              <Button
+                variant="contained"
+                color="inherit"
+                className={classes.center}
+                onClick={handleReq}
+              >
+                Connect to Confluence
               </Button>
-          )
+            )
           : setShowData(<ConfluenceCard val={val}></ConfluenceCard>);
         break;
       case "Jira":
         firebaseAuth.currentUser && !jiraState
           ? setShowData(
-            <Button
-              variant="contained"
-              color="inherit"
-              className={classes.center}
-              onClick={handleJira}
-            >
-              Connect to Jira
+              <Button
+                variant="contained"
+                color="inherit"
+                className={classes.center}
+                onClick={handleJira}
+              >
+                Connect to Jira
               </Button>
-          )
+            )
           : setShowData(<JiraCard val={val}></JiraCard>);
         break;
       case "Calendar":
@@ -639,8 +641,8 @@ export default function MiniDrawer() {
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
-                <ChevronLeftIcon />
-              )}
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </div>
         <Divider />
@@ -670,8 +672,8 @@ export default function MiniDrawer() {
                 ) : index === 4 ? (
                   <img src="https://img.icons8.com/cute-clipart/40/calendar.png"></img>
                 ) : (
-                            <img src="https://img.icons8.com/fluent/40/gmail.png"></img>
-                          )}
+                  <img src="https://img.icons8.com/fluent/40/gmail.png"></img>
+                )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -691,37 +693,37 @@ export default function MiniDrawer() {
                 {index === 0 ? (
                   <img src="https://img.icons8.com/fluent/40/web-analystics.png"></img>
                 ) : (
-                    <React.Fragment>
-                      <Button
-                        style={{ marginLeft: -10 }}
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        onClick={handleClick}
-                      >
-                        <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
-                      </Button>
-                      <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl1}
-                        keepMounted
-                        open={Boolean(anchorEl1)}
-                        onClose={handleClose}
-                      >
-                        <MenuItem onClick={(e) => onClickShow(e, "gsuitestar")}>
-                          Gsuite
+                  <React.Fragment>
+                    <Button
+                      style={{ marginLeft: -10 }}
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
+                      onClick={handleClick}
+                    >
+                      <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
+                    </Button>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={anchorEl1}
+                      keepMounted
+                      open={Boolean(anchorEl1)}
+                      onClose={handleClose}
+                    >
+                      <MenuItem onClick={(e) => onClickShow(e, "gsuitestar")}>
+                        Gsuite
                       </MenuItem>
-                        <MenuItem onClick={(e) => onClickShow(e, "jirastar")}>
-                          Jira
+                      <MenuItem onClick={(e) => onClickShow(e, "jirastar")}>
+                        Jira
                       </MenuItem>
-                        <MenuItem onClick={(e) => onClickShow(e, "confstar")}>
-                          Confluence
+                      <MenuItem onClick={(e) => onClickShow(e, "confstar")}>
+                        Confluence
                       </MenuItem>
-                        <MenuItem onClick={(e) => onClickShow(e, "hubstar")}>
-                          Hubspot
+                      <MenuItem onClick={(e) => onClickShow(e, "hubstar")}>
+                        Hubspot
                       </MenuItem>
-                      </Menu>
-                    </React.Fragment>
-                  )}
+                    </Menu>
+                  </React.Fragment>
+                )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>

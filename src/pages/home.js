@@ -8,6 +8,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import issues_data from "../api/jira";
+import get_data from "../api/confluence";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,6 +72,21 @@ const Home = () => {
       await signIn();
     }
   };
+
+  if (currentUser) {
+    if (
+      window.localStorage.getItem("user") &&
+      window.localStorage.getItem("jira")
+    ) {
+      issues_data();
+    }
+    if (
+      window.localStorage.getItem("user") &&
+      window.localStorage.getItem("token")
+    ) {
+      get_data();
+    }
+  }
 
   firebaseAuth.onAuthStateChanged((user) => {
     if (user) {

@@ -1,5 +1,4 @@
 import axios from "axios";
-import "../api/confluence";
 
 export async function auth() {
   const result = await axios.get(
@@ -9,8 +8,13 @@ export async function auth() {
 }
 
 export async function getToken() {
+  console.log("conf called............");
   const result = JSON.parse(localStorage.getItem("token"));
   if (result && (new Date().getTime() - result.assignTime) / 1000 > 3600) {
+    console.log(
+      "conf user called............",
+      (new Date().getTime() - result.assignTime) / 1000
+    );
     const newToken = await refreshAccessToken(result.refresh_token);
     newToken["refresh_token"] = result.refresh_token;
     let assignTime = new Date().getTime();
@@ -21,6 +25,10 @@ export async function getToken() {
     result &&
     (new Date().getTime() - result.assignTime) / 1000 < 3600
   ) {
+    console.log(
+      "conf user called............",
+      (new Date().getTime() - result.assignTime) / 1000
+    );
     return result.access_token;
   } else {
     const params = new URLSearchParams(window.location.search);

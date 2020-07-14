@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import axios from "axios";
 import * as jira from "../helper/jiraAuth";
+import * as userJira from "../helper/confUserAuth";
 import { firebaseAuth, db } from "../config/config";
 import { get_JiraID, save_JiraData } from "./atlassian";
 
@@ -47,7 +48,7 @@ async function issues(account_ID, startAt, maxResults) {
 async function user() {
   try {
     const apiPath = "https://api.atlassian.com/me";
-    const token = JSON.parse(localStorage.getItem("user")).access_token;
+    const token = await userJira.getUserToken();
     const result = await axios.get(apiPath, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -61,7 +62,7 @@ async function user() {
   }
 }
 
-async function issues_data() {
+export default async function issues_data() {
   let user_schema = {};
   try {
     let account_ID = await user();
@@ -113,7 +114,9 @@ async function issues_data() {
                 console.log("error!", err);
               }
             } else {
-              user_schema["create_date"] = new Date(fields_list.created).getTime();
+              user_schema["create_date"] = new Date(
+                fields_list.created
+              ).getTime();
               user_schema["complete_date"] = fields_list.resolutionDate
                 ? fields_list.resolutionDate
                 : null;
@@ -142,11 +145,4 @@ async function issues_data() {
   } catch (err) {
     console.log("Error is:", err);
   }
-}
-
-if (
-  window.localStorage.getItem("user") &&
-  window.localStorage.getItem("jira")
-) {
-  issues_data();
 }
