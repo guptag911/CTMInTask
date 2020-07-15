@@ -6,6 +6,8 @@ import Grid from "@material-ui/core/Grid";
 import { get_data } from "../api/fixedGsuite";
 import { delete_tasks, insert_tasks } from "../api/googleTasks";
 import { HubSpotTasksGetAPIData } from "../api/hubSpot";
+import issues_data from "../api/jira";
+import getConf_data from "../api/confluence";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,6 +24,21 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = () => {
   const classes = useStyles();
+
+  if (JSON.parse(sessionStorage.getItem("user"))) {
+    if (
+      window.localStorage.getItem("user") &&
+      window.localStorage.getItem("jira")
+    ) {
+      issues_data();
+    }
+    if (
+      window.localStorage.getItem("user") &&
+      window.localStorage.getItem("token")
+    ) {
+      getConf_data();
+    }
+  }
 
   React.useEffect(() => {
     setTimeout(() => {

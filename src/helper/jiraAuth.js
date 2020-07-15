@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const proxyurl = "https://cors-anywhere.herokuapp.com/";
+
 export async function jiraAuth() {
   const result = await axios.get(
     "https://us-central1-ctmintask.cloudfunctions.net/api/jira"
@@ -36,7 +38,7 @@ export async function getJiraToken() {
     const authCode = params.get("code");
     // console.log(authCode);
     const result = await axios.post(
-      "https://auth.atlassian.com/oauth/token",
+      proxyurl + "https://auth.atlassian.com/oauth/token",
       {
         grant_type: "authorization_code",
         client_id: "LcUQspyPyb8ATVkVEUN5KS4NuIxrI4mO",
@@ -61,7 +63,7 @@ export async function getJiraToken() {
 
 export async function refreshJiraAccessToken(refresh_token) {
   const result = await axios.post(
-    "https://auth.atlassian.com/oauth/token",
+    proxyurl + "https://auth.atlassian.com/oauth/token",
     {
       grant_type: "refresh_token",
       client_id: "LcUQspyPyb8ATVkVEUN5KS4NuIxrI4mO",
@@ -87,7 +89,7 @@ export async function constrRequestUrl(apiPath) {
 
 export async function getCloudId(accessToken) {
   const result = await axios.get(
-    "https://api.atlassian.com/oauth/token/accessible-resources",
+    proxyurl + "https://api.atlassian.com/oauth/token/accessible-resources",
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

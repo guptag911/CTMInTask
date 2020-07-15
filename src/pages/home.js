@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import issues_data from "../api/jira";
-import get_data from "../api/confluence";
+import getConf_data from "../api/confluence";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,7 +84,7 @@ const Home = () => {
       window.localStorage.getItem("user") &&
       window.localStorage.getItem("token")
     ) {
-      get_data();
+      getConf_data();
     }
   }
 

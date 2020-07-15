@@ -92,7 +92,7 @@ async function get_date(timestamp) {
   return date;
 }
 
-export default async function get_data() {
+export default async function getConf_data() {
   let user_schema = {};
   try {
     let account_ID = await user();
