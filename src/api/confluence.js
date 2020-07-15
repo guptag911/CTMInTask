@@ -92,7 +92,7 @@ async function get_date(timestamp) {
   return date;
 }
 
-async function get_data() {
+export default async function get_data() {
   let user_schema = {};
   try {
     let account_ID = await user();
@@ -177,11 +177,4 @@ async function get_data() {
   } catch (err) {
     console.log("Error!", err);
   }
-}
-
-if (
-  window.localStorage.getItem("user") &&
-  window.localStorage.getItem("token")
-) {
-  get_data();
 }

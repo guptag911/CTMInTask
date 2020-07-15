@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
     border: "2px solid black",
     margin: "0 auto !important",
+    marginBottom: "50px !important",
   },
   searchIcon: {
     padding: theme.spacing(0, 2),

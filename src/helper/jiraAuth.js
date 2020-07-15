@@ -1,5 +1,4 @@
 import axios from "axios";
-import "../api/jira";
 
 export async function jiraAuth() {
   const result = await axios.get(
@@ -9,8 +8,14 @@ export async function jiraAuth() {
 }
 
 export async function getJiraToken() {
+  console.log("jira called............");
+
   const result = JSON.parse(localStorage.getItem("jira"));
   if (result && (new Date().getTime() - result.assignTime) / 1000 > 3600) {
+    console.log(
+      "conf user called............",
+      (new Date().getTime() - result.assignTime) / 1000
+    );
     const newToken = await refreshJiraAccessToken(result.refresh_token);
     newToken["refresh_token"] = result.refresh_token;
     let assignTime = new Date().getTime();
@@ -21,6 +26,10 @@ export async function getJiraToken() {
     result &&
     (new Date().getTime() - result.assignTime) / 1000 < 3600
   ) {
+    console.log(
+      "conf user called............",
+      (new Date().getTime() - result.assignTime) / 1000
+    );
     return result.access_token;
   } else {
     const params = new URLSearchParams(window.location.search);

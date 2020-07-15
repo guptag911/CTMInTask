@@ -12,7 +12,7 @@ export async function hubAuth() {
 export async function getHubToken() {
   const proxyurl = "https://cors-anywhere.herokuapp.com/";
   const result = JSON.parse(localStorage.getItem("hub"));
-  if (result && (new Date().getTime() - result.assignTime) / 1000 > 3600) {
+  if (result && (new Date().getTime() - result.assignTime) / 1000 > 21600) {
     const newToken = await refreshHubToken(result.refresh_token);
     newToken["refresh_token"] = result.refresh_token;
     let assignTime = new Date().getTime();
@@ -21,10 +21,12 @@ export async function getHubToken() {
     return newToken.access_token;
   } else if (
     result &&
-    (new Date().getTime() - result.assignTime) / 1000 < 3600
+    (new Date().getTime() - result.assignTime) / 1000 < 21600
   ) {
     return result.access_token;
   } else {
+    console.log("hub called............");
+
     const params = new URLSearchParams(window.location.search);
     const authCode = params.get("code");
     // console.log(authCode);
