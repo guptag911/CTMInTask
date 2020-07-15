@@ -66,9 +66,8 @@ export const getAnalyticsOverallCompletedData = async () => {
 };
 
 
-export const getAnalyticsOverallCompletedDataRecently = async () => {
+export const getAnalyticsOverallCompletedDataRecently = async (fromDate = (new Date()).getTime() - 7 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date7DaysBefore = (new Date()).getTime() - 7 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -80,8 +79,9 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
             .collection("tasks")
             .doc("gsuite")
             .collection("data")
-            .where("modified_time", ">=", date7DaysBefore)
             .where("status", "==", "resolved")
+            .where("modified_time", ">=", fromDate)
+            .where("modified_time", "<=", toDate)
             .get();
         userRef.forEach((data) => {
             finalData.push(data.data());
@@ -93,7 +93,8 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("confluence")
-            .where("complete_date", ">=", date7DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         userRefC.forEach((data) => {
             finalData.push(data.data());
@@ -106,7 +107,8 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("jira")
-            .where("complete_date", ">=", date7DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         userRefJ.forEach((data) => {
             finalData.push(data.data());
@@ -120,7 +122,8 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
             .doc("hubspot")
             .collection("data")
             .where("metadata.status", "==", "COMPLETED")
-            .where("metadata.completionDate", ">=", date7DaysBefore)
+            .where("metadata.completionDate", ">=", fromDate)
+            .where("metadata.completionDate", "<=", toDate)
             .get();
         userRefH.forEach((data) => {
             finalData.push(data.data());
@@ -135,9 +138,8 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
 
 
 
-export const getAnalyticsOverallCompletedDataMonth = async () => {
+export const getAnalyticsOverallCompletedDataMonth = async (fromDate = (new Date()).getTime() - 30 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date30DaysBefore = (new Date()).getTime() - 30 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -149,8 +151,9 @@ export const getAnalyticsOverallCompletedDataMonth = async () => {
             .collection("tasks")
             .doc("gsuite")
             .collection("data")
-            .where("modified_time", ">=", date30DaysBefore)
             .where("status", "==", "resolved")
+            .where("modified_time", ">=", fromDate)
+            .where("modified_time", "<=", toDate)
             .get();
         userRef.forEach((data) => {
             finalData.push(data.data());
@@ -162,7 +165,8 @@ export const getAnalyticsOverallCompletedDataMonth = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("confluence")
-            .where("complete_date", ">=", date30DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         userRefC.forEach((data) => {
             finalData.push(data.data());
@@ -175,7 +179,8 @@ export const getAnalyticsOverallCompletedDataMonth = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("jira")
-            .where("complete_date", ">=", date30DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         userRefJ.forEach((data) => {
             finalData.push(data.data());
@@ -189,7 +194,8 @@ export const getAnalyticsOverallCompletedDataMonth = async () => {
             .doc("hubspot")
             .collection("data")
             .where("metadata.status", "==", "COMPLETED")
-            .where("metadata.completionDate", ">=", date30DaysBefore)
+            .where("metadata.completionDate", ">=", fromDate)
+            .where("metadata.completionDate", "<=", toDate)
             .get();
         userRefH.forEach((data) => {
             finalData.push(data.data());
@@ -295,9 +301,8 @@ export const getAnalyticsMonthGsuiteData = async (fromDate = (new Date()).getTim
 
 
 
-export const getAnalyticsHubspotData = async () => {
+export const getAnalyticsHubspotData = async (fromDate = (new Date()).getTime() - 7 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date7DaysBefore = (new Date()).getTime() - 7 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -309,7 +314,8 @@ export const getAnalyticsHubspotData = async () => {
             .doc("hubspot")
             .collection("data")
             .where("metadata.status", "==", "COMPLETED")
-            .where("metadata.completionDate", ">=", date7DaysBefore)
+            .where("metadata.completionDate", ">=", fromDate)
+            .where("metadata.completionDate", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
@@ -352,9 +358,8 @@ export const getAnalyticsCompletedHubspotData = async () => {
 };
 
 
-export const getAnalyticsMonthHubspotData = async () => {
+export const getAnalyticsMonthHubspotData = async (fromDate = (new Date()).getTime() - 30 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date30DaysBefore = (new Date()).getTime() - 30 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -366,7 +371,8 @@ export const getAnalyticsMonthHubspotData = async () => {
             .doc("hubspot")
             .collection("data")
             .where("metadata.status", "==", "COMPLETED")
-            .where("metadata.completionDate", ">=", date30DaysBefore)
+            .where("metadata.completionDate", ">=", fromDate)
+            .where("metadata.completionDate", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
@@ -386,9 +392,8 @@ export const getAnalyticsMonthHubspotData = async () => {
 
 
 
-export const getAnalyticsJiraData = async () => {
+export const getAnalyticsJiraData = async (fromDate = (new Date()).getTime() - 7 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date7DaysBefore = (new Date()).getTime() - 7 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -399,7 +404,8 @@ export const getAnalyticsJiraData = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("jira")
-            .where("complete_date", ">=", date7DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
@@ -441,9 +447,8 @@ export const getAnalyticsCompletedJiraData = async () => {
 };
 
 
-export const getAnalyticsMonthJiraData = async () => {
+export const getAnalyticsMonthJiraData = async (fromDate = (new Date()).getTime() - 30 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date30DaysBefore = (new Date()).getTime() - 30 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -454,7 +459,8 @@ export const getAnalyticsMonthJiraData = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("jira")
-            .where("complete_date", ">=", date30DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
@@ -470,9 +476,8 @@ export const getAnalyticsMonthJiraData = async () => {
 
 
 
-export const getAnalyticsConfData = async () => {
+export const getAnalyticsConfData = async (fromDate = (new Date()).getTime() - 7 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date7DaysBefore = (new Date()).getTime() - 7 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -483,7 +488,8 @@ export const getAnalyticsConfData = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("confluence")
-            .where("complete_date", ">=", date7DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
@@ -525,9 +531,8 @@ export const getAnalyticsCompletedConfData = async () => {
 };
 
 
-export const getAnalyticsMonthConfData = async () => {
+export const getAnalyticsMonthConfData = async (fromDate = (new Date()).getTime() - 30 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date30DaysBefore = (new Date()).getTime() - 30 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -538,7 +543,8 @@ export const getAnalyticsMonthConfData = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("confluence")
-            .where("complete_date", ">=", date30DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
