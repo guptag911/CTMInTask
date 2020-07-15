@@ -66,9 +66,8 @@ export const getAnalyticsOverallCompletedData = async () => {
 };
 
 
-export const getAnalyticsOverallCompletedDataRecently = async () => {
+export const getAnalyticsOverallCompletedDataRecently = async (fromDate = (new Date()).getTime() - 7 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date7DaysBefore = (new Date()).getTime() - 7 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -80,11 +79,12 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
             .collection("tasks")
             .doc("gsuite")
             .collection("data")
-            .where("modified_time", ">=", date7DaysBefore)
+            .where("status", "==", "resolved")
+            .where("modified_time", ">=", fromDate)
+            .where("modified_time", "<=", toDate)
             .get();
         userRef.forEach((data) => {
-            if (data.data().status === "resolved")
-                finalData.push(data.data());
+            finalData.push(data.data());
         });
 
         const userRefC = await db
@@ -93,7 +93,8 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("confluence")
-            .where("complete_date", ">=", date7DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         userRefC.forEach((data) => {
             finalData.push(data.data());
@@ -106,7 +107,8 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("jira")
-            .where("complete_date", ">=", date7DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         userRefJ.forEach((data) => {
             finalData.push(data.data());
@@ -120,10 +122,11 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
             .doc("hubspot")
             .collection("data")
             .where("metadata.status", "==", "COMPLETED")
+            .where("metadata.completionDate", ">=", fromDate)
+            .where("metadata.completionDate", "<=", toDate)
             .get();
         userRefH.forEach((data) => {
-            if (data.data().metadata.completionDate >= date7DaysBefore)
-                finalData.push(data.data());
+            finalData.push(data.data());
         });
 
         return finalData;
@@ -135,9 +138,8 @@ export const getAnalyticsOverallCompletedDataRecently = async () => {
 
 
 
-export const getAnalyticsOverallCompletedDataMonth = async () => {
+export const getAnalyticsOverallCompletedDataMonth = async (fromDate = (new Date()).getTime() - 30 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date30DaysBefore = (new Date()).getTime() - 30 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -149,11 +151,12 @@ export const getAnalyticsOverallCompletedDataMonth = async () => {
             .collection("tasks")
             .doc("gsuite")
             .collection("data")
-            .where("modified_time", ">=", date30DaysBefore)
+            .where("status", "==", "resolved")
+            .where("modified_time", ">=", fromDate)
+            .where("modified_time", "<=", toDate)
             .get();
         userRef.forEach((data) => {
-            if (data.data().status === "resolved")
-                finalData.push(data.data());
+            finalData.push(data.data());
         });
 
         const userRefC = await db
@@ -162,7 +165,8 @@ export const getAnalyticsOverallCompletedDataMonth = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("confluence")
-            .where("complete_date", ">=", date30DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         userRefC.forEach((data) => {
             finalData.push(data.data());
@@ -175,7 +179,8 @@ export const getAnalyticsOverallCompletedDataMonth = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("jira")
-            .where("complete_date", ">=", date30DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         userRefJ.forEach((data) => {
             finalData.push(data.data());
@@ -189,10 +194,11 @@ export const getAnalyticsOverallCompletedDataMonth = async () => {
             .doc("hubspot")
             .collection("data")
             .where("metadata.status", "==", "COMPLETED")
+            .where("metadata.completionDate", ">=", fromDate)
+            .where("metadata.completionDate", "<=", toDate)
             .get();
         userRefH.forEach((data) => {
-            if (data.data().metadata.completionDate >= date30DaysBefore)
-                finalData.push(data.data());
+            finalData.push(data.data());
         });
 
         return finalData;
@@ -206,9 +212,8 @@ export const getAnalyticsOverallCompletedDataMonth = async () => {
 
 
 
-export const getAnalyticsGsuiteData = async () => {
+export const getAnalyticsGsuiteData = async (fromDate = (new Date()).getTime() - 7 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date7DaysBefore = (new Date()).getTime() - 7 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -219,14 +224,16 @@ export const getAnalyticsGsuiteData = async () => {
             .collection("tasks")
             .doc("gsuite")
             .collection("data")
-            .where("modified_time", ">=", date7DaysBefore)
+            .where("modified_time", ">=", fromDate)
+            .where("modified_time", "<=", toDate)
+            .where("status", "==", "resolved")
             .get();
         let finalData = [];
         userRef.forEach((data) => {
-            if (data.data().status === "resolved")
-                finalData.push(data.data());
+            // if (data.data().status === "resolved")
+            finalData.push(data.data());
         });
-        // console.log("Data is:", finalData);
+        console.log("Data is in 7 :", finalData);
         return finalData;
     } catch (err) {
         // console.log(JSON.parse(window.sessionStorage.getItem("user")).uid);
@@ -262,9 +269,8 @@ export const getAnalyticsCompletedGsuiteData = async () => {
 };
 
 
-export const getAnalyticsMonthGsuiteData = async () => {
+export const getAnalyticsMonthGsuiteData = async (fromDate = (new Date()).getTime() - 30 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date30DaysBefore = (new Date()).getTime() - 30 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -275,12 +281,13 @@ export const getAnalyticsMonthGsuiteData = async () => {
             .collection("tasks")
             .doc("gsuite")
             .collection("data")
-            .where("modified_time", ">=", date30DaysBefore)
+            .where("modified_time", ">=", fromDate)
+            .where("modified_time", "<=", toDate)
+            .where("status", "==", "resolved")
             .get();
         let finalData = [];
         userRef.forEach((data) => {
-            if (data.data().status === "resolved")
-                finalData.push(data.data());
+            finalData.push(data.data());
         });
         // console.log("Data is:", finalData);
         return finalData;
@@ -294,9 +301,8 @@ export const getAnalyticsMonthGsuiteData = async () => {
 
 
 
-export const getAnalyticsHubspotData = async () => {
+export const getAnalyticsHubspotData = async (fromDate = (new Date()).getTime() - 7 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date7DaysBefore = (new Date()).getTime() - 7 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -308,11 +314,13 @@ export const getAnalyticsHubspotData = async () => {
             .doc("hubspot")
             .collection("data")
             .where("metadata.status", "==", "COMPLETED")
+            .where("metadata.completionDate", ">=", fromDate)
+            .where("metadata.completionDate", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
-            if (data.data().metadata.completionDate >= date7DaysBefore)
-                finalData.push(data.data());
+            // if (data.data().metadata.completionDate >= date7DaysBefore)
+            finalData.push(data.data());
         });
         return finalData;
 
@@ -350,9 +358,8 @@ export const getAnalyticsCompletedHubspotData = async () => {
 };
 
 
-export const getAnalyticsMonthHubspotData = async () => {
+export const getAnalyticsMonthHubspotData = async (fromDate = (new Date()).getTime() - 30 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date30DaysBefore = (new Date()).getTime() - 30 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -364,11 +371,13 @@ export const getAnalyticsMonthHubspotData = async () => {
             .doc("hubspot")
             .collection("data")
             .where("metadata.status", "==", "COMPLETED")
+            .where("metadata.completionDate", ">=", fromDate)
+            .where("metadata.completionDate", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
-            if (data.data().metadata.completionDate >= date30DaysBefore)
-                finalData.push(data.data());
+            // if (data.data().metadata.completionDate >= date30DaysBefore)
+            finalData.push(data.data());
         });
         return finalData;
 
@@ -383,9 +392,8 @@ export const getAnalyticsMonthHubspotData = async () => {
 
 
 
-export const getAnalyticsJiraData = async () => {
+export const getAnalyticsJiraData = async (fromDate = (new Date()).getTime() - 7 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date7DaysBefore = (new Date()).getTime() - 7 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -396,7 +404,8 @@ export const getAnalyticsJiraData = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("jira")
-            .where("complete_date", ">=", date7DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
@@ -438,9 +447,8 @@ export const getAnalyticsCompletedJiraData = async () => {
 };
 
 
-export const getAnalyticsMonthJiraData = async () => {
+export const getAnalyticsMonthJiraData = async (fromDate = (new Date()).getTime() - 30 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date30DaysBefore = (new Date()).getTime() - 30 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -451,7 +459,8 @@ export const getAnalyticsMonthJiraData = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("jira")
-            .where("complete_date", ">=", date30DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
@@ -467,9 +476,8 @@ export const getAnalyticsMonthJiraData = async () => {
 
 
 
-export const getAnalyticsConfData = async () => {
+export const getAnalyticsConfData = async (fromDate = (new Date()).getTime() - 7 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date7DaysBefore = (new Date()).getTime() - 7 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -480,7 +488,8 @@ export const getAnalyticsConfData = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("confluence")
-            .where("complete_date", ">=", date7DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {
@@ -522,9 +531,8 @@ export const getAnalyticsCompletedConfData = async () => {
 };
 
 
-export const getAnalyticsMonthConfData = async () => {
+export const getAnalyticsMonthConfData = async (fromDate = (new Date()).getTime() - 30 * 24 * 3600 * 1000, toDate = (new Date()).getTime()) => {
     try {
-        let date30DaysBefore = (new Date()).getTime() - 30 * 24 * 3600 * 1000;
         const uid =
             firebaseAuth.currentUser.uid === null
                 ? JSON.parse(window.sessionStorage.getItem("user")).uid
@@ -535,7 +543,8 @@ export const getAnalyticsMonthConfData = async () => {
             .collection("tasks")
             .doc("atlassian")
             .collection("confluence")
-            .where("complete_date", ">=", date30DaysBefore)
+            .where("complete_date", ">=", fromDate)
+            .where("complete_date", "<=", toDate)
             .get();
         let finalData = [];
         userRef.forEach((data) => {

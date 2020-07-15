@@ -9,6 +9,7 @@ import { get_JiraData } from "../../api/atlassian";
 import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from "@nivo/pie";
 import Grid from "@material-ui/core/Grid";
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.down("sm")]: {
@@ -38,6 +39,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const useStylesDate = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 200,
+  },
+}));
+
+let currDate = `${(new Date()).getFullYear()}-${(new Date()).getMonth()}-${(new Date()).getDate()}`;
+
+
 export default function ChartFunc() {
   const [loader, setLoader] = useState(true);
   const [chartData, setChartData] = useState(null);
@@ -45,29 +61,47 @@ export default function ChartFunc() {
   const classes = useStyles();
   const [avgTime, setTimeFunc] = useState(null);
   const [isfinitTime, setFinite] = useState(true);
+  const classesdate = useStylesDate();
+
+  const [fromDate7, setFromDate7] = React.useState(new Date().getTime() - 7 * 24 * 3600 * 1000);
+  const [fromDate30, setFromDate30] = React.useState(new Date().getTime() - 30 * 24 * 3600 * 1000);
+  const [toDate, setToDate] = React.useState(new Date().getTime());
+
+  const FromHandler = (e) => {
+    // console.log("val is ", e.target.value, new Date(e.target.value).getTime());
+    setFromDate7(new Date(e.target.value).getTime());
+    setFromDate30(new Date(e.target.value).getTime());
+  }
+
+  const ToHandler = (e) => {
+    // console.log("val is in ToHandler ", e.target.value);
+    setToDate(new Date(e.target.value).getTime());
+  }
+
 
   useEffect(() => {
     (async function anyNameFunction() {
       try {
-        const Rdata = await getAnalyticsJiraData();
+        const Rdata = await getAnalyticsJiraData(fromDate7, toDate);
         const Tdata = await getAnalyticsCompletedJiraData();
-        const Mdata = await getAnalyticsMonthJiraData();
-        console.log("data is ", Rdata.length, Tdata.length, Mdata);
+        const Mdata = await getAnalyticsMonthJiraData(fromDate30, toDate);
+        console.log("data is ", Rdata.length, Tdata.length, Mdata.length);
         if (Rdata.length == 0 || Mdata.length == 0) {
           setFinite(false);
         }
         else {
+          setFinite(true)
           setTimeFunc([
             {
               id: "Last 7 days",
               label: "Last 7 days avg time(hours) per task",
-              value: Math.round((7 * 24 / Rdata.length + Number.EPSILON) * 100) / 100,
+              value: Math.round(((toDate - fromDate7) / (Rdata.length * 3600 * 1000) + Number.EPSILON) * 100) / 100,
               color: "hsl(257, 70%, 50%)",
             },
             {
               id: "Last 30 days",
               label: "Last 30 days avg time(hours) per task",
-              value: Math.round((30 * 24 / Mdata.length + Number.EPSILON) * 100) / 100,
+              value: Math.round(((toDate - fromDate30) / (Mdata.length * 3600 * 1000) + Number.EPSILON) * 100) / 100,
               color: "hsl(169, 70%, 50%)",
             },
           ]);
@@ -94,7 +128,7 @@ export default function ChartFunc() {
         setLoader(false);
       }
     })();
-  }, []);
+  }, [fromDate7, fromDate30, toDate]);
 
   useEffect(() => {
     (async function anyNameFunction() {
@@ -184,6 +218,30 @@ export default function ChartFunc() {
 
   return (
     <React.Fragment>
+      <form className={classesdate.container} noValidate>
+        <TextField
+          id="date"
+          label="From"
+          type="date"
+          defaultValue={currDate}
+          onChange={FromHandler}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          id="date"
+          label="To"
+          type="date"
+          onChange={ToHandler}
+          defaultValue={toDate}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      </form>
       <Grid container spacing={0} style={{ margin: "0 auto !important" }}>
         <Grid item xs>
           {!loader ? (
