@@ -12,6 +12,14 @@ import {
 } from "../api/gsuiteApi";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import {
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  Tooltip,
+  Button,
+} from "@material-ui/core";
+import LaunchSharpIcon from "@material-ui/icons/LaunchSharp";
+import SearchBar from "./search";
 
 const useStyleLoader = makeStyles((theme) => ({
   root: {
@@ -45,6 +53,28 @@ const useStyles = makeStyles((theme) => ({
   checked: {
     background: "#e84993",
   },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexBasis: "10%",
+    flexShrink: 0,
+    marginRight: "2%",
+    fontFamily: "'Nunito Sans', sans-serif",
+  },
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    marginRight: "2%",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    fontFamily: "'Nunito Sans', sans-serif",
+  },
+  descpHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    fontFamily: "'Nunito Sans', sans-serif",
+  },
 }));
 
 let topEmails = {};
@@ -55,6 +85,11 @@ export default function SimpleCard(props) {
   const classesLoader = useStyleLoader();
   let [Loader, setLoader] = useState(true);
   let [markDone, setMark] = useState(1);
+  const [expanded, setExpanded] = React.useState(true);
+
+  const handlePannelChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : true);
+  };
 
   useEffect(() => {
     // console.log("in useEffect ------------------------------------------------------------------------");
@@ -107,68 +142,87 @@ export default function SimpleCard(props) {
     }
   };
 
+  const MouseOverHandler = (e) => {
+    e.target.style.background = "rgba(222,222,222,0.8)";
+  };
+  const MouseLeaveHandler = (e) => {
+    e.target.style.background = "white";
+  };
+
   return (
-    <div>
+    <div style={{ padding: "inherit" }}>
       {data && !Loader ? (
         data.map((element) => {
           return topEmails[element.sender] ? (
-            <Card key={element.thread_id} className={classes.root}>
-              <CardContent>
+            <ExpansionPanel
+              onMouseOut={MouseLeaveHandler}
+              onMouseOver={MouseOverHandler}
+              key={element.thread_id}
+              expanded={expanded}
+              onChange={handlePannelChange("panel1")}
+            >
+              <ExpansionPanelSummary
+                aria-controls="panel1bh-content"
+                id="panel1bh-header"
+              >
                 <Typography
-                  className={classes.title}
+                  className={classes.heading}
                   color="textSecondary"
                   gutterBottom
                 >
-                  Mailed by -- {element.sender}
+                  <b style={{ color: "#f73378" }}> {element.sender}</b>
                 </Typography>
-                <Typography variant="h7" component="h7">
+                <Typography
+                  variant="h8"
+                  component="h8"
+                  className={classes.heading}
+                >
                   {element.subject}
                 </Typography>
-
-                <br />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={element.replied}
-                      color="primary"
-                      onChange={(e) => {
-                        // setChecked(e.target.checked);
-                        handleChange(element.thread_id, element);
-                      }}
-                    />
-                  }
-                  label="Mark as Done"
-                />
-              </CardContent>
-              <CardActions>
-                <a
-                  target="blank"
-                  href={element.url}
-                  style={{
-                    textDecoration: "none",
-                    color: "#e84993",
-                    fontWeight: "bold",
-                  }}
-                  size="small"
-                >
-                  Go to the task
-                </a>
-              </CardActions>
-              <CardActions style={{ float: "right" }}>
                 <Typography
-                  className={classes.title}
+                  variant="h7"
+                  component="h7"
+                  className={classes.heading}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={element.replied}
+                        color="primary"
+                        onChange={(e) => {
+                          // setChecked(e.target.checked);
+                          handleChange(element.thread_id, element);
+                        }}
+                      />
+                    }
+                    label="Mark as Done"
+                  />
+                </Typography>
+                <Typography className={classes.heading}>
+                  {" "}
+                  <a
+                    target="blank"
+                    href={element.url}
+                    style={{
+                      textDecoration: "none",
+                      color: "#e84993",
+                      fontWeight: "bold",
+                    }}
+                    size="small"
+                  >
+                    <LaunchSharpIcon></LaunchSharpIcon>
+                  </a>
+                </Typography>
+
+                <Typography
+                  className={classes.descpHeading}
                   color="textSecondary"
-                  style={{
-                    textDecoration: "none",
-                    color: "#e84993",
-                    fontWeight: "bold",
-                  }}
                   gutterBottom
                 >
                   Priority - {element.priority}
                 </Typography>
-              </CardActions>
-            </Card>
+              </ExpansionPanelSummary>
+            </ExpansionPanel>
           ) : null;
         })
       ) : (

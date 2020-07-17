@@ -45,6 +45,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { getZohoToken, zoho } from "../helper/zohoAuth";
 
 const drawerWidth = 240;
 
@@ -271,6 +272,10 @@ export default function MiniDrawer() {
     JSON.parse(localStorage.getItem("jira"))
   );
 
+  const [zohoState, setZohoState] = React.useState(
+    JSON.parse(localStorage.getItem("zoho"))
+  );
+
   const [clickState, setclickState] = React.useState(
     localStorage.getItem("state")
       ? JSON.parse(localStorage.getItem("state"))
@@ -279,6 +284,7 @@ export default function MiniDrawer() {
           conf: false,
           Jira: false,
           user: false,
+          zoho: false,
         }
   );
 
@@ -287,6 +293,7 @@ export default function MiniDrawer() {
     conf: false,
     Jira: false,
     user: false,
+    zoho: false,
   };
 
   const handleChange = (event, newValue) => {
@@ -313,6 +320,7 @@ export default function MiniDrawer() {
       conf: true,
       Jira: false,
       user: false,
+      zoho: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
 
@@ -326,6 +334,7 @@ export default function MiniDrawer() {
       conf: false,
       Jira: false,
       user: false,
+      zoho: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
 
@@ -340,6 +349,7 @@ export default function MiniDrawer() {
       conf: false,
       Jira: true,
       user: false,
+      zoho: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
     const res = await jiraAuth();
@@ -352,9 +362,23 @@ export default function MiniDrawer() {
       conf: false,
       Jira: false,
       user: true,
+      zoho: false,
     };
     localStorage.setItem("state", JSON.stringify(state));
     const res = await user();
+    window.location.href = res;
+  };
+
+  const handleZoho = async (e) => {
+    let state = {
+      hub: false,
+      conf: false,
+      Jira: false,
+      user: false,
+      zoho: true,
+    };
+    localStorage.setItem("state", JSON.stringify(state));
+    const res = await zoho();
     window.location.href = res;
   };
 
@@ -368,6 +392,7 @@ export default function MiniDrawer() {
         conf: false,
         Jira: false,
         user: false,
+        zoho: false,
       };
       localStorage.setItem("state", JSON.stringify(state));
     }
@@ -379,6 +404,7 @@ export default function MiniDrawer() {
         conf: false,
         Jira: false,
         user: false,
+        zoho: false,
       };
       localStorage.setItem("state", JSON.stringify(state));
     }
@@ -390,6 +416,7 @@ export default function MiniDrawer() {
         conf: false,
         Jira: false,
         user: false,
+        zoho: false,
       };
       localStorage.setItem("state", JSON.stringify(state));
     }
@@ -401,6 +428,19 @@ export default function MiniDrawer() {
         conf: false,
         Jira: false,
         user: false,
+        zoho: false,
+      };
+      localStorage.setItem("state", JSON.stringify(state));
+    }
+
+    if (clickState.zoho && authCode) {
+      window.location.reload(false);
+      state = {
+        hub: false,
+        conf: false,
+        Jira: false,
+        user: false,
+        zoho: false,
       };
       localStorage.setItem("state", JSON.stringify(state));
     }
@@ -415,6 +455,8 @@ export default function MiniDrawer() {
       handleAuth();
     } else if (clickState.user) {
       handleUser();
+    } else if (clickState.zoho) {
+      handleZohoAuth();
     }
   }, []);
 
@@ -432,6 +474,10 @@ export default function MiniDrawer() {
 
   const handleHubAuth = async () => {
     await getHubToken();
+  };
+
+  const handleZohoAuth = async () => {
+    await getZohoToken();
   };
 
   const [anchorEl1, setAnchorEl1] = React.useState(null);
@@ -562,7 +608,11 @@ export default function MiniDrawer() {
               alt="Innovaccer"
             />
           </Typography>
-
+          {firebaseAuth.currentUser && !zohoState ? (
+            <Button variant="contained" color="inherit" onClick={handleZoho}>
+              Connect to zoho
+            </Button>
+          ) : null}
           <div className={classes.grow} />
           <Tooltip title="Refresh">
             <IconButton
