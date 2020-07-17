@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from "@nivo/pie";
 import Grid from "@material-ui/core/Grid";
 import TextField from '@material-ui/core/TextField';
+import Container from "@material-ui/core/Container";
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.down("sm")]: {
@@ -226,31 +227,32 @@ export default function ChartFunc() {
 
   return (
     <React.Fragment>
-       <form className={classesdate.container} noValidate>
-        <TextField
-          id="date"
-          label="From"
-          type="date"
-          defaultValue={currDate}
-          onChange={FromHandler}
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        <TextField
-          id="date"
-          label="To"
-          type="date"
-          onChange={ToHandler}
-          defaultValue={toDate}
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      </form>
-
+      <Container>
+        <form className={classesdate.container} noValidate>
+          <TextField
+            id="date"
+            label="From"
+            type="date"
+            defaultValue={currDate}
+            onChange={FromHandler}
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            id="date"
+            label="To"
+            type="date"
+            onChange={ToHandler}
+            defaultValue={toDate}
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </form>
+      </Container>
       <Grid container spacing={0} style={{ margin: "0 auto !important" }}>
         <Grid item xs>
           {!loader ? (

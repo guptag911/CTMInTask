@@ -55,10 +55,10 @@ const Dashboard = () => {
       {
         <Grid container spacing={2} maxWidth="lg" style={{ marginTop: "40px" }}>
           <Grid item xs={12}>
-            <Container>
+            {/* <Container> */}
               {" "}
               <TabView></TabView>
-            </Container>
+            {/* </Container> */}
           </Grid>
         </Grid>
       }
