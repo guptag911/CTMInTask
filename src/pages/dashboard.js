@@ -3,14 +3,11 @@ import Container from "@material-ui/core/Container";
 import TabView from "../components/tabView";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import { get_data } from "../api/fixedGsuite";
 import { delete_tasks, insert_tasks } from "../api/googleTasks";
 import { HubSpotTasksGetAPIData } from "../api/hubSpot";
 import issues_data from "../api/jira";
 import getConf_data from "../api/confluence";
 import { authToken } from "../api/zoho";
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,11 +42,10 @@ const Dashboard = () => {
 
   React.useEffect(() => {
     setTimeout(() => {
-      get_data("from: comments-noreply@docs.google.com");
+      HubSpotTasksGetAPIData();
       delete_tasks();
       insert_tasks();
-      HubSpotTasksGetAPIData();
-    }, 4000);
+    }, 5000);
   }, []);
   // console.log("Analytics is ", analyticsClicked);
   return (
@@ -58,9 +54,7 @@ const Dashboard = () => {
       {
         <Grid container spacing={2} maxWidth="lg" style={{ marginTop: "40px" }}>
           <Grid item xs={12}>
-            {/* <Container> */}
-              {" "}
-              <TabView></TabView>
+            {/* <Container> */} <TabView></TabView>
             {/* </Container> */}
           </Grid>
         </Grid>

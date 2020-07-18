@@ -49,6 +49,7 @@ const useStylesDate = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: 200,
+    padding: "20px",
   },
 }));
 
@@ -101,7 +102,7 @@ export default function ChartFunc() {
                 Math.round(
                   ((toDate - fromDate7) / (Rdata.length * 3600 * 1000) +
                     Number.EPSILON) *
-                  100
+                    100
                 ) / 100,
               color: "hsl(257, 70%, 50%)",
             },
@@ -112,7 +113,7 @@ export default function ChartFunc() {
                 Math.round(
                   ((toDate - fromDate30) / (Mdata.length * 3600 * 1000) +
                     Number.EPSILON) *
-                  100
+                    100
                 ) / 100,
               color: "hsl(169, 70%, 50%)",
             },
@@ -228,32 +229,36 @@ export default function ChartFunc() {
   // console.log("curr date is ", currDate);
   return (
     <React.Fragment>
-      <Container>
-        <form className={classesdate.container} noValidate>
-          <TextField
-            id="date"
-            label="From"
-            type="date"
-            defaultValue={currDate}
-            onChange={FromHandler}
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField
-            id="date"
-            label="To"
-            type="date"
-            onChange={ToHandler}
-            defaultValue={toDate}
-            className={classes.textField}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </form>
-      </Container>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Container>
+            <form className={classesdate.container} noValidate>
+              <TextField
+                id="date"
+                label="From"
+                type="date"
+                defaultValue={currDate}
+                onChange={FromHandler}
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                id="date"
+                label="To"
+                type="date"
+                onChange={ToHandler}
+                defaultValue={toDate}
+                className={classes.textField}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </form>
+          </Container>
+        </Grid>
+      </Grid>
 
       <Grid container spacing={0} style={{ margin: "0 auto !important" }}>
         <Grid item xs>
@@ -267,8 +272,8 @@ export default function ChartFunc() {
               </div>
             ) : null
           ) : (
-              <CircularProgress />
-            )}
+            <CircularProgress />
+          )}
         </Grid>
         <Grid item xs>
           {recentChart ? (

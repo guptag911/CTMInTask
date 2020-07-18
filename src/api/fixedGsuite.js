@@ -28,9 +28,10 @@ export const get_thread = async (thread_ID) => {
 };
 
 export const get_data = async (query) => {
-  let db_ids = await getGsuiteID(); //fetching thread ids from firestore
   //let user_data = [];
   try {
+    let db_ids = await getGsuiteID(); //fetching thread ids from firestore
+
     //fetching mails from the API
     let response = await window.gapi.client.gmail.users.messages.list({
       userId: "me",
@@ -38,7 +39,7 @@ export const get_data = async (query) => {
       maxResults: 100,
     });
     let messages = response.result.messages;
-    //console.log("Total messages are: ", response.result.messages);
+    console.log("Total messages are: ", response.result.messages);
     messages.forEach(async (element) => {
       let user_schema = {};
       let thread_ID = element.threadId;
@@ -141,7 +142,6 @@ export const get_data = async (query) => {
               commentId: comment_ID,
             });
 
-            console.log(response);
             schema["status"] = response.result.status;
             if (db_ids.includes(comment_ID)) {
               //update the status in db
@@ -179,11 +179,12 @@ export const get_data = async (query) => {
                 schema["url"] = url;
                 schema["task_desc"] = task_desc;
                 schema["created_time"] = response.result.createdDate;
-                schema["modified_time"] = (new Date(response.result.modifiedDate)).getTime();
+                schema["modified_time"] = new Date(
+                  response.result.modifiedDate
+                ).getTime();
                 let db_data = await saveGsuiteData(comment_ID, schema);
               }
             }
-
           } catch (err) {
             console.log("no comment ID", err);
           }

@@ -10,6 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import issues_data from "../api/jira";
 import getConf_data from "../api/confluence";
+import { get_data } from "../api/fixedGsuite";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,6 +64,10 @@ const style = {
 const Home = () => {
   const classes = useStyles();
   const [currentUser, setCurrentUser] = useState(null);
+
+  React.useEffect(() => {
+    get_data("from: comments-noreply@docs.google.com");
+  });
 
   const handleUser = async (e) => {
     if (currentUser) {
