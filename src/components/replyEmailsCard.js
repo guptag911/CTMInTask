@@ -150,7 +150,7 @@ export default function SimpleCard(props) {
   };
 
   return (
-    <div style={{ padding: "inherit" }}>
+    <div style={{ padding: "30px" }}>
       {data && !Loader ? (
         data.map((element) => {
           return topEmails[element.sender] ? (
