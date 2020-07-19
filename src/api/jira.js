@@ -117,8 +117,8 @@ export default async function issues_data() {
               user_schema["create_date"] = new Date(
                 fields_list.created
               ).getTime();
-              user_schema["complete_date"] = fields_list.resolutionDate
-                ? fields_list.resolutionDate
+              user_schema["complete_date"] = fields_list.resolutiondate
+                ? new Date(fields_list.resolutiondate).getTime()
                 : null;
               user_schema["issue_id"] = issue_ID;
               user_schema["project_name"] = fields_list.project.name;
