@@ -4,15 +4,7 @@
 # Objective
 The objective of Central Task Manager is to increase employee productivity at Innovaccer. Innovaccer currently uses multiple productivity, task/project management tools which helps various departments to document the process and makes sure business objectives are achieved in a productive manner. Due to multiple siloed tools it's difficult for employees to maintain coherence to each tool in day today operations. Central Task Manager will help employees collate task/action items and work breakdowns from various tools and deliver them to employees in a timely and consolidated fashion and will help leadership to monitor capacity and productivity of each employee at Innovaccer.
 
-# Features!
 
-  - All tasks from Google Docs, Sheets and Slides along with tasks from Confluence, Jira and Hubspot.
-  - One click acess to go directly to the assigned task.
-  - Special filtering of gmail mails based on user predefined star users based on reply priority.
-  - Graphical view of completed tasks for user's analysis.
-  - Avability of marking the task as star for easier acess to important tasks.
-  - Special admin dashboard for the admin to analyze the performance of his/her team or department.
-  - Anywhere acess to CTM with chatbot available on Google Chat.
 
 ### Tech
 
@@ -43,7 +35,7 @@ CTM Intask is live and running [here](https://ctmintask.web.app/#/)
     - Use "Identify yourself" on top right to connect your attlassian account with CTM.
     - For connecting with Confluence, navigate to confluence icon and "connect to confluence" to establish a 
       secure connection.
-    - Same goes for Jira aswell.
+    - Same goes for Jira as well.
     - Use "Connect to Hubspot"in Hubspot section for connecting Hubspot account to CTM.
     - You are done with all setup and now all your assigned tasks will be always there for you on CTM.
 
@@ -61,16 +53,19 @@ CTM Intask is live and running [here](https://ctmintask.web.app/#/)
        common CTM features to go to task, star task and mark the task as completed.
     7. Performs a details analysis on user's performance by analysing the completed and pending tasks on the 
        basis of time.
-    8. Anytime acess to CTM tasks with ChatBot for quick response.
+    8. An Admin of the Organisation can see all the User's Analytics data in a Separated Admin Dashboard which is only accessible to Admin.
+    9. User can also set their Priorities By Starring their tasks from different sections.
+    10. Anytime acess to CTM tasks with ChatBot for quick response.
     
 
 ### Todos
-    1. Implement a dumper to delete irrlevant data from  data from database.
+    1. Implement a dumper to delete irrelevant data from  data from database.
     2. A fewer optimizations for faster response.
-    3. Chrome Extension to get all features of InTask in Gmail itself.
+    3. Chrome Extension to get some of vita InTask's features in Gmail itself.
     4. Improvements in admin dashboard for a detailed analysis of team members.
     5. Some further UI changes for a better user experience.
     6. Integration of assigning Ad-hoc tasks on CTM itself.
+    7. Implementaion of Manager's analytics dashboard So that he can keep a check on his team's productivity.
 
 License
 ----

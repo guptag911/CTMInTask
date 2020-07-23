@@ -345,7 +345,7 @@ export default function ChartFunc(props) {
               </div>
             ) : null
           ) : (
-            <CircularProgress />
+            <CircularProgress  style={{ color: "black" }} />
           )}
         </Grid>
         <Grid item xs>
