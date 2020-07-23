@@ -202,18 +202,18 @@ export default function MiniDrawer() {
   };
 
   React.useEffect(() => {
-
     try {
-      (async function AnyName() {
-        let Admindata = await getIsAdmin()
-        console.log("in effect true ", Admindata);
-        setIsAdmin(Admindata);
-      }())
-    }
-    catch (e) {
+      adminGet();
+    } catch (e) {
       setIsAdmin(false);
     }
-  }, [])
+  }, []);
+
+  const adminGet = async () => {
+    let Admindata = await getIsAdmin();
+    console.log("in effect true ", Admindata);
+    setIsAdmin(Admindata);
+  };
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -293,11 +293,11 @@ export default function MiniDrawer() {
     localStorage.getItem("state")
       ? JSON.parse(localStorage.getItem("state"))
       : {
-        hub: false,
-        conf: false,
-        Jira: false,
-        user: false,
-      }
+          hub: false,
+          conf: false,
+          Jira: false,
+          user: false,
+        }
   );
 
   let state = {
@@ -483,56 +483,56 @@ export default function MiniDrawer() {
       case "Hubspot":
         firebaseAuth.currentUser && !hubState
           ? setShowData(
-            <Button
-              variant="contained"
-              color="inherit"
-              className={classes.center}
-              onClick={handleHub}
-            >
-              Connect to HubSpot
+              <Button
+                variant="contained"
+                color="inherit"
+                className={classes.center}
+                onClick={handleHub}
+              >
+                Connect to HubSpot
               </Button>
-          )
+            )
           : setShowData(
-            <Container>
-              <HubSpotCard val={val}></HubSpotCard>
-            </Container>
-          );
+              <Container>
+                <HubSpotCard val={val}></HubSpotCard>
+              </Container>
+            );
         break;
       case "Confluence":
         firebaseAuth.currentUser && !authState
           ? setShowData(
-            <Button
-              variant="contained"
-              color="inherit"
-              className={classes.center}
-              onClick={handleReq}
-            >
-              Connect to Confluence
+              <Button
+                variant="contained"
+                color="inherit"
+                className={classes.center}
+                onClick={handleReq}
+              >
+                Connect to Confluence
               </Button>
-          )
+            )
           : setShowData(
-            <Container>
-              <ConfluenceCard val={val}></ConfluenceCard>
-            </Container>
-          );
+              <Container>
+                <ConfluenceCard val={val}></ConfluenceCard>
+              </Container>
+            );
         break;
       case "Jira":
         firebaseAuth.currentUser && !jiraState
           ? setShowData(
-            <Button
-              variant="contained"
-              color="inherit"
-              className={classes.center}
-              onClick={handleJira}
-            >
-              Connect to Jira
+              <Button
+                variant="contained"
+                color="inherit"
+                className={classes.center}
+                onClick={handleJira}
+              >
+                Connect to Jira
               </Button>
-          )
+            )
           : setShowData(
-            <Container>
-              <JiraCard val={val}></JiraCard>
-            </Container>
-          );
+              <Container>
+                <JiraCard val={val}></JiraCard>
+              </Container>
+            );
         break;
       case "Calendar":
         setShowData(
@@ -621,17 +621,17 @@ export default function MiniDrawer() {
             />
           </Typography>
           <div className={classes.grow} />
-          {isAdmin ? <Button
-            variant="outlined"
-            color="inherit"
-            style={{ fontWeight: "bold" }}
-            component={Link}
-            to="/admin"
-            style={{ marginLeft: "30px" }}
-          >
-            Admin
-            </Button> : null
-          }
+          {isAdmin ? (
+            <Button
+              variant="outlined"
+              color="inherit"
+              style={{ fontWeight: "bold", marginLeft: "30px" }}
+              component={Link}
+              to="/admin"
+            >
+              Admin Dashboard
+            </Button>
+          ) : null}
           <Tooltip title="Refresh">
             <IconButton
               color="inherit"
@@ -709,8 +709,8 @@ export default function MiniDrawer() {
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
-                <ChevronLeftIcon />
-              )}
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </div>
         <Divider />
@@ -740,8 +740,8 @@ export default function MiniDrawer() {
                 ) : index === 4 ? (
                   <img src="https://img.icons8.com/cute-clipart/40/calendar.png"></img>
                 ) : (
-                            <img src="https://img.icons8.com/fluent/40/gmail.png"></img>
-                          )}
+                  <img src="https://img.icons8.com/fluent/40/gmail.png"></img>
+                )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -749,7 +749,7 @@ export default function MiniDrawer() {
         </List>
         <Divider />
         <List>
-          {["Analytics", "Admin", "Starred"].map((text, index) => (
+          {["Analytics", "Starred"].map((text, index) => (
             <ListItem
               button
               key={text}
@@ -760,56 +760,41 @@ export default function MiniDrawer() {
               <ListItemIcon>
                 {index === 0 ? (
                   <img src="https://img.icons8.com/fluent/40/web-analystics.png"></img>
-                ) : index === 1 && userstore.isAdmin ? (
+                ) : (
                   <React.Fragment>
                     <Button
                       style={{ marginLeft: -10 }}
-                      component={Link}
-                      to="/admin"
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
+                      onClick={handleClick}
                     >
-                      <img src="https://img.icons8.com/nolan/40/admin-settings-male.png"></img>
+                      <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
                     </Button>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={anchorEl1}
+                      keepMounted
+                      open={Boolean(anchorEl1)}
+                      onClose={handleClose}
+                    >
+                      <MenuItem onClick={(e) => onClickShow(e, "gsuitestar")}>
+                        Gsuite
+                      </MenuItem>
+                      <MenuItem onClick={(e) => onClickShow(e, "jirastar")}>
+                        Jira
+                      </MenuItem>
+                      <MenuItem onClick={(e) => onClickShow(e, "confstar")}>
+                        Confluence
+                      </MenuItem>
+                      <MenuItem onClick={(e) => onClickShow(e, "hubstar")}>
+                        Hubspot
+                      </MenuItem>
+                    </Menu>
                   </React.Fragment>
-                ) : (
-                      <React.Fragment>
-                        <Button
-                          style={{ marginLeft: -10 }}
-                          aria-controls="simple-menu"
-                          aria-haspopup="true"
-                          onClick={handleClick}
-                        >
-                          <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
-                        </Button>
-                        <Menu
-                          id="simple-menu"
-                          anchorEl={anchorEl1}
-                          keepMounted
-                          open={Boolean(anchorEl1)}
-                          onClose={handleClose}
-                        >
-                          <MenuItem onClick={(e) => onClickShow(e, "gsuitestar")}>
-                            Gsuite
-                      </MenuItem>
-                          <MenuItem onClick={(e) => onClickShow(e, "jirastar")}>
-                            Jira
-                      </MenuItem>
-                          <MenuItem onClick={(e) => onClickShow(e, "confstar")}>
-                            Confluence
-                      </MenuItem>
-                          <MenuItem onClick={(e) => onClickShow(e, "hubstar")}>
-                            Hubspot
-                      </MenuItem>
-                        </Menu>
-                      </React.Fragment>
-                    )}
-              </ListItemIcon>
-              {text === "Admin" && userstore.isAdmin ? (
-                <Button component={Link} to="/admin">
-                  <ListItemText primary={text} />
-                </Button>
-              ) : (
-                  <ListItemText primary={text} />
                 )}
+              </ListItemIcon>
+
+              <ListItemText primary={text} />
             </ListItem>
           ))}
         </List>
