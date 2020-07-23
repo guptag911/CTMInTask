@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getGsuiteData } from "../../api/fixedDb";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {
   getAnalyticsGsuiteData,
   getAnalyticsCompletedGsuiteData,
   getAnalyticsMonthGsuiteData,
+  GsuiteAnalyticsCompletedWithinPeriod,
+  GsuiteAnalyticsPendingWithinPeriod,
+  GsuiteAnalyticsTotalWithinPeriod
 } from "../../api/analytics";
 import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from "@nivo/pie";
@@ -72,16 +74,21 @@ export default function ChartFunc() {
   );
   const [toDate, setToDate] = React.useState(new Date().getTime());
 
+  const [fromDate, setFromDate] = React.useState(0);
+
   const FromHandler = (e) => {
     // console.log("val is ", e.target.value, new Date(e.target.value).getTime());
+    setFromDate(new Date(e.target.value).getTime())
     setFromDate7(new Date(e.target.value).getTime());
     setFromDate30(new Date(e.target.value).getTime());
   };
 
   const ToHandler = (e) => {
-    // console.log("val is in ToHandler ", e.target.value);
+    console.log("val is in ToHandler ", e.target.value);
     setToDate(new Date(e.target.value).getTime());
   };
+
+
 
   useEffect(() => {
     (async function anyNameFunction() {
@@ -119,20 +126,25 @@ export default function ChartFunc() {
             },
           ]);
         }
-        setRecentChart([
-          {
-            id: "Completed",
-            label: "Completed Tasks",
-            value: Tdata.length,
-            color: "hsl(169, 70%, 50%)",
-          },
-          {
-            id: "Recently Completed",
-            label: "Recently Completed Tasks",
-            value: Rdata.length,
-            color: "hsl(257, 70%, 50%)",
-          },
-        ]);
+        if (Tdata.length + Rdata.length == 0) {
+          setRecentChart(null);
+        }
+        else {
+          setRecentChart([
+            {
+              id: "Completed",
+              label: "Completed Tasks",
+              value: Tdata.length,
+              color: "hsl(169, 70%, 50%)",
+            },
+            {
+              id: "Recently Completed",
+              label: "Recently Completed Tasks",
+              value: Rdata.length,
+              color: "hsl(257, 70%, 50%)",
+            },
+          ]);
+        }
         setLoader(false);
       } catch (e) {
         console.log("Error is ", e);
@@ -144,44 +156,44 @@ export default function ChartFunc() {
   useEffect(() => {
     (async function anyNameFunction() {
       try {
-        const data = await getGsuiteData();
-        let pendTasks = 0;
-        let compTasks = 0;
-        let totTasks = data.length;
-        for (let ele in data) {
-          if (data[ele].status === "resolved") {
-            compTasks += 1;
-          } else if (data[ele].status === "open") {
-            pendTasks += 1;
-          }
+        let pendTasks = await GsuiteAnalyticsPendingWithinPeriod(fromDate, toDate);
+        let compTasks = await GsuiteAnalyticsCompletedWithinPeriod(fromDate, toDate);
+        let totTasks = await GsuiteAnalyticsTotalWithinPeriod(fromDate, toDate);
+        pendTasks = pendTasks.length;
+        compTasks = compTasks.length;
+        totTasks = totTasks.length;
+        if (pendTasks + compTasks + totTasks == 0) {
+          setChartData(null);
         }
-        setChartData([
-          {
-            id: "Pending",
-            label: "Pending Tasks",
-            value: pendTasks,
-            color: "hsl(169, 70%, 50%)",
-          },
-          {
-            id: "Completed",
-            label: "Completed Tasks",
-            value: compTasks,
-            color: "hsl(257, 70%, 50%)",
-          },
-          {
-            id: "Total",
-            label: "Total Tasks",
-            value: totTasks,
-            color: "hsl(241, 70%, 50%)",
-          },
-        ]);
+        else {
+          setChartData([
+            {
+              id: "Pending",
+              label: "Pending Tasks",
+              value: pendTasks,
+              color: "hsl(169, 70%, 50%)",
+            },
+            {
+              id: "Completed",
+              label: "Completed Tasks",
+              value: compTasks,
+              color: "hsl(257, 70%, 50%)",
+            },
+            {
+              id: "Total",
+              label: "Total Tasks",
+              value: totTasks,
+              color: "hsl(241, 70%, 50%)",
+            },
+          ]);
+        }
         setLoader(false);
       } catch (e) {
         console.log("Error is ", e);
         setLoader(false);
       }
     })();
-  }, []);
+  }, [fromDate, toDate]);
 
   const [contRecent, setContRecent] = React.useState(null);
   const [contTask, setCont] = React.useState(null);
@@ -272,8 +284,8 @@ export default function ChartFunc() {
               </div>
             ) : null
           ) : (
-            <CircularProgress />
-          )}
+              <CircularProgress />
+            )}
         </Grid>
         <Grid item xs>
           {recentChart ? (
