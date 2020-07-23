@@ -178,7 +178,9 @@ export const get_data = async (query) => {
                 schema["receiver"] = receiver;
                 schema["url"] = url;
                 schema["task_desc"] = task_desc;
-                schema["created_time"] = response.result.createdDate;
+                schema["created_time"] = new Date(
+                  response.result.createdDate
+                ).getTime();
                 schema["modified_time"] = new Date(
                   response.result.modifiedDate
                 ).getTime();

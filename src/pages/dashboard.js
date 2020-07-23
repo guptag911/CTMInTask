@@ -44,7 +44,7 @@ const Dashboard = () => {
       HubSpotTasksGetAPIData();
       delete_tasks();
       insert_tasks();
-    }, 5000);
+    }, 4000);
   }, []);
   // console.log("Analytics is ", analyticsClicked);
   return (

@@ -65,9 +65,11 @@ const Home = () => {
   const classes = useStyles();
   const [currentUser, setCurrentUser] = useState(null);
 
-  React.useEffect(() => {
-    get_data("from: comments-noreply@docs.google.com");
-  });
+  useEffect(() => {
+    setTimeout(() => {
+      get_data("from: comments-noreply@docs.google.com");
+    }, 2000);
+  }, []);
 
   const handleUser = async (e) => {
     if (currentUser) {

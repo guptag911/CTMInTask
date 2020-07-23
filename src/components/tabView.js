@@ -234,7 +234,7 @@ export default function MiniDrawer() {
           aria-haspopup="true"
           color="inherit"
         >
-          <Avatar alt="click" src={user.photoURL} />
+          <Avatar alt="click" src={userstore.photoURL} />
         </IconButton>
         <p style={{ color: "#000000 !important" }}>Profile</p>
       </MenuItem>
@@ -776,7 +776,7 @@ export default function MiniDrawer() {
                   </React.Fragment>
                 )}
               </ListItemIcon>
-              {text === "Admin" ? (
+              {text === "Admin" && userstore.isAdmin ? (
                 <Button component={Link} to="/admin">
                   <ListItemText primary={text} />
                 </Button>
