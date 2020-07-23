@@ -26,7 +26,7 @@ CTM InTask used the following tech stack for proper functionininng :
 * [Firestore](https://firebase.google.com/docs/firestore) - Used for Cloud Database Storage.
 * [DialogFlow](https://cloud.google.com/dialogflow/docs) - Used for integration of ChatBot.
 
-### Installation
+### Installation (For Developers)
 
 ```sh
 $ cd CTMInTask
@@ -34,6 +34,9 @@ $ npm install
 $ yarn start
 ```
 NOTE: Make sure that you are in master branch.
+
+### Deployment
+CTM Intask is live and running [here](https://ctmintask.web.app/#/)
 
 ### How to setup for first time!
     - Login with your innovaccer's account for Gsuite authorization.
