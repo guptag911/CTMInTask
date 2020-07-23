@@ -4,8 +4,10 @@ import {
   getAnalyticsHubspotData,
   getAnalyticsCompletedHubspotData,
   getAnalyticsMonthHubspotData,
+  HubspotAnalyticsCompletedWithinPeriod,
+  HubspotAnalyticsPendingWithinPeriod,
+  HubspotAnalyticsTotalWithinPeriod
 } from "../../api/analytics";
-import { HubSpotDataGet } from "../../api/hubSpot";
 import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from "@nivo/pie";
 import Grid from "@material-ui/core/Grid";
@@ -72,16 +74,20 @@ export default function ChartFunc() {
   );
   const [toDate, setToDate] = React.useState(new Date().getTime());
 
+  const [fromDate, setFromDate] = React.useState(0);
+
   const FromHandler = (e) => {
     // console.log("val is ", e.target.value, new Date(e.target.value).getTime());
+    setFromDate(new Date(e.target.value).getTime())
     setFromDate7(new Date(e.target.value).getTime());
     setFromDate30(new Date(e.target.value).getTime());
   };
 
   const ToHandler = (e) => {
-    // console.log("val is in ToHandler ", e.target.value);
+    console.log("val is in ToHandler ", e.target.value);
     setToDate(new Date(e.target.value).getTime());
   };
+
 
   useEffect(() => {
     (async function anyNameFunction() {
@@ -119,20 +125,25 @@ export default function ChartFunc() {
             },
           ]);
         }
-        setRecentChart([
-          {
-            id: "Completed",
-            label: "Completed Tasks",
-            value: Tdata.length,
-            color: "hsl(169, 70%, 50%)",
-          },
-          {
-            id: "Recently Completed",
-            label: "Recently Completed Tasks",
-            value: Rdata.length,
-            color: "hsl(257, 70%, 50%)",
-          },
-        ]);
+        if (Tdata.length + Rdata.length == 0) {
+          setRecentChart(null);
+        }
+        else {
+          setRecentChart([
+            {
+              id: "Completed",
+              label: "Completed Tasks",
+              value: Tdata.length,
+              color: "hsl(169, 70%, 50%)",
+            },
+            {
+              id: "Recently Completed",
+              label: "Recently Completed Tasks",
+              value: Rdata.length,
+              color: "hsl(257, 70%, 50%)",
+            },
+          ]);
+        }
         setLoader(false);
       } catch (e) {
         console.log("Error is ", e);
@@ -144,54 +155,45 @@ export default function ChartFunc() {
   useEffect(() => {
     (async function anyNameFunction() {
       try {
-        let pendTasks = 0;
-        let compTasks = 0;
-        let totTasks = 0;
-
-        let Hubdata = await HubSpotDataGet();
-        for (let ele in Hubdata) {
-          if (
-            Hubdata[ele].engagement.type === "TASK" &&
-            Hubdata[ele].metadata.status === "COMPLETED"
-          ) {
-            compTasks += 1;
-            totTasks += 1;
-          } else if (
-            Hubdata[ele].engagement.type === "TASK" &&
-            Hubdata[ele].metadata.status !== "COMPLETED"
-          ) {
-            pendTasks += 1;
-            totTasks += 1;
-          }
+        let pendTasks = await HubspotAnalyticsPendingWithinPeriod(fromDate, toDate);
+        let compTasks = await HubspotAnalyticsCompletedWithinPeriod(fromDate, toDate);
+        let totTasks = await HubspotAnalyticsTotalWithinPeriod(fromDate, toDate);
+        pendTasks = pendTasks.length;
+        compTasks = compTasks.length;
+        totTasks = totTasks.length;
+        if (pendTasks + compTasks + totTasks == 0) {
+          setChartData(null);
         }
-
-        setChartData([
-          {
-            id: "Pending",
-            label: "Pending Tasks",
-            value: pendTasks,
-            color: "hsl(169, 70%, 50%)",
-          },
-          {
-            id: "Completed",
-            label: "Completed Tasks",
-            value: compTasks,
-            color: "hsl(257, 70%, 50%)",
-          },
-          {
-            id: "Total",
-            label: "Total Tasks",
-            value: totTasks,
-            color: "hsl(241, 70%, 50%)",
-          },
-        ]);
+        else {
+          setChartData([
+            {
+              id: "Pending",
+              label: "Pending Tasks",
+              value: pendTasks,
+              color: "hsl(169, 70%, 50%)",
+            },
+            {
+              id: "Completed",
+              label: "Completed Tasks",
+              value: compTasks,
+              color: "hsl(257, 70%, 50%)",
+            },
+            {
+              id: "Total",
+              label: "Total Tasks",
+              value: totTasks,
+              color: "hsl(241, 70%, 50%)",
+            },
+          ]);
+        }
         setLoader(false);
       } catch (e) {
         console.log("Error is ", e);
         setLoader(false);
       }
     })();
-  }, []);
+  }, [fromDate, toDate]);
+
 
   const [contRecent, setContRecent] = React.useState(null);
   const [contTask, setCont] = React.useState(null);
