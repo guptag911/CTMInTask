@@ -37,7 +37,9 @@ const Admin = () => {
       <Grid container spacing={3}>
         <Grid item xs>
           <Typography>Admin Dashboard</Typography>
-          <Typography>Admin({firebaseAuth.currentUser.email})</Typography>
+          <Typography>
+            Admin({JSON.parse(sessionStorage.getItem("user")).email})
+          </Typography>
         </Grid>
         <Grid item xs>
           {users
