@@ -47,7 +47,7 @@ import InputBase from "@material-ui/core/InputBase";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getZohoToken, zoho } from "../helper/zohoAuth";
 import Container from "@material-ui/core/Container";
-
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -504,52 +504,72 @@ export default function MiniDrawer() {
 
     switch (service) {
       case "Gsuite":
-        setShowData(<Container><GsuiteCard val={val}></GsuiteCard></Container>);
+        setShowData(
+          <Container>
+            <GsuiteCard val={val}></GsuiteCard>
+          </Container>
+        );
         break;
       case "Hubspot":
         firebaseAuth.currentUser && !hubState
           ? setShowData(
-            <Button
-              variant="contained"
-              color="inherit"
-              className={classes.center}
-              onClick={handleHub}
-            >
-              Connect to HubSpot
+              <Button
+                variant="contained"
+                color="inherit"
+                className={classes.center}
+                onClick={handleHub}
+              >
+                Connect to HubSpot
               </Button>
-          )
-          : setShowData(<Container><HubSpotCard val={val}></HubSpotCard></Container>);
+            )
+          : setShowData(
+              <Container>
+                <HubSpotCard val={val}></HubSpotCard>
+              </Container>
+            );
         break;
       case "Confluence":
         firebaseAuth.currentUser && !authState
           ? setShowData(
-            <Button
-              variant="contained"
-              color="inherit"
-              className={classes.center}
-              onClick={handleReq}
-            >
-              Connect to Confluence
+              <Button
+                variant="contained"
+                color="inherit"
+                className={classes.center}
+                onClick={handleReq}
+              >
+                Connect to Confluence
               </Button>
-          )
-          : setShowData(<Container><ConfluenceCard val={val}></ConfluenceCard></Container>);
+            )
+          : setShowData(
+              <Container>
+                <ConfluenceCard val={val}></ConfluenceCard>
+              </Container>
+            );
         break;
       case "Jira":
         firebaseAuth.currentUser && !jiraState
           ? setShowData(
-            <Button
-              variant="contained"
-              color="inherit"
-              className={classes.center}
-              onClick={handleJira}
-            >
-              Connect to Jira
+              <Button
+                variant="contained"
+                color="inherit"
+                className={classes.center}
+                onClick={handleJira}
+              >
+                Connect to Jira
               </Button>
-          )
-          : setShowData(<Container><JiraCard val={val}></JiraCard></Container>);
+            )
+          : setShowData(
+              <Container>
+                <JiraCard val={val}></JiraCard>
+              </Container>
+            );
         break;
       case "Calendar":
-        setShowData(<Container><CalendarCard val={val}></CalendarCard></Container>);
+        setShowData(
+          <Container>
+            <CalendarCard val={val}></CalendarCard>
+          </Container>
+        );
         break;
       case "Reply Mail":
         setShowData(
@@ -563,19 +583,39 @@ export default function MiniDrawer() {
         setShowData(<AnalyticsCont val={val}></AnalyticsCont>);
         break;
       case "gsuitestar":
-        setShowData(<Container><StarCard val={val}></StarCard></Container>);
+        setShowData(
+          <Container>
+            <StarCard val={val}></StarCard>
+          </Container>
+        );
         break;
       case "confstar":
-        setShowData(<Container><ConfStarCard val={val}></ConfStarCard></Container>);
+        setShowData(
+          <Container>
+            <ConfStarCard val={val}></ConfStarCard>
+          </Container>
+        );
         break;
       case "hubstar":
-        setShowData(<Container><HubStarCard val={val}></HubStarCard></Container>);
+        setShowData(
+          <Container>
+            <HubStarCard val={val}></HubStarCard>
+          </Container>
+        );
         break;
       case "jirastar":
-        setShowData(<Container><JiraStarCard val={val}></JiraStarCard></Container>);
+        setShowData(
+          <Container>
+            <JiraStarCard val={val}></JiraStarCard>
+          </Container>
+        );
         break;
       default:
-        setShowData(<Container><GsuiteCard val={val}></GsuiteCard></Container>);
+        setShowData(
+          <Container>
+            <GsuiteCard val={val}></GsuiteCard>
+          </Container>
+        );
     }
   };
 
@@ -693,8 +733,8 @@ export default function MiniDrawer() {
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
-                <ChevronLeftIcon />
-              )}
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </div>
         <Divider />
@@ -724,8 +764,8 @@ export default function MiniDrawer() {
                 ) : index === 4 ? (
                   <img src="https://img.icons8.com/cute-clipart/40/calendar.png"></img>
                 ) : (
-                            <img src="https://img.icons8.com/fluent/40/gmail.png"></img>
-                          )}
+                  <img src="https://img.icons8.com/fluent/40/gmail.png"></img>
+                )}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -733,7 +773,7 @@ export default function MiniDrawer() {
         </List>
         <Divider />
         <List>
-          {["Analytics", "Starred"].map((text, index) => (
+          {["Analytics", "Admin", "Starred"].map((text, index) => (
             <ListItem
               button
               key={text}
@@ -744,40 +784,56 @@ export default function MiniDrawer() {
               <ListItemIcon>
                 {index === 0 ? (
                   <img src="https://img.icons8.com/fluent/40/web-analystics.png"></img>
+                ) : index === 1 && userstore.isAdmin ? (
+                  <React.Fragment>
+                    <Button
+                      style={{ marginLeft: -10 }}
+                      component={Link}
+                      to="/admin"
+                    >
+                      <img src="https://img.icons8.com/nolan/40/admin-settings-male.png"></img>
+                    </Button>
+                  </React.Fragment>
                 ) : (
-                    <React.Fragment>
-                      <Button
-                        style={{ marginLeft: -10 }}
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        onClick={handleClick}
-                      >
-                        <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
-                      </Button>
-                      <Menu
-                        id="simple-menu"
-                        anchorEl={anchorEl1}
-                        keepMounted
-                        open={Boolean(anchorEl1)}
-                        onClose={handleClose}
-                      >
-                        <MenuItem onClick={(e) => onClickShow(e, "gsuitestar")}>
-                          Gsuite
+                  <React.Fragment>
+                    <Button
+                      style={{ marginLeft: -10 }}
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
+                      onClick={handleClick}
+                    >
+                      <img src="https://img.icons8.com/cute-clipart/40/bookmark-ribbon.png"></img>
+                    </Button>
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={anchorEl1}
+                      keepMounted
+                      open={Boolean(anchorEl1)}
+                      onClose={handleClose}
+                    >
+                      <MenuItem onClick={(e) => onClickShow(e, "gsuitestar")}>
+                        Gsuite
                       </MenuItem>
-                        <MenuItem onClick={(e) => onClickShow(e, "jirastar")}>
-                          Jira
+                      <MenuItem onClick={(e) => onClickShow(e, "jirastar")}>
+                        Jira
                       </MenuItem>
-                        <MenuItem onClick={(e) => onClickShow(e, "confstar")}>
-                          Confluence
+                      <MenuItem onClick={(e) => onClickShow(e, "confstar")}>
+                        Confluence
                       </MenuItem>
-                        <MenuItem onClick={(e) => onClickShow(e, "hubstar")}>
-                          Hubspot
+                      <MenuItem onClick={(e) => onClickShow(e, "hubstar")}>
+                        Hubspot
                       </MenuItem>
-                      </Menu>
-                    </React.Fragment>
-                  )}
+                    </Menu>
+                  </React.Fragment>
+                )}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              {text === "Admin" ? (
+                <Button component={Link} to="/admin">
+                  <ListItemText primary={text} />
+                </Button>
+              ) : (
+                <ListItemText primary={text} />
+              )}
             </ListItem>
           ))}
         </List>

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -7,6 +7,7 @@ import Slide from "@material-ui/core/Slide";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
+import { DialogTitle, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,35 +20,22 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ResponsiveDialog({ open, handleClose, url, element }) {
-  //   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  // console.log("Handleclose is ",handleClose);
+export default function ResponsiveDialog({ open, handleClose, uid }) {
+  console.log(uid);
   const classes = useStyles();
-  // useEffect(()=>{
-  //   console.log("url is in iframe ", url, element);
-  // },[])
-
   return (
     <div>
       <Dialog
-        fullScreen
-        open={open}
         onClose={handleClose}
-        TransitionComponent={Transition}
+        aria-labelledby="customized-dialog-title"
+        open={open}
       >
-        <DialogContent>
-          {open ? (
-            <iframe
-              src={url}
-              title="iframe"
-              width="100%"
-              height="100%"
-              sandbox="allow-presentation allow-same-origin allow-scripts allow-forms allow-popups allow-scripts allow-top-navigation"
-            ></iframe>
-          ) : null}
-        </DialogContent>
+        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+          Modal title
+        </DialogTitle>
+        <DialogContent dividers>hjbsajhcb</DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button autoFocus onClick={handleClose} color="primary">
             Close
           </Button>
         </DialogActions>

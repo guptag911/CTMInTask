@@ -12,6 +12,7 @@ import PrivateRoute from "./components/privateRoute";
 // Pages
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
+import Admin from "./components/admin/admin";
 
 const theme = createMuiTheme({
   palette: {
@@ -35,6 +36,7 @@ function App() {
       <div className="App">
         <HashRouter>
           <Switch>
+            <PrivateRoute exact path="/admin" component={Admin} />
             <PrivateRoute exact path="/dash" component={Dashboard} />
             <Route path="/" component={Home} />
           </Switch>

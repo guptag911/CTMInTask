@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import { signout, signIn } from "../helper/auth";
-import { firebaseAuth } from "../config/config";
+import { firebaseAuth, db } from "../config/config";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -93,14 +93,19 @@ const Home = () => {
     }
   }
 
-  firebaseAuth.onAuthStateChanged((user) => {
+  firebaseAuth.onAuthStateChanged(async (user) => {
     if (user) {
       setCurrentUser(user);
+      const adminStatus = await db.collection("users").doc(user.uid).get();
+
       let userData = {
         displayNam: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
         uid: user.uid,
+        isAdmin: adminStatus.data().isAdmin
+          ? adminStatus.data().isAdmin
+          : false,
       };
       window.sessionStorage.setItem("user", JSON.stringify(userData));
       return user;
