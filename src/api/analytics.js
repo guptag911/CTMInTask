@@ -2,13 +2,16 @@ import { firebaseAuth, db } from "../config/config";
 
 export const getAnalyticsOverallCompletedData = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     let finalData = [];
     const userRef = await db
       .collection("users")
@@ -67,13 +70,16 @@ export const getAnalyticsOverallCompletedData = async (
 
 export const getAnalyticsOverallCompletedDataRecently = async (
   fromDate = new Date().getTime() - 7 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     let finalData = [];
     const userRef = await db
       .collection("users")
@@ -138,13 +144,16 @@ export const getAnalyticsOverallCompletedDataRecently = async (
 
 export const getAnalyticsOverallCompletedDataMonth = async (
   fromDate = new Date().getTime() - 30 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     let finalData = [];
     const userRef = await db
       .collection("users")
@@ -209,13 +218,16 @@ export const getAnalyticsOverallCompletedDataMonth = async (
 
 export const OverallAnalyticsCompletedWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     let finalData = [];
     const userRef = await db
       .collection("users")
@@ -282,13 +294,16 @@ export const OverallAnalyticsCompletedWithinPeriod = async (
 
 export const OverallAnalyticsPendingWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     let finalData = [];
     const userRef = await db
       .collection("users")
@@ -347,13 +362,16 @@ export const OverallAnalyticsPendingWithinPeriod = async (
 
 export const OverallAnalyticsTotalWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     let finalData = [];
     const userRef = await db
       .collection("users")
@@ -417,13 +435,16 @@ export const OverallAnalyticsTotalWithinPeriod = async (
 
 export const getAnalyticsGsuiteData = async (
   fromDate = new Date().getTime() - 7 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -450,13 +471,16 @@ export const getAnalyticsGsuiteData = async (
 
 export const getAnalyticsCompletedGsuiteData = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -480,13 +504,16 @@ export const getAnalyticsCompletedGsuiteData = async (
 
 export const GsuiteAnalyticsCompletedWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -510,16 +537,19 @@ export const GsuiteAnalyticsCompletedWithinPeriod = async (
 
 export const GsuiteAnalyticsPendingWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
     // fromDate = new Date(fromDate).toISOString();
     // toDate = new Date(toDate).toISOString();
     // console.log("from date is ", fromDate);
-    const uid =
-      firebaseAuth.currentUser.uid === null
-        ? JSON.parse(window.sessionStorage.getItem("user")).uid
-        : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -541,15 +571,18 @@ export const GsuiteAnalyticsPendingWithinPeriod = async (
 
 export const GsuiteAnalyticsTotalWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
     fromDate = new Date(fromDate).toISOString();
     toDate = new Date(toDate).toISOString();
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -572,13 +605,16 @@ export const GsuiteAnalyticsTotalWithinPeriod = async (
 
 export const getAnalyticsMonthGsuiteData = async (
   fromDate = new Date().getTime() - 30 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -603,13 +639,16 @@ export const getAnalyticsMonthGsuiteData = async (
 
 export const getAnalyticsHubspotData = async (
   fromDate = new Date().getTime() - 7 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -634,13 +673,16 @@ export const getAnalyticsHubspotData = async (
 
 export const getAnalyticsCompletedHubspotData = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -665,13 +707,16 @@ export const getAnalyticsCompletedHubspotData = async (
 
 export const getAnalyticsMonthHubspotData = async (
   fromDate = new Date().getTime() - 30 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -696,13 +741,16 @@ export const getAnalyticsMonthHubspotData = async (
 
 export const HubspotAnalyticsCompletedWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -726,13 +774,16 @@ export const HubspotAnalyticsCompletedWithinPeriod = async (
 
 export const HubspotAnalyticsPendingWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -754,13 +805,16 @@ export const HubspotAnalyticsPendingWithinPeriod = async (
 
 export const HubspotAnalyticsTotalWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -784,13 +838,16 @@ export const HubspotAnalyticsTotalWithinPeriod = async (
 
 export const getAnalyticsJiraData = async (
   fromDate = new Date().getTime() - 7 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -814,13 +871,16 @@ export const getAnalyticsJiraData = async (
 
 export const getAnalyticsCompletedJiraData = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -845,13 +905,16 @@ export const getAnalyticsCompletedJiraData = async (
 
 export const getAnalyticsMonthJiraData = async (
   fromDate = new Date().getTime() - 30 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -875,13 +938,16 @@ export const getAnalyticsMonthJiraData = async (
 
 export const JiraAnalyticsCompletedWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -905,14 +971,16 @@ export const JiraAnalyticsCompletedWithinPeriod = async (
 
 export const JiraAnalyticsPendingWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -934,13 +1002,16 @@ export const JiraAnalyticsPendingWithinPeriod = async (
 
 export const JiraAnalyticsTotalWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -963,13 +1034,16 @@ export const JiraAnalyticsTotalWithinPeriod = async (
 
 export const getAnalyticsConfData = async (
   fromDate = new Date().getTime() - 7 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -993,13 +1067,16 @@ export const getAnalyticsConfData = async (
 
 export const getAnalyticsCompletedConfData = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -1024,13 +1101,16 @@ export const getAnalyticsCompletedConfData = async (
 
 export const getAnalyticsMonthConfData = async (
   fromDate = new Date().getTime() - 30 * 24 * 3600 * 1000,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -1054,13 +1134,16 @@ export const getAnalyticsMonthConfData = async (
 
 export const ConfAnalyticsCompletedWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -1084,13 +1167,16 @@ export const ConfAnalyticsCompletedWithinPeriod = async (
 
 export const ConfAnalyticsPendingWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)
@@ -1112,13 +1198,16 @@ export const ConfAnalyticsPendingWithinPeriod = async (
 
 export const ConfAnalyticsTotalWithinPeriod = async (
   fromDate = 0,
-  toDate = new Date().getTime()
+  toDate = new Date().getTime(),
+  open,
+  id
 ) => {
   try {
-    const uid =
-            firebaseAuth.currentUser.uid === null
-                ? JSON.parse(window.sessionStorage.getItem("user")).uid
-                : firebaseAuth.currentUser.uid;
+    const uid = open
+      ? id
+      : firebaseAuth.currentUser.uid === null
+      ? JSON.parse(window.sessionStorage.getItem("user")).uid
+      : firebaseAuth.currentUser.uid;
     const userRef = await db
       .collection("users")
       .doc(uid)

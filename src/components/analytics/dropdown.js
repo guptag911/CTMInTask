@@ -33,11 +33,13 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ControlledTreeView() {
+export default function ControlledTreeView(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
-  const [cont, setCont] = React.useState(<OverallAnalytics></OverallAnalytics>);
+  const [cont, setCont] = React.useState(
+    <OverallAnalytics open={props.open} id={props.id}></OverallAnalytics>
+  );
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
@@ -51,25 +53,38 @@ export default function ControlledTreeView() {
   const onClickHandler = (product) => {
     switch (product) {
       case "overall":
-        setCont(<OverallAnalytics></OverallAnalytics>);
+        setCont(
+          <OverallAnalytics open={props.open} id={props.id}></OverallAnalytics>
+        );
         break;
       case "gsuite":
-        setCont(<GsuiteAnalytics></GsuiteAnalytics>);
+        setCont(
+          <GsuiteAnalytics open={props.open} id={props.id}></GsuiteAnalytics>
+        );
         break;
       case "jira":
-        setCont(<JiraAnalytics></JiraAnalytics>);
+        setCont(
+          <JiraAnalytics open={props.open} id={props.id}></JiraAnalytics>
+        );
         break;
       case "conf":
-        setCont(<ConfluenceAnalytics></ConfluenceAnalytics>);
+        setCont(
+          <ConfluenceAnalytics
+            open={props.open}
+            id={props.id}
+          ></ConfluenceAnalytics>
+        );
         break;
       case "hub":
-        setCont(<HubspotAnalytics></HubspotAnalytics>);
+        setCont(
+          <HubspotAnalytics open={props.open} id={props.id}></HubspotAnalytics>
+        );
     }
   };
 
   return (
     <React.Fragment>
-      <Grid container spacing={3}>
+      <Grid container spacing={10}>
         <Grid item xs={12} sm={2}>
           <TreeView
             className={classes.root}

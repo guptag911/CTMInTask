@@ -6,7 +6,7 @@ import {
   getAnalyticsMonthHubspotData,
   HubspotAnalyticsCompletedWithinPeriod,
   HubspotAnalyticsPendingWithinPeriod,
-  HubspotAnalyticsTotalWithinPeriod
+  HubspotAnalyticsTotalWithinPeriod,
 } from "../../api/analytics";
 import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from "@nivo/pie";
@@ -57,7 +57,7 @@ const useStylesDate = makeStyles((theme) => ({
 
 let currDate = `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}`;
 
-export default function ChartFunc() {
+export default function ChartFunc(props) {
   const [loader, setLoader] = useState(true);
   const [chartData, setChartData] = useState(null);
   const [recentChart, setRecentChart] = useState(null);
@@ -78,7 +78,7 @@ export default function ChartFunc() {
 
   const FromHandler = (e) => {
     // console.log("val is ", e.target.value, new Date(e.target.value).getTime());
-    setFromDate(new Date(e.target.value).getTime())
+    setFromDate(new Date(e.target.value).getTime());
     setFromDate7(new Date(e.target.value).getTime());
     setFromDate30(new Date(e.target.value).getTime());
   };
@@ -88,13 +88,25 @@ export default function ChartFunc() {
     setToDate(new Date(e.target.value).getTime());
   };
 
-
   useEffect(() => {
     (async function anyNameFunction() {
       try {
-        const Rdata = await getAnalyticsHubspotData(fromDate7, toDate);
-        const Tdata = await getAnalyticsCompletedHubspotData();
-        const Mdata = await getAnalyticsMonthHubspotData(fromDate30, toDate);
+        const Rdata = await getAnalyticsHubspotData(
+          fromDate7,
+          toDate,
+          props.open,
+          props.id
+        );
+        const Tdata = await getAnalyticsCompletedHubspotData(
+          props.open,
+          props.id
+        );
+        const Mdata = await getAnalyticsMonthHubspotData(
+          fromDate30,
+          toDate,
+          props.open,
+          props.id
+        );
         console.log("data is ", Rdata.length, Tdata.length, Mdata.length);
         if (Rdata.length == 0 || Mdata.length == 0) {
           setFinite(false);
@@ -127,8 +139,7 @@ export default function ChartFunc() {
         }
         if (Tdata.length + Rdata.length == 0) {
           setRecentChart(null);
-        }
-        else {
+        } else {
           setRecentChart([
             {
               id: "Completed",
@@ -155,16 +166,30 @@ export default function ChartFunc() {
   useEffect(() => {
     (async function anyNameFunction() {
       try {
-        let pendTasks = await HubspotAnalyticsPendingWithinPeriod(fromDate, toDate);
-        let compTasks = await HubspotAnalyticsCompletedWithinPeriod(fromDate, toDate);
-        let totTasks = await HubspotAnalyticsTotalWithinPeriod(fromDate, toDate);
+        let pendTasks = await HubspotAnalyticsPendingWithinPeriod(
+          fromDate,
+          toDate,
+          props.open,
+          props.id
+        );
+        let compTasks = await HubspotAnalyticsCompletedWithinPeriod(
+          fromDate,
+          toDate,
+          props.open,
+          props.id
+        );
+        let totTasks = await HubspotAnalyticsTotalWithinPeriod(
+          fromDate,
+          toDate,
+          props.open,
+          props.id
+        );
         pendTasks = pendTasks.length;
         compTasks = compTasks.length;
         totTasks = totTasks.length;
         if (pendTasks + compTasks + totTasks == 0) {
           setChartData(null);
-        }
-        else {
+        } else {
           setChartData([
             {
               id: "Pending",
@@ -193,7 +218,6 @@ export default function ChartFunc() {
       }
     })();
   }, [fromDate, toDate]);
-
 
   const [contRecent, setContRecent] = React.useState(null);
   const [contTask, setCont] = React.useState(null);

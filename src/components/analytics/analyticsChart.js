@@ -6,7 +6,7 @@ import {
   getAnalyticsOverallCompletedDataMonth,
   OverallAnalyticsCompletedWithinPeriod,
   OverallAnalyticsPendingWithinPeriod,
-  OverallAnalyticsTotalWithinPeriod
+  OverallAnalyticsTotalWithinPeriod,
 } from "../../api/analytics";
 import { makeStyles } from "@material-ui/core/styles";
 import { ResponsivePie } from "@nivo/pie";
@@ -14,7 +14,6 @@ import { ResponsivePie } from "@nivo/pie";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
-
 
 const useStyles = makeStyles((theme) => ({
   [theme.breakpoints.down("sm")]: {
@@ -80,7 +79,7 @@ export default function ChartFunc(props) {
 
   const FromHandler = (e) => {
     // console.log("val is ", e.target.value, new Date(e.target.value).getTime());
-    setFromDate(new Date(e.target.value).getTime())
+    setFromDate(new Date(e.target.value).getTime());
     setFromDate7(new Date(e.target.value).getTime());
     setFromDate30(new Date(e.target.value).getTime());
   };
@@ -95,12 +94,19 @@ export default function ChartFunc(props) {
       try {
         const Rdata = await getAnalyticsOverallCompletedDataRecently(
           fromDate7,
-          toDate
+          toDate,
+          props.open,
+          props.id
         );
-        const Tdata = await getAnalyticsOverallCompletedData();
+        const Tdata = await getAnalyticsOverallCompletedData(
+          props.open,
+          props.id
+        );
         const Mdata = await getAnalyticsOverallCompletedDataMonth(
           fromDate30,
-          toDate
+          toDate,
+          props.open,
+          props.id
         );
         console.log("data is ", Rdata.length, Tdata.length, Mdata);
         if (Rdata.length == 0 || Mdata.length == 0) {
@@ -115,7 +121,7 @@ export default function ChartFunc(props) {
                 Math.round(
                   ((toDate - fromDate7) / (Rdata.length * 3600 * 1000) +
                     Number.EPSILON) *
-                  100
+                    100
                 ) / 100,
               color: "hsl(257, 70%, 50%)",
             },
@@ -126,7 +132,7 @@ export default function ChartFunc(props) {
                 Math.round(
                   ((toDate - fromDate30) / (Mdata.length * 3600 * 1000) +
                     Number.EPSILON) *
-                  100
+                    100
                 ) / 100,
               color: "hsl(169, 70%, 50%)",
             },
@@ -134,8 +140,7 @@ export default function ChartFunc(props) {
         }
         if (Tdata.length + Rdata.length == 0) {
           setRecentChart(null);
-        }
-        else {
+        } else {
           setRecentChart([
             {
               id: "Completed",
@@ -164,16 +169,30 @@ export default function ChartFunc(props) {
   useEffect(() => {
     (async function anyNameFunction() {
       try {
-        let pendTasks = await OverallAnalyticsPendingWithinPeriod(fromDate, toDate);
-        let compTasks = await OverallAnalyticsCompletedWithinPeriod(fromDate, toDate);
-        let totTasks = await OverallAnalyticsTotalWithinPeriod(fromDate, toDate);
+        let pendTasks = await OverallAnalyticsPendingWithinPeriod(
+          fromDate,
+          toDate,
+          props.open,
+          props.id
+        );
+        let compTasks = await OverallAnalyticsCompletedWithinPeriod(
+          fromDate,
+          toDate,
+          props.open,
+          props.id
+        );
+        let totTasks = await OverallAnalyticsTotalWithinPeriod(
+          fromDate,
+          toDate,
+          props.open,
+          props.id
+        );
         pendTasks = pendTasks.length;
         compTasks = compTasks.length;
         totTasks = totTasks.length;
         if (pendTasks + compTasks + totTasks == 0) {
           setChartData(null);
-        }
-        else {
+        } else {
           setChartData([
             {
               id: "Pending",
@@ -326,8 +345,8 @@ export default function ChartFunc(props) {
               </div>
             ) : null
           ) : (
-              <CircularProgress />
-            )}
+            <CircularProgress />
+          )}
         </Grid>
         <Grid item xs>
           {recentChart ? (

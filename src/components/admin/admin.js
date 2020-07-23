@@ -112,6 +112,7 @@ const Admin = () => {
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState(null);
   const [currentUid, setCurrentUid] = useState(null);
+  const [currentUserName, setUserName] = useState(null);
   const classes = useStyles();
   const userstore = JSON.parse(sessionStorage.getItem("user"));
 
@@ -127,6 +128,7 @@ const Admin = () => {
     e.preventDefault();
     e.stopPropagation();
     setCurrentUid(e.currentTarget.parentNode.parentNode.className);
+    setUserName(e.target.textContent);
     setOpen(true);
   };
   const handleClose = (e) => {
@@ -321,7 +323,8 @@ const Admin = () => {
           <ResponsiveDialog
             open={open}
             handleClose={handleClose}
-            uid={currentUid}
+            id={currentUid}
+            name={currentUserName}
           />
         </Grid>
       </Grid>

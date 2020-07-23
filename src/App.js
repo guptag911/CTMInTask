@@ -9,10 +9,12 @@ import "./App.css";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 import PrivateRoute from "./components/privateRoute";
+
 // Pages
 import Home from "./pages/home";
 import Dashboard from "./pages/dashboard";
 import Admin from "./components/admin/admin";
+import PrivateAdmin from "./components/privateAdmin";
 
 const theme = createMuiTheme({
   palette: {
@@ -36,7 +38,7 @@ function App() {
       <div className="App">
         <HashRouter>
           <Switch>
-            <PrivateRoute exact path="/admin" component={Admin} />
+            <PrivateAdmin exact path="/admin" component={Admin} />
             <PrivateRoute exact path="/dash" component={Dashboard} />
             <Route path="/" component={Home} />
           </Switch>

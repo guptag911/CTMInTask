@@ -8,6 +8,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 import { DialogTitle, Typography } from "@material-ui/core";
+import AnalyticsCont from "../analytics/analyticsCont";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,8 +21,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ResponsiveDialog({ open, handleClose, uid }) {
-  console.log(uid);
+export default function ResponsiveDialog({ open, handleClose, id, name }) {
+  console.log(id);
   const classes = useStyles();
   return (
     <div>
@@ -31,11 +32,13 @@ export default function ResponsiveDialog({ open, handleClose, uid }) {
         open={open}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Modal title
+          {name}
         </DialogTitle>
-        <DialogContent dividers>hjbsajhcb</DialogContent>
+        <DialogContent dividers>
+          <AnalyticsCont open={open} id={id}></AnalyticsCont>
+        </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
+          <Button autoFocus onClick={handleClose} color="inherit">
             Close
           </Button>
         </DialogActions>
