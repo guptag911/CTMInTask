@@ -187,29 +187,30 @@ export default function ChartFunc(props) {
           props.open,
           props.id
         );
-        pendTasks = pendTasks.length;
-        compTasks = compTasks.length;
-        totTasks = totTasks.length;
-        if (pendTasks + compTasks + totTasks == 0) {
+        console.log("data lengths are ", pendTasks.length, compTasks.length, totTasks.length)
+        // pendTasks = pendTasks.length;
+        // compTasks = compTasks.length;
+        // totTasks = totTasks.length;
+        if (pendTasks.length + compTasks.length + totTasks.length == 0) {
           setChartData(null);
         } else {
           setChartData([
             {
               id: "Pending",
               label: "Pending Tasks",
-              value: pendTasks,
+              value: pendTasks.length,
               color: "hsl(169, 70%, 50%)",
             },
             {
               id: "Completed",
               label: "Completed Tasks",
-              value: compTasks,
+              value: compTasks.length,
               color: "hsl(257, 70%, 50%)",
             },
             {
               id: "Total",
               label: "Total Tasks",
-              value: totTasks,
+              value: totTasks.length,
               color: "hsl(241, 70%, 50%)",
             },
           ]);

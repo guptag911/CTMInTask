@@ -379,12 +379,14 @@ export const OverallAnalyticsTotalWithinPeriod = async (
       .collection("tasks")
       .doc("gsuite")
       .collection("data")
-      .where("created_time", ">=", new Date(fromDate).toISOString())
-      .where("created_time", "<=", new Date(toDate).toISOString())
+      .where("created_time", ">=", fromDate)
+      .where("created_time", "<=", toDate)
       .get();
     userRef.forEach((data) => {
       finalData.push(data.data());
     });
+
+    console.log("f=gsuite length ", finalData.length)
 
     const userRefC = await db
       .collection("users")
@@ -399,6 +401,8 @@ export const OverallAnalyticsTotalWithinPeriod = async (
       finalData.push(data.data());
     });
 
+    console.log("f=conf length ", finalData.length)
+
     const userRefJ = await db
       .collection("users")
       .doc(uid)
@@ -411,6 +415,8 @@ export const OverallAnalyticsTotalWithinPeriod = async (
     userRefJ.forEach((data) => {
       finalData.push(data.data());
     });
+
+    console.log("f=jira length ", finalData.length)
 
     const userRefH = await db
       .collection("users")
@@ -425,6 +431,8 @@ export const OverallAnalyticsTotalWithinPeriod = async (
     userRefH.forEach((data) => {
       finalData.push(data.data());
     });
+
+    console.log("f=hub length ", finalData.length)
 
     return finalData;
   } catch (err) {
@@ -576,8 +584,6 @@ export const GsuiteAnalyticsTotalWithinPeriod = async (
   id
 ) => {
   try {
-    fromDate = new Date(fromDate).toISOString();
-    toDate = new Date(toDate).toISOString();
     const uid = open
       ? id
       : firebaseAuth.currentUser.uid === null
