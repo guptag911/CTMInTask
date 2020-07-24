@@ -99,6 +99,8 @@ export default function ChartFunc(props) {
           props.id
         );
         const Tdata = await getAnalyticsOverallCompletedData(
+          0,
+          new Date().getTime(),
           props.open,
           props.id
         );

@@ -97,7 +97,8 @@ export default function ChartFunc(props) {
           props.open,
           props.id
         );
-        const Tdata = await getAnalyticsCompletedJiraData(props.open, props.id);
+        const Tdata = await getAnalyticsCompletedJiraData(0,
+          new Date().getTime(), props.open, props.id);
         const Mdata = await getAnalyticsMonthJiraData(
           fromDate30,
           toDate,
@@ -117,7 +118,7 @@ export default function ChartFunc(props) {
                 Math.round(
                   ((toDate - fromDate7) / (Rdata.length * 3600 * 1000) +
                     Number.EPSILON) *
-                    100
+                  100
                 ) / 100,
               color: "hsl(257, 70%, 50%)",
             },
@@ -128,7 +129,7 @@ export default function ChartFunc(props) {
                 Math.round(
                   ((toDate - fromDate30) / (Mdata.length * 3600 * 1000) +
                     Number.EPSILON) *
-                    100
+                  100
                 ) / 100,
               color: "hsl(169, 70%, 50%)",
             },
@@ -303,8 +304,8 @@ export default function ChartFunc(props) {
               </div>
             ) : null
           ) : (
-            <CircularProgress  style={{ color: "black" }} />
-          )}
+              <CircularProgress style={{ color: "black" }} />
+            )}
         </Grid>
         <Grid item xs>
           {recentChart ? (

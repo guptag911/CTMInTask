@@ -6,6 +6,8 @@ export const getAnalyticsOverallCompletedData = async (
   open,
   id
 ) => {
+
+  
   try {
     const uid = open
       ? id
@@ -25,6 +27,8 @@ export const getAnalyticsOverallCompletedData = async (
       finalData.push(data.data());
     });
 
+    console.log("data gsutote length ", finalData.length, finalData)
+
     const userRefC = await db
       .collection("users")
       .doc(uid)
@@ -36,6 +40,8 @@ export const getAnalyticsOverallCompletedData = async (
     userRefC.forEach((data) => {
       finalData.push(data.data());
     });
+
+    console.log("data confe length ", finalData.length, finalData)
 
     const userRefJ = await db
       .collection("users")
@@ -49,6 +55,8 @@ export const getAnalyticsOverallCompletedData = async (
       finalData.push(data.data());
     });
 
+    console.log("data jira length ", finalData.length, finalData)
+
     const userRefH = await db
       .collection("users")
       .doc(uid)
@@ -60,6 +68,8 @@ export const getAnalyticsOverallCompletedData = async (
     userRefH.forEach((data) => {
       finalData.push(data.data());
     });
+
+    console.log("data hub length ", finalData.length, finalData)
 
     return finalData;
   } catch (err) {

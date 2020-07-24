@@ -97,7 +97,8 @@ export default function ChartFunc(props) {
           props.open,
           props.id
         );
-        const Tdata = await getAnalyticsCompletedConfData(props.open, props.id);
+        const Tdata = await getAnalyticsCompletedConfData(0,
+          new Date().getTime(),props.open, props.id);
         const Mdata = await getAnalyticsMonthConfData(
           fromDate30,
           toDate,
