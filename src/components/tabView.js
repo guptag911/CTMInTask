@@ -202,11 +202,13 @@ export default function MiniDrawer() {
   };
 
   React.useEffect(() => {
-    try {
-      adminGet();
-    } catch (e) {
-      setIsAdmin(false);
-    }
+    setTimeout(() => {
+      try {
+        adminGet();
+      } catch (e) {
+        setIsAdmin(false);
+      }
+    }, 2000);
   }, []);
 
   const adminGet = async () => {
