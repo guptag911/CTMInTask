@@ -1,8 +1,10 @@
 # Central Task Manager (InTask)
 ![logo](https://res-2.cloudinary.com/crunchbase-production/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco/zez9iqg8lghajcaq65ai)
+## [Visit Your One Stop Dashboard ](https://ctmintask.web.app/#/)
 
 # Objective
-The objective of Central Task Manager is to increase employee productivity at Innovaccer. Innovaccer currently uses multiple productivity, task/project management tools which helps various departments to document the process and makes sure business objectives are achieved in a productive manner. Due to multiple siloed tools it's difficult for employees to maintain coherence to each tool in day today operations. Central Task Manager will help employees collate task/action items and work breakdowns from various tools and deliver them to employees in a timely and consolidated fashion and will help leadership to monitor capacity and productivity of each employee at Innovaccer.
+The objective of Central Task Manager is to increase employee/Uer's productivity at an Organisation. Organizations/Users currently use multiple productivity, task/project management tools which helps various departments to document the process and makes sure business objectives are achieved in a productive manner. Due to multiple siloed tools it's difficult for employees/Users to maintain coherence to each tool in day today operations. Central Task Manager will help employees/Users collate task/action items and work breakdowns from various tools and deliver them to employees in a timely and consolidated fashion and will help leadership to monitor capacity and productivity of each employee/User at an Organisation.
+
 
 
 
